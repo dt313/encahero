@@ -1,11 +1,11 @@
 import { SafeAreaView, Text } from 'react-native';
 
-function Home() {
+function Quiz() {
     return (
         <SafeAreaView>
-            <Text>Home</Text>
+            <Text>Quiz</Text>
         </SafeAreaView>
     );
 }
 
-export default Home;
+export default Quiz;

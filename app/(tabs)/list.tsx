@@ -1,11 +1,11 @@
 import { SafeAreaView, Text } from 'react-native';
 
-function Home() {
+function List() {
     return (
         <SafeAreaView>
-            <Text>Home</Text>
+            <Text>List</Text>
         </SafeAreaView>
     );
 }
 
-export default Home;
+export default List;
