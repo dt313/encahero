@@ -1,11 +1,13 @@
-import { Text, View } from "react-native";
+import { Text } from 'react-native';
+
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 function Register() {
-  return (
-    <View>
-      <Text>Register</Text>
-    </View>
-  );
+    return (
+        <SafeAreaView>
+            <Text>Register</Text>
+        </SafeAreaView>
+    );
 }
 
 export default Register;
