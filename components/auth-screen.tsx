@@ -50,7 +50,14 @@ function AuthScreen({ type }: AuthProps) {
     const typeValue = useMemo(() => (type === 'register' ? 'Register' : 'Login'), [type]);
 
     const handleSubmit = () => {
-        dispatch(addToast({ position: 'top', type: 'error' }));
+        dispatch(
+            addToast({
+                position: 'top',
+                type: 'error',
+                message:
+                    'If you are targeting foldable devices or devices which can change the screen size or app window size, you can use the event listener available in the Dimensions module as shown in the below example.',
+            }),
+        );
     };
 
     const handleGGButton = () => {
@@ -65,6 +72,7 @@ function AuthScreen({ type }: AuthProps) {
     const color = useThemeColor({}, 'text');
     const whiteColor = useThemeColor({}, 'white');
     const dividerColor = useThemeColor({}, 'dividerColor');
+
     return (
         <ThemedView style={styles.wrapper}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

@@ -17,6 +17,7 @@ function ToastContainer() {
                 return (
                     <Toast
                         key={toast.id}
+                        title={toast.title}
                         message={toast.message}
                         type={toast.type}
                         duration={toast.duration}

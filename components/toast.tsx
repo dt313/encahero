@@ -15,6 +15,7 @@ import { ThemedText } from './ThemedText';
 
 const { width } = Dimensions.get('window');
 type ToastProps = {
+    title: string;
     message: string;
     type: 'info' | 'success' | 'warning' | 'error';
     duration: number;
@@ -25,22 +26,11 @@ type ToastProps = {
 // Thêm type definition ở đầu file
 type KeyboardEventData = {
     endCoordinates: {
-        width: number;
         height: number;
-        screenX: number;
-        screenY: number;
     };
-    startCoordinates?: {
-        width: number;
-        height: number;
-        screenX: number;
-        screenY: number;
-    };
-    duration?: number;
-    easing?: string;
 };
 
-function Toast({ message, type, duration, position, onHide }: ToastProps) {
+function Toast({ title, message, type, duration, position, onHide }: ToastProps) {
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const slideAnim = useRef(new Animated.Value(position === 'top' ? -50 : 50)).current;
     const [keyboardHeight, setKeyboardHeight] = useState(0);
@@ -175,7 +165,7 @@ function Toast({ message, type, duration, position, onHide }: ToastProps) {
                 </View>
                 <View style={styles.textWrap}>
                     <ThemedText style={[styles.message, styles.title]} numberOfLines={3}>
-                        {message}
+                        {title}
                     </ThemedText>
                     <ThemedText style={[styles.message, styles.content]} numberOfLines={3}>
                         {message}

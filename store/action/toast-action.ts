@@ -11,6 +11,7 @@ export const addToast = (payload: object): ReduxActionType => {
         payload: {
             id: generateRandomId(),
             type: 'info',
+            title: 'info',
             message: 'Hello World',
             duration: DURATION,
             position: 'bottom',

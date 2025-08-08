@@ -1,5 +1,6 @@
 type ToastType = {
     id: string;
+    title: string;
     message: string;
     type: 'info' | 'success' | 'warning' | 'error';
     duration: number;
