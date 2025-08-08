@@ -1,6 +1,6 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-import { Animated, Dimensions, Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Animated, Dimensions, Keyboard, Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import {
     Alert02Icon,
@@ -22,11 +22,38 @@ type ToastProps = {
     onHide: () => void;
 };
 
+// Thêm type definition ở đầu file
+type KeyboardEventData = {
+    endCoordinates: {
+        width: number;
+        height: number;
+        screenX: number;
+        screenY: number;
+    };
+    startCoordinates?: {
+        width: number;
+        height: number;
+        screenX: number;
+        screenY: number;
+    };
+    duration?: number;
+    easing?: string;
+};
+
 function Toast({ message, type, duration, position, onHide }: ToastProps) {
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const slideAnim = useRef(new Animated.Value(position === 'top' ? -50 : 50)).current;
+    const [keyboardHeight, setKeyboardHeight] = useState(0);
 
     useEffect(() => {
+        const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', (e: KeyboardEventData) => {
+            setKeyboardHeight(e.endCoordinates.height);
+        });
+
+        const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+            setKeyboardHeight(0);
+        });
+
         // Animate in
         Animated.parallel([
             Animated.timing(fadeAnim, {
@@ -44,6 +71,8 @@ function Toast({ message, type, duration, position, onHide }: ToastProps) {
         // Auto hide after duration
         const timer = setTimeout(() => {
             hideToast();
+            keyboardDidShowListener?.remove();
+            keyboardDidHideListener?.remove();
         }, duration);
 
         return () => clearTimeout(timer);
@@ -105,8 +134,32 @@ function Toast({ message, type, duration, position, onHide }: ToastProps) {
         }
     };
 
+    // Calculate dynamic position based on keyboard
+    const getContainerStyle = () => {
+        if (position === 'top') {
+            return [styles.container, styles.topPosition];
+        } else {
+            // For bottom position, adjust based on keyboard height
+            const bottomOffset =
+                keyboardHeight > 0
+                    ? keyboardHeight + 20 // 20px padding above keyboard
+                    : Platform.OS === 'ios'
+                      ? 80
+                      : 40;
+
+            return [
+                styles.container,
+                {
+                    bottom: bottomOffset,
+                    // Use transform instead of bottom for smooth animation
+                    transform: [{ translateY: 0 }],
+                },
+            ];
+        }
+    };
+
     return (
-        <View style={[styles.container, position === 'top' ? styles.topPosition : styles.bottomPosition]}>
+        <View style={getContainerStyle()}>
             <Animated.View
                 style={[
                     styles.toast,
@@ -156,9 +209,6 @@ const styles = StyleSheet.create({
     },
     topPosition: {
         top: Platform.OS === 'ios' ? 60 : 40,
-    },
-    bottomPosition: {
-        bottom: Platform.OS === 'ios' ? 80 : 40,
     },
     toast: {
         paddingHorizontal: 16,

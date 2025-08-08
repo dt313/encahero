@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native';
 
 import { router } from 'expo-router';
 
@@ -67,88 +67,96 @@ function AuthScreen({ type }: AuthProps) {
     const dividerColor = useThemeColor({}, 'dividerColor');
     return (
         <ThemedView style={styles.wrapper}>
-            <SafeAreaView style={styles.content}>
-                <View style={styles.title}>
-                    <ThemedText type="title">
-                        {typeValue} to <Text style={styles.appName}>Encahero</Text>
-                    </ThemedText>
-                    <HelloWave />
-                </View>
-                {/* Tab Switcher */}
-                <TabSwitcher
-                    tabs={TAB_SWITCHER}
-                    activeTab={tab}
-                    onTabChange={handleChangeTabSwitch}
-                    containerStyle={{
-                        marginTop: 24,
-                    }}
-                />
-                {/* input  */}
-
-                <View style={styles.inputContainer}>
-                    <Input label="Email" value={email} placeholder="example@gmail.com" onChangeText={setEmail} />
-                    {tab === 'password' && (
-                        <Input label="Password" value={password} placeholder="Abcd123@" onChangeText={setPassword} />
-                    )}
-                </View>
-
-                {/* button */}
-                <Button textStyle={{ color: '#333' }} onPress={handleSubmit}>
-                    {tab === 'password' ? typeValue : 'Send'}
-                </Button>
-
-                {/* Divider */}
-                <View style={styles.dividerContainer}>
-                    <View style={[styles.dividerLine, { backgroundColor: dividerColor }]} />
-                    <Text style={styles.dividerText}>OR</Text>
-                    <View style={[styles.dividerLine, { backgroundColor: dividerColor }]} />
-                </View>
-
-                {/* Social Buttons */}
-                <View style={styles.inputContainer}>
-                    <Button
-                        buttonStyle={{
-                            backgroundColor: 'transparent',
-                            borderWidth: 1.5,
-                            borderColor: '#ceccccff',
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <SafeAreaView style={styles.content}>
+                    <View style={styles.title}>
+                        <ThemedText type="title">
+                            {typeValue} to <Text style={styles.appName}>Encahero</Text>
+                        </ThemedText>
+                        <HelloWave />
+                    </View>
+                    {/* Tab Switcher */}
+                    <TabSwitcher
+                        tabs={TAB_SWITCHER}
+                        activeTab={tab}
+                        onTabChange={handleChangeTabSwitch}
+                        containerStyle={{
+                            marginTop: 24,
                         }}
-                        leftIcon={<Image style={styles.socialIcon} source={ggIcon} />}
-                        onPress={handleGGButton}
-                    >
-                        Continue with Google
-                    </Button>
-                    <Button
-                        buttonStyle={{
-                            backgroundColor: color,
-                            borderWidth: 1.5,
-                            borderColor: color,
-                        }}
-                        textStyle={{ color: whiteColor }}
-                        leftIcon={<Image style={styles.socialIcon} source={fbIcon} />}
-                        onPress={handleFbButton}
-                    >
-                        Continue with Facebook
-                    </Button>
-                </View>
+                    />
+                    {/* input  */}
 
-                {/* Register Link */}
-                <View style={styles.registerContainer}>
-                    <Text style={styles.registerText}>
-                        {type === 'register' ? 'Are you already a member? ' : 'Not a Collect member yet? '}
-                    </Text>
-                    <Button
-                        type="link"
-                        onPress={() => {
-                            if (type === 'register') router.back();
-                            else {
-                                router.push('/register');
-                            }
-                        }}
-                    >
-                        {type === 'register' ? 'Login' : 'Register'} Now
+                    <View style={styles.inputContainer}>
+                        <Input label="Email" value={email} placeholder="example@gmail.com" onChangeText={setEmail} />
+                        {tab === 'password' && (
+                            <Input
+                                label="Password"
+                                value={password}
+                                placeholder="Abcd123@"
+                                onChangeText={setPassword}
+                                isPassword
+                            />
+                        )}
+                    </View>
+
+                    {/* button */}
+                    <Button textStyle={{ color: '#333' }} onPress={handleSubmit}>
+                        {tab === 'password' ? typeValue : 'Send'}
                     </Button>
-                </View>
-            </SafeAreaView>
+
+                    {/* Divider */}
+                    <View style={styles.dividerContainer}>
+                        <View style={[styles.dividerLine, { backgroundColor: dividerColor }]} />
+                        <Text style={styles.dividerText}>OR</Text>
+                        <View style={[styles.dividerLine, { backgroundColor: dividerColor }]} />
+                    </View>
+
+                    {/* Social Buttons */}
+                    <View style={styles.inputContainer}>
+                        <Button
+                            buttonStyle={{
+                                backgroundColor: 'transparent',
+                                borderWidth: 1.5,
+                                borderColor: '#ceccccff',
+                            }}
+                            leftIcon={<Image style={styles.socialIcon} source={ggIcon} />}
+                            onPress={handleGGButton}
+                        >
+                            Continue with Google
+                        </Button>
+                        <Button
+                            buttonStyle={{
+                                backgroundColor: color,
+                                borderWidth: 1.5,
+                                borderColor: color,
+                            }}
+                            textStyle={{ color: whiteColor }}
+                            leftIcon={<Image style={styles.socialIcon} source={fbIcon} />}
+                            onPress={handleFbButton}
+                        >
+                            Continue with Facebook
+                        </Button>
+                    </View>
+
+                    {/* Register Link */}
+                    <View style={styles.registerContainer}>
+                        <Text style={styles.registerText}>
+                            {type === 'register' ? 'Are you already a member? ' : 'Not a Collect member yet? '}
+                        </Text>
+                        <Button
+                            type="link"
+                            onPress={() => {
+                                if (type === 'register') router.back();
+                                else {
+                                    router.push('/register');
+                                }
+                            }}
+                        >
+                            {type === 'register' ? 'Login' : 'Register'} Now
+                        </Button>
+                    </View>
+                </SafeAreaView>
+            </TouchableWithoutFeedback>
         </ThemedView>
     );
 }
