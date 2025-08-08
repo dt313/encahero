@@ -1,24 +1,12 @@
-import { useState } from 'react';
+import { usePathname } from 'expo-router';
 
-import { Text } from 'react-native';
-
-import { SafeAreaView } from 'react-native-safe-area-context';
+import AuthScreen from '@/components/auth-screen';
 
 function Login() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-
-    const handleLogin = () => {
-        // Xử lý đăng nhập tại đây
-        console.log('Email:', email);
-        console.log('Password:', password);
-    };
-
-    return (
-        <SafeAreaView>
-            <Text>Login</Text>
-        </SafeAreaView>
-    );
+    const pathname = usePathname();
+    const rawRoute = pathname.split('/').filter(Boolean).pop();
+    const routeName = rawRoute === 'register' ? 'register' : 'login';
+    return <AuthScreen type={routeName} />;
 }
 
 export default Login;

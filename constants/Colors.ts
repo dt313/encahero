@@ -10,17 +10,33 @@ export const Colors = {
     light: {
         text: '#11181C',
         background: '#fff',
+        white: '#fff',
+        black: '#333',
         tint: tintColorLight,
         icon: '#687076',
         tabIconDefault: '#687076',
         tabIconSelected: tintColorLight,
+
+        authSwitcherActiveTabBackground: '#c2c2c244',
+        authSwitcherActiveText: '#1D1D1F',
+        authInputBackground: '#d2d5d977',
+
+        dividerColor: '#E5E5E7',
     },
     dark: {
         text: '#ECEDEE',
         background: '#151718',
+        white: '#333',
+        black: '#fff',
         tint: tintColorDark,
         icon: '#9BA1A6',
         tabIconDefault: '#9BA1A6',
         tabIconSelected: tintColorDark,
+
+        authSwitcherActiveTabBackground: '#d9d8d844',
+        authSwitcherActiveText: '#ffffffff',
+        authInputBackground: '#4b4b4b77',
+
+        dividerColor: '#747474ff',
     },
 };

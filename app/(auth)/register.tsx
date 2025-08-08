@@ -1,13 +1,12 @@
-import { Text } from 'react-native';
+import { usePathname } from 'expo-router';
 
-import { SafeAreaView } from 'react-native-safe-area-context';
+import AuthScreen from '@/components/auth-screen';
 
 function Register() {
-    return (
-        <SafeAreaView>
-            <Text>Register</Text>
-        </SafeAreaView>
-    );
+    const pathname = usePathname();
+    const rawRoute = pathname.split('/').filter(Boolean).pop();
+    const routeName = rawRoute === 'register' ? 'register' : 'login';
+    return <AuthScreen type={routeName} />;
 }
 
 export default Register;
