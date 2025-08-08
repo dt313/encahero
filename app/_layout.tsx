@@ -6,6 +6,7 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import 'react-native-reanimated';
 
 import StoreProvider from '@/components/store-provider';
+import ToastContainer from '@/components/toast-container';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 
@@ -26,6 +27,7 @@ export default function RootLayout() {
     return (
         <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
             <StoreProvider>
+                <ToastContainer />
                 <Stack>
                     <Stack.Screen name="index" options={{ headerShown: false }} />
                     <Stack.Screen name="(tabs)" options={{ headerShown: false }} />

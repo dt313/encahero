@@ -36,7 +36,7 @@ function Button({
             {...rest}
         >
             {leftIcon}
-            <ThemedText style={[styles.buttonText, type === 'link' ? { color: '#d7b703ff' } : undefined, , textStyle]}>
+            <ThemedText style={[styles.buttonText, type === 'link' ? { color: '#FF9800' } : undefined, , textStyle]}>
                 {children}
             </ThemedText>
             {rightIcon}
@@ -46,7 +46,7 @@ function Button({
 
 const styles = StyleSheet.create({
     button: {
-        backgroundColor: '#FFD700',
+        backgroundColor: '#FF9800',
         paddingVertical: 12,
         borderRadius: 8,
         alignItems: 'center',

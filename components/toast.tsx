@@ -1,0 +1,242 @@
+import { useEffect, useRef } from 'react';
+
+import { Animated, Dimensions, Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
+
+import {
+    Alert02Icon,
+    AlertCircleIcon,
+    Cancel01Icon,
+    CheckmarkCircle03Icon,
+    Eraser01Icon,
+} from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
+
+import { ThemedText } from './ThemedText';
+
+const { width } = Dimensions.get('window');
+type ToastProps = {
+    message: string;
+    type: 'info' | 'success' | 'warning' | 'error';
+    duration: number;
+    position: 'top' | 'bottom';
+    onHide: () => void;
+};
+
+function Toast({ message, type, duration, position, onHide }: ToastProps) {
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+    const slideAnim = useRef(new Animated.Value(position === 'top' ? -50 : 50)).current;
+
+    useEffect(() => {
+        // Animate in
+        Animated.parallel([
+            Animated.timing(fadeAnim, {
+                toValue: 1,
+                duration: 300,
+                useNativeDriver: true,
+            }),
+            Animated.timing(slideAnim, {
+                toValue: 0,
+                duration: 300,
+                useNativeDriver: true,
+            }),
+        ]).start();
+
+        // Auto hide after duration
+        const timer = setTimeout(() => {
+            hideToast();
+        }, duration);
+
+        return () => clearTimeout(timer);
+    }, [duration]);
+
+    const hideToast = () => {
+        Animated.parallel([
+            Animated.timing(fadeAnim, {
+                toValue: 0,
+                duration: 300,
+                useNativeDriver: true,
+            }),
+            Animated.timing(slideAnim, {
+                toValue: position === 'top' ? -50 : 50,
+                duration: 300,
+                useNativeDriver: true,
+            }),
+        ]).start(() => {
+            if (onHide) onHide();
+        });
+    };
+
+    const getToastStyle = () => {
+        switch (type) {
+            case 'success':
+                return styles.successToast;
+            case 'error':
+                return styles.errorToast;
+            case 'warning':
+                return styles.warningToast;
+            default:
+                return styles.infoToast;
+        }
+    };
+
+    const getIconBg = () => {
+        switch (type) {
+            case 'success':
+                return styles.successIconBg;
+            case 'error':
+                return styles.errorIconBg;
+            case 'warning':
+                return styles.warningIconBg;
+            default:
+                return styles.infoIconBg;
+        }
+    };
+
+    const getIcon = () => {
+        switch (type) {
+            case 'success':
+                return CheckmarkCircle03Icon;
+            case 'error':
+                return Eraser01Icon;
+            case 'warning':
+                return Alert02Icon;
+            default:
+                return AlertCircleIcon;
+        }
+    };
+
+    return (
+        <View style={[styles.container, position === 'top' ? styles.topPosition : styles.bottomPosition]}>
+            <Animated.View
+                style={[
+                    styles.toast,
+                    getToastStyle(),
+                    {
+                        opacity: fadeAnim,
+                        transform: [{ translateY: slideAnim }],
+                    },
+                ]}
+            >
+                <View style={[styles.iconWrap, getIconBg()]}>
+                    <HugeiconsIcon icon={getIcon()} color="white" size={20} />
+                </View>
+                <View style={styles.textWrap}>
+                    <ThemedText style={[styles.message, styles.title]} numberOfLines={3}>
+                        {message}
+                    </ThemedText>
+                    <ThemedText style={[styles.message, styles.content]} numberOfLines={3}>
+                        {message}
+                    </ThemedText>
+                </View>
+                <TouchableOpacity
+                    style={[
+                        styles.iconWrap,
+                        {
+                            borderWidth: 1,
+                            borderColor: '#c6c6c6ff',
+                        },
+                    ]}
+                    onPress={hideToast}
+                >
+                    <HugeiconsIcon icon={Cancel01Icon} color="white" size={16} />
+                </TouchableOpacity>
+            </Animated.View>
+        </View>
+    );
+}
+
+const styles = StyleSheet.create({
+    container: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        alignItems: 'center',
+        zIndex: 9999,
+        paddingHorizontal: 20,
+    },
+    topPosition: {
+        top: Platform.OS === 'ios' ? 60 : 40,
+    },
+    bottomPosition: {
+        bottom: Platform.OS === 'ios' ? 80 : 40,
+    },
+    toast: {
+        paddingHorizontal: 16,
+        paddingVertical: 12,
+        borderRadius: 50,
+        maxWidth: width - 40,
+        minWidth: '90%',
+        minHeight: 60,
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexDirection: 'row',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    message: {
+        marginHorizontal: 8,
+        fontSize: 14,
+        textAlign: 'left',
+        fontWeight: '500',
+        color: '#fff',
+    },
+    // Toast types
+    infoToast: {
+        backgroundColor: '#002757',
+    },
+    successToast: {
+        backgroundColor: '#00593e',
+    },
+    errorToast: {
+        backgroundColor: '#561000',
+    },
+    warningToast: {
+        backgroundColor: '#593300',
+    },
+
+    // icon background
+    infoIconBg: {
+        backgroundColor: '#2f86e6',
+    },
+    successIconBg: {
+        backgroundColor: '#00976a',
+    },
+    errorIconBg: {
+        backgroundColor: '#951f03',
+    },
+    warningIconBg: {
+        backgroundColor: '#945801',
+    },
+    // Text colors
+    textWrap: {
+        flex: 1,
+    },
+    title: {
+        fontSize: 16,
+        color: '#fff',
+        fontWeight: '600',
+    },
+    content: {
+        fontSize: 14,
+        color: '#dededeff',
+    },
+
+    // icon
+    iconWrap: {
+        borderRadius: 100,
+        width: 32,
+        height: 32,
+        padding: 4,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+});
+
+export default Toast;

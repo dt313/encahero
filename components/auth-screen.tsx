@@ -4,7 +4,9 @@ import { Image, StyleSheet, Text, View } from 'react-native';
 
 import { router } from 'expo-router';
 
+import { addToast } from '@/store/action/toast-action';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useDispatch } from 'react-redux';
 
 import fbIcon from '@/assets/images/fb-icon.png';
 import ggIcon from '@/assets/images/gg-icon.png';
@@ -39,6 +41,8 @@ function AuthScreen({ type }: AuthProps) {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
 
+    const dispatch = useDispatch();
+
     const handleChangeTabSwitch = (value: string) => {
         setTab(value);
     };
@@ -46,15 +50,15 @@ function AuthScreen({ type }: AuthProps) {
     const typeValue = useMemo(() => (type === 'register' ? 'Register' : 'Login'), [type]);
 
     const handleSubmit = () => {
-        console.log('submit');
+        dispatch(addToast({ position: 'top', type: 'error' }));
     };
 
     const handleGGButton = () => {
-        console.log('google');
+        dispatch(addToast({ position: 'bottom', type: 'success' }));
     };
 
     const handleFbButton = () => {
-        console.log('facebook');
+        dispatch(addToast({ position: 'bottom', type: 'warning' }));
     };
 
     // color theme
@@ -65,7 +69,9 @@ function AuthScreen({ type }: AuthProps) {
         <ThemedView style={styles.wrapper}>
             <SafeAreaView style={styles.content}>
                 <View style={styles.title}>
-                    <ThemedText type="title">{typeValue} to Encahero</ThemedText>
+                    <ThemedText type="title">
+                        {typeValue} to <Text style={styles.appName}>Encahero</Text>
+                    </ThemedText>
                     <HelloWave />
                 </View>
                 {/* Tab Switcher */}
@@ -160,6 +166,15 @@ const styles = StyleSheet.create({
         display: 'flex',
         alignItems: 'center',
         flexDirection: 'row',
+    },
+
+    appName: {
+        color: '#FF9800',
+        fontWeight: 'bold',
+        fontSize: 32,
+        textShadowColor: 'rgba(0, 0, 0, 0.3)',
+        textShadowOffset: { width: 1, height: 1 },
+        textShadowRadius: 2,
     },
     inputContainer: {
         marginBottom: 32,
