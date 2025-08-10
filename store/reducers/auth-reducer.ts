@@ -3,7 +3,7 @@ import ReduxActionType from '@/types/redux-action-type';
 import { LOGIN, LOGOUT } from '../action/auth-action';
 
 const initialState = {
-    isLoggedIn: false,
+    isLoggedIn: true,
     user: {},
 };
 
