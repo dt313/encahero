@@ -108,9 +108,7 @@ function AuthScreen({ type }: AuthProps) {
                     </View>
 
                     {/* button */}
-                    <Button textStyle={{ color: '#333' }} onPress={handleSubmit}>
-                        {tab === 'password' ? typeValue : 'Send'}
-                    </Button>
+                    <Button onPress={handleSubmit}>{tab === 'password' ? typeValue : 'Send'}</Button>
 
                     {/* Divider */}
                     <View style={styles.dividerContainer}>

@@ -27,7 +27,8 @@ function Button({
     return (
         <TouchableOpacity
             style={[
-                type === 'default' ? styles.button : undefined,
+                styles.button,
+                type === 'default' ? styles.default : undefined,
                 type === 'link' ? styles.link : undefined,
                 ,
                 buttonStyle,
@@ -36,7 +37,14 @@ function Button({
             {...rest}
         >
             {leftIcon}
-            <ThemedText style={[styles.buttonText, type === 'link' ? { color: '#FF9800' } : undefined, , textStyle]}>
+            <ThemedText
+                style={[
+                    styles.buttonText,
+                    type === 'link' ? { color: '#FF9800' } : undefined,
+                    type === 'default' ? { color: '#333' } : undefined,
+                    textStyle,
+                ]}
+            >
                 {children}
             </ThemedText>
             {rightIcon}
@@ -46,12 +54,14 @@ function Button({
 
 const styles = StyleSheet.create({
     button: {
-        backgroundColor: '#FF9800',
-        paddingVertical: 12,
-        borderRadius: 8,
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'row',
+    },
+    default: {
+        backgroundColor: '#FF9800',
+        paddingVertical: 12,
+        borderRadius: 8,
     },
     buttonText: {
         fontSize: 16,

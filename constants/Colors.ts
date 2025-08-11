@@ -9,6 +9,7 @@ const tintColorDark = '#fff';
 export const Colors = {
     light: {
         text: '#11181C',
+        lighterText: '#6d6d6dff',
         background: '#fff',
         white: '#fff',
         black: '#333',
@@ -22,9 +23,13 @@ export const Colors = {
         authInputBackground: '#d2d5d977',
 
         dividerColor: '#E5E5E7',
+        chartBg: '#fff',
+        chartHeaderBG: '#ffffffff',
+        goalBg: '#c4ed81ff',
     },
     dark: {
         text: '#ECEDEE',
+        lighterText: '#9c9b9bff',
         background: '#151718',
         white: '#333',
         black: '#fff',
@@ -38,5 +43,8 @@ export const Colors = {
         authInputBackground: '#4b4b4b77',
 
         dividerColor: '#747474ff',
+        chartBg: '#0c1117',
+        chartHeaderBG: '#131a23ff',
+        goalBg: '#1b530cff',
     },
 };

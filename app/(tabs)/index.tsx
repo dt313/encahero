@@ -1,4 +1,4 @@
-import { Image, StyleSheet, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, View } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -6,23 +6,70 @@ import image from '@/assets/images/fb-icon.png';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import Charts from '@/components/charts';
+import GoalList from '@/components/goal-list';
 
 const HEADER_HEIGHT = 60;
+const list = [
+    {
+        name: 'Common Words',
+        total: 100,
+        count: 12,
+    },
+    {
+        name: 'Business Vocabulary',
+        total: 80,
+        count: 25,
+    },
+    {
+        name: 'Travel Phrases',
+        total: 60,
+        count: 15,
+    },
+    {
+        name: 'Academic Words',
+        total: 120,
+        count: 40,
+    },
+    {
+        name: 'Idioms & Expressions',
+        total: 90,
+        count: 22,
+    },
+    {
+        name: 'TOEIC Listening Keywords',
+        total: 70,
+        count: 18,
+    },
+    {
+        name: 'Daily Conversation',
+        total: 110,
+        count: 30,
+    },
+];
+
 function Home() {
     return (
-        <SafeAreaView
-            style={{
-                padding: 20,
-            }}
-        >
-            <ThemedView style={styles.header}>
-                <View style={styles.textWrapper}>
-                    <ThemedText type="title">Hello, Danh Tuan</ThemedText>
-                    <ThemedText lightColor="#636363ff">Let's check how you feel to day</ThemedText>
-                </View>
-                <Image style={styles.avatar} source={image} />
-            </ThemedView>
-        </SafeAreaView>
+        <ScrollView>
+            <SafeAreaView
+                style={{
+                    padding: 20,
+                    paddingBottom: 80,
+                }}
+            >
+                <ThemedView style={styles.header}>
+                    <View style={styles.textWrapper}>
+                        <ThemedText type="title">Hello, Danh Tuan</ThemedText>
+                        <ThemedText lightColor="#636363ff">Lets check how you feel to day</ThemedText>
+                    </View>
+                    <Image style={styles.avatar} source={image} />
+                </ThemedView>
+
+                <Charts />
+
+                <GoalList containerStyle={{ marginTop: 16 }} title="Today's Goal" list={list} />
+            </SafeAreaView>
+        </ScrollView>
     );
 }
 
