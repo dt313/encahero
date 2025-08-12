@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "@expo/vector-icons": "^14.1.0",
+        "@gorhom/bottom-sheet": "^5.1.8",
         "@hugeicons/core-free-icons": "^1.0.16",
         "@hugeicons/react-native": "^1.0.7",
         "@react-navigation/bottom-tabs": "^7.3.10",

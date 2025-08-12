@@ -1,4 +1,4 @@
-import { Image, ScrollView, StyleSheet, View } from 'react-native';
+import { Image, Platform, ScrollView, StyleSheet, View } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -54,7 +54,7 @@ function Home() {
             <SafeAreaView
                 style={{
                     padding: 20,
-                    paddingBottom: 80,
+                    paddingBottom: Platform.OS === 'android' ? 40 : 80,
                 }}
             >
                 <ThemedView style={styles.header}>

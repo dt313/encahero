@@ -1,5 +1,8 @@
+import { useCallback, useRef } from 'react';
+
 import { FlatList, StyleSheet, Text, View, ViewStyle, useColorScheme } from 'react-native';
 
+import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
 import { AddSquareIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 
@@ -8,6 +11,7 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 import { getRandomColor } from '@/utils';
 
 import { ThemedText } from './ThemedText';
+import { ThemedView } from './ThemedView';
 import Button from './button';
 
 const data = [
@@ -50,12 +54,22 @@ function HorizontalList({ headerName = 'Popular', containerStyle, isRandomColor 
     const textColor = useThemeColor({}, 'text');
     const theme = useColorScheme();
 
+    // ref
+    const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+
+    // callbacks
+    const handlePresentModalPress = useCallback(() => {
+        bottomSheetModalRef.current?.present();
+    }, []);
+    const handleSheetChanges = useCallback((index: number) => {
+        console.log('handleSheetChanges', index);
+    }, []);
+
     return (
         <View style={[styles.wrapper, containerStyle]}>
             <ThemedText type="title" style={styles.headerName}>
                 {headerName}
             </ThemedText>
-
             <FlatList
                 horizontal
                 data={data}
@@ -66,7 +80,7 @@ function HorizontalList({ headerName = 'Popular', containerStyle, isRandomColor 
                         <View style={[styles.item, { backgroundColor: backgroundColor }]}>
                             <View style={styles.itemHeader}>
                                 <Text style={styles.itemIcon}>{item.icon}</Text>
-                                <Button style={{ paddingVertical: 0 }}>
+                                <Button style={{ paddingVertical: 0 }} onPress={handlePresentModalPress}>
                                     <HugeiconsIcon icon={AddSquareIcon} size={32} color={textColor} />
                                 </Button>
                             </View>
@@ -82,6 +96,14 @@ function HorizontalList({ headerName = 'Popular', containerStyle, isRandomColor 
                 contentContainerStyle={{ columnGap: 8, paddingVertical: 16 }}
                 showsHorizontalScrollIndicator={false}
             />
+
+            <BottomSheetModal ref={bottomSheetModalRef} onChange={handleSheetChanges} snapPoints={['50%', '75%']}>
+                <BottomSheetView style={[styles.bottomModal, { backgroundColor: white }]}>
+                    <ThemedView style={{ minHeight: 300, width: '100%', backgroundColor: '#fff' }}>
+                        <ThemedText>Awesome </ThemedText>
+                    </ThemedView>
+                </BottomSheetView>
+            </BottomSheetModal>
         </View>
     );
 }
@@ -122,6 +144,11 @@ const styles = StyleSheet.create({
     },
     itemNumber: {
         fontWeight: 500,
+    },
+
+    bottomModal: {
+        flex: 1,
+        alignItems: 'center',
     },
 });
 
