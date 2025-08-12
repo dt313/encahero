@@ -1,3 +1,5 @@
 import generateRandomId from '@/utils/generate-random-id';
 
-export { generateRandomId };
+import getRandomColor from './random-color';
+
+export { generateRandomId, getRandomColor };

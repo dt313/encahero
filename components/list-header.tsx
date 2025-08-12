@@ -13,6 +13,7 @@ function ListHeader() {
     const [isSearching, setIsSearching] = useState(false);
     const white = useThemeColor({}, 'white');
     const textColor = useThemeColor({}, 'text');
+    const lighterText = useThemeColor({}, 'lighterText');
 
     const widthAnim = useRef(new Animated.Value(52)).current;
 
@@ -41,7 +42,13 @@ function ListHeader() {
                         <HugeiconsIcon icon={Cancel01FreeIcons} color={textColor} />
                     </TouchableOpacity>
                 )}
-                {isSearching && <TextInput style={styles.searchInput} placeholder="Search..." />}
+                {isSearching && (
+                    <TextInput
+                        style={[styles.searchInput, { backgroundColor: white, color: textColor }]}
+                        placeholder="Search..."
+                        placeholderTextColor={lighterText}
+                    />
+                )}
             </Animated.View>
             <TouchableOpacity
                 style={[styles.searchIcon, { backgroundColor: white }]}
@@ -59,6 +66,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         columnGap: 4,
+        paddingBottom: 12,
     },
 
     search: {
@@ -70,7 +78,6 @@ const styles = StyleSheet.create({
     },
 
     searchInput: {
-        backgroundColor: '#fff',
         borderRadius: 100,
         height: 52,
         paddingHorizontal: 16,

@@ -55,9 +55,9 @@ function Charts() {
                                 ...styles.tab,
                                 backgroundColor: activeTab === tab.title ? activeTabBackground : 'transparent',
                             }}
-                            // textStyle={{
-                            //     color: activeTab !== tab.title ? '#929292ff' : textColor,
-                            // }}
+                            textStyle={{
+                                color: textColor,
+                            }}
                             onPress={() => handleTabPress(tab.title)}
                         >
                             {tab.title}

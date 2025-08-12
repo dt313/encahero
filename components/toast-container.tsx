@@ -13,19 +13,20 @@ function ToastContainer() {
     };
     return (
         <>
-            {list.map((toast: ToastType) => {
-                return (
-                    <Toast
-                        key={toast.id}
-                        title={toast.title}
-                        message={toast.message}
-                        type={toast.type}
-                        duration={toast.duration}
-                        position={toast.position}
-                        onHide={() => handleHide(toast.id)}
-                    />
-                );
-            })}
+            {list?.length > 0 &&
+                list?.map((toast: ToastType) => {
+                    return (
+                        <Toast
+                            key={toast.id}
+                            title={toast.title}
+                            message={toast.message}
+                            type={toast.type}
+                            duration={toast.duration}
+                            position={toast.position}
+                            onHide={() => handleHide(toast.id)}
+                        />
+                    );
+                })}
         </>
     );
 }
