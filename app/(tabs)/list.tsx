@@ -16,9 +16,15 @@ function List() {
             <BottomSheetModalProvider>
                 <View>
                     <ScrollView contentContainerStyle={{ paddingBottom: Platform.OS === 'ios' ? 140 : 80 }}>
-                        <HorizontalList isRandomColor containerStyle={{ marginTop: 24 }} />
-                        <HorizontalList headerName="Your List" containerStyle={{ marginTop: 24 }} />
-                        <CategoryList />
+                        <View
+                            style={{
+                                paddingHorizontal: 20,
+                            }}
+                        >
+                            <HorizontalList isRandomColor containerStyle={{ marginTop: 24 }} />
+                            <HorizontalList headerName="Your List" containerStyle={{ marginTop: 24 }} />
+                            <CategoryList />
+                        </View>
                     </ScrollView>
                 </View>
             </BottomSheetModalProvider>
@@ -29,7 +35,6 @@ function List() {
 const styles = StyleSheet.create({
     wrapper: {
         flex: 1,
-        paddingHorizontal: 20,
     },
 });
 export default List;

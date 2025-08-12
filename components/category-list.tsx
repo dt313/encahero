@@ -1,4 +1,6 @@
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+
+import { useRouter } from 'expo-router';
 
 import { ArrowRight01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
@@ -6,7 +8,6 @@ import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useThemeColor } from '@/hooks/useThemeColor';
 
 import { ThemedText } from './ThemedText';
-import Button from './button';
 
 const list = [
     {
@@ -47,6 +48,7 @@ const list = [
 ];
 function CategoryList() {
     const textColor = useThemeColor({}, 'text');
+    const router = useRouter();
     return (
         <View style={[styles.wrapper]}>
             <ThemedText type="title" style={styles.headerName}>
@@ -56,17 +58,19 @@ function CategoryList() {
             <View style={styles.body}>
                 {list.map((item: any, index: number) => {
                     return (
-                        <View key={item.name} style={[styles.item, { borderColor: '#7d7d7d77' }]}>
-                            <View style={styles.header}>
-                                <ThemedText type="defaultSemiBold" style={styles.itemName}>
-                                    {item.name}
-                                </ThemedText>
-                                <ThemedText lighter>{item.total} list</ThemedText>
+                        <TouchableOpacity key={item.name} onPress={() => router.push('/category/1')}>
+                            <View style={[styles.item, { borderColor: '#7d7d7d77' }]}>
+                                <View style={styles.header}>
+                                    <ThemedText type="defaultSemiBold" style={styles.itemName}>
+                                        {item.name}
+                                    </ThemedText>
+                                    <ThemedText lighter>{item.total} list</ThemedText>
+                                </View>
+                                <View>
+                                    <HugeiconsIcon icon={ArrowRight01Icon} color={textColor} />
+                                </View>
                             </View>
-                            <Button type="link">
-                                <HugeiconsIcon icon={ArrowRight01Icon} color={textColor} />
-                            </Button>
-                        </View>
+                        </TouchableOpacity>
                     );
                 })}
             </View>
@@ -93,13 +97,13 @@ const styles = StyleSheet.create({
         paddingBottom: 24,
         flexDirection: 'row',
         justifyContent: 'space-between',
+        alignItems: 'center',
         overflow: 'hidden',
         borderWidth: 1.2,
     },
     itemName: {
         marginBottom: 4,
         flex: 1,
-        textOverflow: 'es',
     },
     header: {},
 });

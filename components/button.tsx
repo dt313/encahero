@@ -4,7 +4,7 @@ import { StyleSheet, TextStyle, TouchableOpacity, TouchableOpacityProps, ViewSty
 
 import { ThemedText } from './ThemedText';
 
-type ButtonProps = {
+export type ButtonProps = {
     type?: string;
     leftIcon?: ReactNode;
     rightIcon?: ReactNode;
