@@ -80,6 +80,7 @@ const styles = StyleSheet.create({
     },
     headerName: {
         letterSpacing: 0.5,
+        fontWeight: 600,
     },
 
     body: {
