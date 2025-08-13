@@ -1,13 +1,21 @@
+import { useState } from 'react';
+
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { ArrowReloadHorizontalIcon, VolumeHighIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
+import FlipCard from 'react-native-flip-card';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
 
 import { ThemedText } from '../ThemedText';
 
-const anwsers = [
+type AnswerType = {
+    title: string;
+    name: 'easy' | 'medium' | 'hard';
+    icon: string;
+};
+const anwsers: AnswerType[] = [
     {
         title: 'Easy',
         name: 'easy',
@@ -30,20 +38,38 @@ const anwsers = [
 
 function ReviewCard() {
     const backgroundColor = useThemeColor({}, 'background');
+
+    const [flip, setFlip] = useState(false);
+
+    const handleFlip = () => {
+        setFlip(!flip);
+    };
     return (
         <View style={styles.wrapper}>
             <View style={[styles.questionBox, { backgroundColor: backgroundColor }]}>
-                <View style={[styles.flip, { borderColor: '#909090ff' }]}>
-                    <View>
-                        <ThemedText style={styles.mainText} type="title">
-                            Truth
-                        </ThemedText>
-                    </View>
-                    <View>
-                        <ThemedText style={styles.mainText} type="title">
-                            Su That
-                        </ThemedText>
-                    </View>
+                <View style={[styles.flip]}>
+                    <FlipCard
+                        flip={flip}
+                        style={{
+                            flex: 1,
+                            height: '100%',
+                            backgroundColor: backgroundColor,
+                            borderWidth: 1.5,
+                            borderColor: '#909090ff',
+                            borderRadius: 16,
+                        }}
+                        friction={9}
+                        flipHorizontal={true}
+                        flipVertical={false}
+                        perspective={1000}
+                    >
+                        <View style={styles.card}>
+                            <ThemedText type="title">Truth</ThemedText>
+                        </View>
+                        <View style={styles.card}>
+                            <ThemedText type="title">Su That</ThemedText>
+                        </View>
+                    </FlipCard>
                 </View>
 
                 <View style={styles.tools}>
@@ -53,7 +79,7 @@ function ReviewCard() {
                     <TouchableOpacity style={styles.toolItem}>
                         <HugeiconsIcon icon={VolumeHighIcon} />
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.toolItem}>
+                    <TouchableOpacity style={styles.toolItem} onPress={handleFlip}>
                         <HugeiconsIcon icon={ArrowReloadHorizontalIcon} />
                     </TouchableOpacity>
                 </View>
@@ -110,10 +136,14 @@ const styles = StyleSheet.create({
 
     flip: {
         flex: 1,
+        borderRadius: 16,
+    },
+
+    card: {
+        flex: 1,
+        height: '100%',
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 16,
-        borderWidth: 1.5,
     },
     tools: {
         flexDirection: 'row',
