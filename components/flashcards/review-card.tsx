@@ -2,6 +2,8 @@ import { useState } from 'react';
 
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
+import * as Speech from 'expo-speech';
+
 import { ArrowReloadHorizontalIcon, VolumeHighIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import FlipCard from 'react-native-flip-card';
@@ -38,11 +40,18 @@ const anwsers: AnswerType[] = [
 
 function ReviewCard() {
     const backgroundColor = useThemeColor({}, 'background');
+    const textColor = useThemeColor({}, 'text');
 
     const [flip, setFlip] = useState(false);
 
     const handleFlip = () => {
         setFlip(!flip);
+    };
+
+    const speak = () => {
+        Speech.stop();
+        const thingToSay = 'Hello World';
+        Speech.speak(thingToSay);
     };
     return (
         <View style={styles.wrapper}>
@@ -76,11 +85,11 @@ function ReviewCard() {
                     <View style={styles.toolItem}>
                         <ThemedText style={styles.type}>New</ThemedText>
                     </View>
-                    <TouchableOpacity style={styles.toolItem}>
-                        <HugeiconsIcon icon={VolumeHighIcon} />
+                    <TouchableOpacity style={styles.toolItem} onPress={speak}>
+                        <HugeiconsIcon icon={VolumeHighIcon} size={28} color={textColor} />
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.toolItem} onPress={handleFlip}>
-                        <HugeiconsIcon icon={ArrowReloadHorizontalIcon} />
+                        <HugeiconsIcon icon={ArrowReloadHorizontalIcon} size={28} color={textColor} />
                     </TouchableOpacity>
                 </View>
             </View>
