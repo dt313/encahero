@@ -6,8 +6,16 @@
 const tintColorLight = '#000000ff';
 const tintColorDark = '#fff';
 
+export const commonColor = {
+    failBgColor: '#f05b5b22',
+    failBorderColor: '#f23434ff',
+    trueBgColor: '#69e25922',
+    trueBorderColor: '#29b83aff',
+    volumeColor: '#396feeff',
+};
 export const Colors = {
     light: {
+        primary: '#FF9800',
         text: '#11181C',
         lighterText: '#6d6d6dff',
         background: '#fff',
@@ -28,6 +36,7 @@ export const Colors = {
         goalBg: '#c4ed81ff',
     },
     dark: {
+        primary: '#FF9800',
         text: '#ECEDEE',
         lighterText: '#9c9b9bff',
         background: '#151718',

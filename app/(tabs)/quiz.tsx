@@ -2,7 +2,7 @@ import { StyleSheet, View } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import ReviewCard from '@/components/flashcards/review-card';
+import MultipleChoice from '@/components/flashcards/multiple-choice';
 
 function Quiz() {
     return (
@@ -10,7 +10,8 @@ function Quiz() {
             {/* TODO : Header  */}
 
             <View style={styles.flashcards}>
-                <ReviewCard />
+                {/* <ReviewCard /> */}
+                <MultipleChoice />
             </View>
         </SafeAreaView>
     );
