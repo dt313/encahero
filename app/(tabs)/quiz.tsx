@@ -1,5 +1,8 @@
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { useCallback, useRef } from 'react';
 
+import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
+
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { BookOpen02Icon, Settings01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { Bar } from 'react-native-progress';
@@ -7,22 +10,42 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/ThemedText';
 import ReviewCard from '@/components/flashcards/review-card';
+import LearningList from '@/components/learning-list';
+import ModalBottomSheet from '@/components/modal-bottom-sheet';
+import QuizSetting from '@/components/quiz-setting';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
 
 function Quiz() {
     const white = useThemeColor({}, 'white');
     const textColor = useThemeColor({}, 'text');
+    // Viết hoa chữ cái đầu mỗi từ
+    const capitalizeWords = (text: string) => {
+        return text.replace(/\b\w/g, (char) => char.toUpperCase());
+    };
+    const leftRef = useRef<BottomSheetModal>(null);
+    const rightRef = useRef<BottomSheetModal>(null);
+
+    // callbacks
+    const handleOpenListMenu = useCallback(() => {
+        leftRef.current?.present();
+    }, []);
+
+    // callbacks
+    const handleOpenSettingBox = useCallback(() => {
+        rightRef.current?.present();
+    }, []);
+
     return (
         <SafeAreaView style={{ paddingHorizontal: 20, flex: 1 }}>
             <View style={styles.header}>
-                <TouchableOpacity style={[styles.btnWrap, { backgroundColor: white }]}>
+                <TouchableOpacity style={[styles.btnWrap, { backgroundColor: white }]} onPress={handleOpenListMenu}>
                     <HugeiconsIcon icon={BookOpen02Icon} size={24} color={textColor} />
                 </TouchableOpacity>
                 <ThemedText type="subtitle" style={styles.headerName} numberOfLines={1} ellipsizeMode="tail">
-                    Hello anh em nhe toi la tuan bhehehe
+                    {capitalizeWords('Hello anh em nhe toi la tuan bhehehe')}
                 </ThemedText>
-                <TouchableOpacity style={[styles.btnWrap, { backgroundColor: white }]}>
+                <TouchableOpacity style={[styles.btnWrap, { backgroundColor: white }]} onPress={handleOpenSettingBox}>
                     <HugeiconsIcon icon={Settings01Icon} size={24} color={textColor} />
                 </TouchableOpacity>
             </View>
@@ -30,7 +53,7 @@ function Quiz() {
             <View style={styles.progress}>
                 <ThemedText style={styles.progressNumber}>1</ThemedText>
                 <Bar
-                    style={{ flex: 1, marginHorizontal: 12 }}
+                    style={{ flex: 1, marginHorizontal: 12, borderRadius: 30 }}
                     color="#4CAF50"
                     height={12}
                     progress={0.4}
@@ -46,6 +69,18 @@ function Quiz() {
                 <ReviewCard />
                 {/* <MultipleChoice /> */}
             </View>
+
+            <ModalBottomSheet bottomSheetModalRef={leftRef}>
+                <View style={{ minHeight: Platform.OS === 'ios' ? 500 : 200, width: '100%' }}>
+                    <LearningList />
+                </View>
+            </ModalBottomSheet>
+
+            <ModalBottomSheet bottomSheetModalRef={rightRef}>
+                <View style={{ minHeight: Platform.OS === 'ios' ? 500 : 200, width: '100%' }}>
+                    <QuizSetting />
+                </View>
+            </ModalBottomSheet>
         </SafeAreaView>
     );
 }
