@@ -53,7 +53,7 @@ const EngToVi = () => {
     );
 };
 
-const ViToEng = () => {
+export const ViToEng = () => {
     return (
         <View>
             <ThemedText type="subtitle" style={{ fontSize: 18 }}>
