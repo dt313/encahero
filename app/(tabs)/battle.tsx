@@ -1,11 +1,11 @@
-import { Text } from 'react-native';
-
 import { SafeAreaView } from 'react-native-safe-area-context';
+
+import Leaderboard from '@/components/leader-board';
 
 function Battle() {
     return (
-        <SafeAreaView>
-            <Text>Battle</Text>
+        <SafeAreaView style={{ flex: 1 }}>
+            <Leaderboard />
         </SafeAreaView>
     );
 }
