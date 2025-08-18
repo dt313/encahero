@@ -4,7 +4,7 @@ import { Platform } from 'react-native';
 
 import { Tabs } from 'expo-router';
 
-import { BookOpen01Icon, Home01Icon, Quiz02Icon, Sword03Icon, UserIcon } from '@hugeicons/core-free-icons';
+import { BookOpen01Icon, Home01Icon, Quiz02Icon, Settings02Icon, Sword03Icon } from '@hugeicons/core-free-icons';
 
 import { Colors } from '@/constants/Colors';
 
@@ -71,11 +71,11 @@ export default function TabLayout() {
                 }}
             />
             <Tabs.Screen
-                name="profile"
+                name="setting"
                 options={{
-                    title: 'Profile',
+                    title: 'Setting',
                     tabBarIcon: ({ color, focused }) => (
-                        <TabIconButton icon={UserIcon} color={color} focused={focused} />
+                        <TabIconButton icon={Settings02Icon} color={color} focused={focused} />
                     ),
                 }}
             />

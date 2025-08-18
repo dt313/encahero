@@ -2,8 +2,6 @@ import React from 'react';
 
 import { FlatList, Image, ImageBackground, StyleSheet, View } from 'react-native';
 
-import { SafeAreaView } from 'react-native-safe-area-context';
-
 import confetti from '@/assets/images/confetti.png';
 import avatar from '@/assets/images/peeps-avatar-alpha.png';
 
@@ -122,11 +120,11 @@ function LeaderboardItem({ item }: { item: any }) {
 
 export default function Leaderboard() {
     return (
-        <SafeAreaView style={styles.container}>
-            <ImageBackground source={confetti}>
-                <ThemedText type="title" style={[styles.title]}>
+        <View style={styles.container}>
+            <ImageBackground source={confetti} style={{ paddingVertical: 20 }}>
+                {/* <ThemedText type="title" style={[styles.title]}>
                     Leaderboard 🏆
-                </ThemedText>
+                </ThemedText> */}
                 {/* Người đứng đầu */}
 
                 <View style={styles.top}>
@@ -144,13 +142,16 @@ export default function Leaderboard() {
                 data={data.slice(1)} // bỏ người đầu
                 renderItem={({ item }) => <LeaderboardItem item={item} />}
                 keyExtractor={(item) => item.id}
+                contentContainerStyle={{
+                    padding: 16,
+                }}
             />
-        </SafeAreaView>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 16 },
+    container: { flex: 1 },
     title: { fontWeight: 400, textAlign: 'center', marginBottom: 20 },
     top: { alignItems: 'center', marginBottom: 20 },
 
@@ -212,7 +213,7 @@ const styles = StyleSheet.create({
         width: 28,
         height: 28,
         borderRadius: 14,
-        backgroundColor: '#ac4fe2ff',
+        backgroundColor: '#8d8d8dff',
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -227,7 +228,7 @@ const styles = StyleSheet.create({
     // second item
 
     secondItem: { backgroundColor: '#c1e891ff' },
-    rankCircleSecond: { backgroundColor: '#427306ff' },
+    rankCircleSecond: { backgroundColor: '#6bb413ff' },
     secondName: { fontSize: 18, color: '#333' },
     secondMatch: { color: '#333' },
 });

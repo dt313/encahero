@@ -2,7 +2,7 @@ import { Image, Platform, ScrollView, StyleSheet, View } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import image from '@/assets/images/fb-icon.png';
+import avatar from '@/assets/images/peeps-avatar-alpha.png';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -62,7 +62,7 @@ function Home() {
                         <ThemedText type="title">Hello, Danh Tuan</ThemedText>
                         <ThemedText lightColor="#636363ff">Lets check how you feel to day</ThemedText>
                     </View>
-                    <Image style={styles.avatar} source={image} />
+                    <Image style={styles.avatar} source={avatar} />
                 </ThemedView>
 
                 <Charts />
