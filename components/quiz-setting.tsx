@@ -5,11 +5,18 @@ import { Alert, Pressable, StyleSheet, Switch, Text, View } from 'react-native';
 import { ArrowRight02Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 
+import { useThemeColor } from '@/hooks/useThemeColor';
+
 import { ThemedText } from './ThemedText';
 
 function QuizSetting() {
     const [reviewMode, setReviewMode] = useState(false);
     const [autoPlay, setAutoPlay] = useState(true);
+
+    const linkColor = useThemeColor({}, 'quizLinkTextColor');
+    const linkBg = useThemeColor({}, 'quizLinkBg');
+    const white = useThemeColor({}, 'white');
+    const textColor = useThemeColor({}, 'text');
 
     const handleStopLearning = () => {
         Alert.alert('Stop Learning', 'Are you sure you want to stop learning this list?', [
@@ -25,7 +32,7 @@ function QuizSetting() {
             </ThemedText>
 
             {/* Review Mode */}
-            <View style={styles.optionRow}>
+            <View style={[styles.optionRow, { backgroundColor: white }]}>
                 <ThemedText style={styles.optionText}>Review Mode</ThemedText>
                 <Switch
                     value={reviewMode}
@@ -35,20 +42,26 @@ function QuizSetting() {
             </View>
 
             {/* Auto Play Sound */}
-            <View style={styles.optionRow}>
+            <View style={[styles.optionRow, { backgroundColor: white }]}>
                 <ThemedText style={styles.optionText}>Auto Play Sound</ThemedText>
                 <Switch value={autoPlay} onValueChange={setAutoPlay} />
             </View>
 
             {/* Links */}
-            <Pressable style={styles.link} onPress={() => console.log('Go to Known Words')}>
-                <Text style={styles.linkText}>📖 Known Words</Text>
-                <HugeiconsIcon icon={ArrowRight02Icon} size={24} />
+            <Pressable
+                style={[styles.link, { backgroundColor: linkBg }]}
+                onPress={() => console.log('Go to Known Words')}
+            >
+                <Text style={[styles.linkText, { color: linkColor }]}>📖 Known Words</Text>
+                <HugeiconsIcon icon={ArrowRight02Icon} size={24} color={textColor} />
             </Pressable>
 
-            <Pressable style={styles.link} onPress={() => console.log('Go to All Words')}>
-                <Text style={styles.linkText}>📚 View All Words</Text>
-                <HugeiconsIcon icon={ArrowRight02Icon} size={24} />
+            <Pressable
+                style={[styles.link, { backgroundColor: linkBg }]}
+                onPress={() => console.log('Go to All Words')}
+            >
+                <Text style={[styles.linkText, { color: linkColor }]}>📚 View All Words</Text>
+                <HugeiconsIcon icon={ArrowRight02Icon} size={24} color={textColor} />
             </Pressable>
 
             {/* Stop Learning Button */}
@@ -71,22 +84,19 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        backgroundColor: '#fff',
         paddingHorizontal: 12,
-        paddingVertical: 12,
+        paddingVertical: 16,
         borderRadius: 12,
         marginBottom: 12,
         shadowColor: '#000',
         shadowOpacity: 0.1,
-        shadowRadius: 5,
-        elevation: 3,
+        shadowRadius: 8,
+        elevation: 5,
     },
     optionText: {
         fontSize: 16,
-        color: '#333',
     },
     link: {
-        backgroundColor: '#eef2ff',
         padding: 15,
         borderRadius: 12,
         marginBottom: 12,
@@ -96,7 +106,6 @@ const styles = StyleSheet.create({
     },
     linkText: {
         fontSize: 16,
-        color: '#4f46e5',
         fontWeight: '600',
     },
     stopButton: {

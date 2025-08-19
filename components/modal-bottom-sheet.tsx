@@ -43,7 +43,7 @@ function ModalBottomSheet({ bottomSheetModalRef, snapPoints = [], children }: Mo
             handleIndicatorStyle={{ backgroundColor: text }}
         >
             <BottomSheetView style={[styles.bottomModal]}>
-                <View style={{ minHeight: '100%', width: '100%', padding: 20 }}>{children}</View>
+                <View style={{ minHeight: '100%', width: '100%', paddingBottom: 32 }}>{children}</View>
             </BottomSheetView>
         </BottomSheetModal>
     );

@@ -34,6 +34,17 @@ export const Colors = {
         chartBg: '#fff',
         chartHeaderBG: '#ffffffff',
         goalBg: '#c4ed81ff',
+
+        // learning card
+        learningListCardBg: '#f3f4f6',
+        learningListCardActiveBg: '#eef2ff',
+        learningListCardActiveTextColor: '#3730a3',
+        learningListCardBorderColor: '#e5e7eb',
+        learningListCardPrimaryColor: '#6366f1',
+
+        // quiz setting
+        quizLinkTextColor: '#4f46e5',
+        quizLinkBg: '#eef2ff',
     },
     dark: {
         primary: '#FF9800',
@@ -55,5 +66,16 @@ export const Colors = {
         chartBg: '#0c1117',
         chartHeaderBG: '#131a23ff',
         goalBg: '#1b530cff',
+
+        // learning card
+        learningListCardBg: '#343434ff',
+        learningListCardActiveBg: '#000',
+        learningListCardActiveTextColor: '#fff',
+        learningListCardBorderColor: '#575757ff',
+        learningListCardPrimaryColor: '#6d6edcff',
+
+        // quiz setting
+        quizLinkTextColor: '#f7f7f7ff',
+        quizLinkBg: '#5c5d5dff',
     },
 };

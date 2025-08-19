@@ -4,6 +4,8 @@ import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 
 import { Bar, Circle } from 'react-native-progress';
 
+import { useThemeColor } from '@/hooks/useThemeColor';
+
 import { ThemedText } from './ThemedText';
 import Button from './button';
 
@@ -26,12 +28,17 @@ const SAMPLE_DATA: Deck[] = [
 export default function LearningList() {
     const [selectedId, setSelectedId] = useState<string>(SAMPLE_DATA[0].id);
     const listRef = useRef<FlatList<Deck>>(null);
-
     const data = useMemo(() => SAMPLE_DATA, []);
+
+    const cardBackground = useThemeColor({}, 'learningListCardBg');
+    const activeCardBackground = useThemeColor({}, 'learningListCardActiveBg');
+    const learningListCardActiveTextColor = useThemeColor({}, 'learningListCardActiveTextColor');
+    const learningListCardBorderColor = useThemeColor({}, 'learningListCardBorderColor');
+    const learningListCardPrimaryColor = useThemeColor({}, 'learningListCardPrimaryColor');
 
     const onSelect = (id: string, index: number) => {
         setSelectedId(id);
-        listRef.current?.scrollToIndex({ index, viewPosition: 0.5 });
+        listRef.current?.scrollToIndex({ index, viewPosition: 0.3 });
     };
     const [progress, setProgress] = React.useState(0);
     const [indeterminate, setIndeterminate] = React.useState(true);
@@ -73,9 +80,23 @@ export default function LearningList() {
                     return (
                         <Pressable
                             onPress={() => onSelect(item.id, index)}
-                            style={[styles.card, isActive && styles.cardActive]}
+                            style={[
+                                styles.card,
+                                { backgroundColor: cardBackground, borderColor: learningListCardBorderColor },
+
+                                isActive && [
+                                    styles.cardActive,
+                                    {
+                                        backgroundColor: activeCardBackground,
+                                        borderColor: learningListCardPrimaryColor,
+                                    },
+                                ],
+                            ]}
                         >
-                            <ThemedText style={[styles.name, isActive && styles.nameActive]} numberOfLines={1}>
+                            <ThemedText
+                                style={[styles.name, isActive && { color: learningListCardActiveTextColor }]}
+                                numberOfLines={1}
+                            >
                                 {item.name}
                             </ThemedText>
 
@@ -88,7 +109,7 @@ export default function LearningList() {
                             </View>
                             <Bar
                                 style={{ borderRadius: 30 }}
-                                color="#6366f1"
+                                color={learningListCardPrimaryColor}
                                 height={8}
                                 progress={progress}
                                 width={null}
@@ -108,7 +129,12 @@ export default function LearningList() {
                                 <View style={styles.center}>
                                     <ThemedText style={styles.text}>{Math.round(progress * 100)}%</ThemedText>
                                 </View>
-                                <Circle progress={progress} size={80} color="#6366f1" indeterminate={indeterminate} />
+                                <Circle
+                                    progress={progress}
+                                    size={80}
+                                    color={learningListCardPrimaryColor}
+                                    indeterminate={indeterminate}
+                                />
                             </View>
                         </Pressable>
                     );
@@ -135,13 +161,9 @@ const styles = StyleSheet.create({
         marginRight: 12,
         padding: 12,
         borderRadius: 16,
-        backgroundColor: '#f3f4f6',
         borderWidth: 1,
-        borderColor: '#e5e7eb',
     },
     cardActive: {
-        backgroundColor: '#eef2ff',
-        borderColor: '#6366f1',
         shadowColor: '#000',
         shadowOpacity: 0.08,
         shadowRadius: 8,
@@ -149,7 +171,6 @@ const styles = StyleSheet.create({
         elevation: 2,
     },
     name: { fontSize: 16, fontWeight: '700', marginBottom: 6 },
-    nameActive: { color: '#3730a3' },
     row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
     label: { fontSize: 12, opacity: 0.7, marginBottom: 4 },
     value: { fontSize: 14, fontWeight: '600' },
