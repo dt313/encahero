@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from 'react';
 
-import { FlatList, Platform, StyleSheet, Text, View, ViewStyle, useColorScheme } from 'react-native';
+import { FlatList, StyleSheet, Text, View, ViewStyle, useColorScheme } from 'react-native';
 
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { AddSquareIcon } from '@hugeicons/core-free-icons';
@@ -111,13 +111,11 @@ function HorizontalList({ headerName = 'Popular', containerStyle, isRandomColor 
             />
 
             <ModalBottomSheet bottomSheetModalRef={bottomSheetModalRef}>
-                <View style={{ minHeight: Platform.OS === 'ios' ? 500 : 200, width: '100%' }}>
-                    <GoalPickerBottomSheet
-                        descriprion="Chọn số lượng task bạn phải hoàn thành trong 1 ngày"
-                        title={selectedItem ? selectedItem?.name : ''}
-                        onConfirm={handleConfirm}
-                    />
-                </View>
+                <GoalPickerBottomSheet
+                    descriprion="Chọn số lượng task bạn phải hoàn thành trong 1 ngày"
+                    title={selectedItem ? selectedItem?.name : ''}
+                    onConfirm={handleConfirm}
+                />
             </ModalBottomSheet>
         </View>
     );

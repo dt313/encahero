@@ -1,6 +1,6 @@
 import { useCallback, useRef } from 'react';
 
-import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { BookOpen02Icon, Settings01Icon } from '@hugeicons/core-free-icons';
@@ -71,15 +71,11 @@ function Quiz() {
             </View>
 
             <ModalBottomSheet bottomSheetModalRef={leftRef}>
-                <View style={{ minHeight: Platform.OS === 'ios' ? 500 : 200, width: '100%' }}>
-                    <LearningList />
-                </View>
+                <LearningList />
             </ModalBottomSheet>
 
             <ModalBottomSheet bottomSheetModalRef={rightRef}>
-                <View style={{ minHeight: Platform.OS === 'ios' ? 500 : 200, width: '100%' }}>
-                    <QuizSetting />
-                </View>
+                <QuizSetting />
             </ModalBottomSheet>
         </SafeAreaView>
     );

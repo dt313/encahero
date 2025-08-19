@@ -1,6 +1,6 @@
 import React, { ReactNode, useCallback, useMemo } from 'react';
 
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { BottomSheetBackdrop, BottomSheetBackdropProps, BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
 
@@ -24,7 +24,7 @@ const CustomBackdrop = (props: BottomSheetBackdropProps) => {
     );
 };
 
-function ModalBottomSheet({ bottomSheetModalRef, snapPoints = ['50%'], children }: ModalBottomSheetProps) {
+function ModalBottomSheet({ bottomSheetModalRef, snapPoints = [], children }: ModalBottomSheetProps) {
     const background = useThemeColor({}, 'background');
     const text = useThemeColor({}, 'text');
     const _snapPoints = useMemo(() => snapPoints, []);
@@ -42,7 +42,9 @@ function ModalBottomSheet({ bottomSheetModalRef, snapPoints = ['50%'], children 
             backgroundStyle={{ backgroundColor: background }}
             handleIndicatorStyle={{ backgroundColor: text }}
         >
-            <BottomSheetView style={[styles.bottomModal]}>{children}</BottomSheetView>
+            <BottomSheetView style={[styles.bottomModal]}>
+                <View style={{ minHeight: '100%', width: '100%', padding: 20 }}>{children}</View>
+            </BottomSheetView>
         </BottomSheetModal>
     );
 }
