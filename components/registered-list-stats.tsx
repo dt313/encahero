@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useCallback, useRef } from 'react';
 
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { ArrowRight02Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
 
 import { ThemedText } from './ThemedText';
+import GoalPickerBottomSheet from './goal-picker';
+import ModalBottomSheet from './modal-bottom-sheet';
 
 type RegisteredStatsProps = {
     title: string;
@@ -19,6 +22,14 @@ export default function RegisteredListStats({ title }: RegisteredStatsProps) {
     const linkBg = useThemeColor({}, 'quizLinkBg');
     const white = useThemeColor({}, 'white');
     const textColor = useThemeColor({}, 'text');
+
+    const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+
+    const handleOpenBottomModal = useCallback(() => {
+        bottomSheetModalRef.current?.present();
+    }, []);
+
+    const handleConfirm = () => {};
     return (
         <View style={[styles.container, { backgroundColor: background }]}>
             <ThemedText type="title" style={styles.title} numberOfLines={2}>
@@ -63,10 +74,7 @@ export default function RegisteredListStats({ title }: RegisteredStatsProps) {
                     <HugeiconsIcon icon={ArrowRight02Icon} size={24} color={textColor} />
                 </Pressable>
 
-                <Pressable
-                    style={[styles.link, { backgroundColor: linkBg }]}
-                    onPress={() => console.log('Go to All Words')}
-                >
+                <Pressable style={[styles.link, { backgroundColor: linkBg }]} onPress={handleOpenBottomModal}>
                     <Text style={[styles.linkText, { color: linkColor }]}>🔄 Chỉnh số lượng Task</Text>
                     <HugeiconsIcon icon={ArrowRight02Icon} size={24} color={textColor} />
                 </Pressable>
@@ -75,6 +83,15 @@ export default function RegisteredListStats({ title }: RegisteredStatsProps) {
                     <Text style={styles.stopButtonText}>🛑 Stop Learning This List</Text>
                 </Pressable>
             </View>
+
+            {/* Modal Bottom Sheet */}
+            <ModalBottomSheet bottomSheetModalRef={bottomSheetModalRef}>
+                <GoalPickerBottomSheet
+                    descriprion="Chọn số lượng task bạn phải hoàn thành trong 1 ngày"
+                    title={'Hello'}
+                    onConfirm={handleConfirm}
+                />
+            </ModalBottomSheet>
         </View>
     );
 }

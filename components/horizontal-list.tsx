@@ -16,7 +16,7 @@ import { ThemedText } from './ThemedText';
 import Button from './button';
 import GoalPickerBottomSheet from './goal-picker';
 import ModalBottomSheet from './modal-bottom-sheet';
-import RegisteredListStats from './registed-list-stats';
+import RegisteredListStats from './registered-list-stats';
 
 interface HorizontalListProps {
     headerName?: string;
