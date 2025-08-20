@@ -30,15 +30,29 @@ const mockHistory = [
 
 export default function BattleHistory() {
     const backgroundColor = useThemeColor({}, 'background');
+    const white = useThemeColor({}, 'white');
     return (
         <View style={styles.container}>
             {/* My Ranking */}
-            <View style={styles.myRanking}>
+            <View style={[styles.myRanking, { backgroundColor: white }]}>
                 <Image source={{ uri: mockRanking.avatar }} style={styles.avatar} />
                 <View style={styles.rankingInfo}>
                     <ThemedText style={styles.title}>{mockRanking.username}</ThemedText>
-                    <ThemedText style={styles.subText}>Rank: {mockRanking.rank}</ThemedText>
-                    <ThemedText style={styles.subText}>Score: {mockRanking.score}</ThemedText>
+                    <ThemedText style={styles.subText}>
+                        Rank: {mockRanking.rank} Score: {mockRanking.score}
+                    </ThemedText>
+
+                    <View style={styles.winLoseContainer}>
+                        <View style={[styles.winLoseBox, { backgroundColor: '#81ec86ff' }]}>
+                            <Text style={styles.winLoseText}>Win: {10}</Text>
+                        </View>
+                        <View style={[styles.winLoseBox, { backgroundColor: '#fc8e8eff' }]}>
+                            <Text style={styles.winLoseText}>Lose: {11}</Text>
+                        </View>
+                        <View style={[styles.winLoseBox, { backgroundColor: '#f0d569ff' }]}>
+                            <Text style={styles.winLoseText}>Draw: {12}</Text>
+                        </View>
+                    </View>
                 </View>
             </View>
 
@@ -74,7 +88,6 @@ const styles = StyleSheet.create({
     myRanking: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#c1cae9ff',
         padding: 16,
         borderRadius: 12,
         marginBottom: 24,
@@ -93,15 +106,30 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     title: {
-        color: '#333',
         fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 4,
     },
     subText: {
-        color: '#525252ff',
         fontSize: 14,
         fontWeight: 500,
+    },
+
+    winLoseContainer: {
+        flexDirection: 'row',
+        marginTop: 8,
+        justifyContent: 'flex-start',
+        gap: 8, // nếu RN >= 0.71, nếu thấp dùng marginRight cho từng box
+    },
+    winLoseBox: {
+        paddingVertical: 4,
+        paddingHorizontal: 8,
+        borderRadius: 8,
+    },
+    winLoseText: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: '#333',
     },
     history: {
         flex: 1,
@@ -116,7 +144,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 12,
         borderRadius: 10,
-        marginBottom: 12,
+        marginBottom: 4,
         shadowColor: '#000',
         shadowOpacity: 0.05,
         shadowRadius: 5,

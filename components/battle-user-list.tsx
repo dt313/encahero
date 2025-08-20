@@ -46,6 +46,7 @@ function BattleUserList() {
         if (random) {
             timeout = setTimeout(() => {
                 setRandom(false);
+                router.push('/lobby/1');
             }, 2000);
         }
 

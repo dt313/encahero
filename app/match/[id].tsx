@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
 
-import { StyleSheet, Text, View } from 'react-native';
+import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
 
+import { Cancel01Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/ThemedText';
@@ -21,6 +24,7 @@ const QUESTION_TIME = 5000; // 5s per question
 export default function Match() {
     const [currentQuestion, setCurrentQuestion] = useState(3); // ví dụ câu thứ 3
     const [timeLeft, setTimeLeft] = useState(QUESTION_TIME);
+    const router = useRouter();
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -35,6 +39,25 @@ export default function Match() {
         return () => clearInterval(interval);
     }, [currentQuestion]);
 
+    const handleExit = () => {
+        Alert.alert(
+            'Thoát trận đấu',
+            'Bạn có chắc muốn thoát trận đấu không? Nếu thoát trận đồng nghĩa với bạn chịu thua',
+            [
+                {
+                    text: 'Hủy',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Thoát trận',
+                    style: 'destructive',
+                    onPress: () => router.replace('/battle?tab=history'),
+                },
+            ],
+            { cancelable: true },
+        );
+    };
+
     const timerSec = (timeLeft / 1000).toFixed(1);
     return (
         <LinearGradient
@@ -44,7 +67,12 @@ export default function Match() {
             locations={[0, 0.3, 0.7, 1]}
             style={{ position: 'absolute', flex: 1, height: '100%' }}
         >
-            <SafeAreaView style={{ flex: 1 }}>
+            <SafeAreaView style={{ flex: 1, position: 'relative' }}>
+                <View style={styles.headerRight}>
+                    <Pressable style={styles.exitButton} onPress={handleExit}>
+                        <HugeiconsIcon icon={Cancel01Icon} size={24} color="red" />
+                    </Pressable>
+                </View>
                 <MatchHeader players={players} />
 
                 {/* Question bar */}
@@ -65,6 +93,19 @@ export default function Match() {
 }
 
 const styles = StyleSheet.create({
+    headerRight: {
+        alignItems: 'flex-end',
+        marginRight: 12,
+    },
+
+    exitButton: {
+        padding: 4,
+        backgroundColor: '#f77d7d88',
+        borderRadius: 50,
+        borderWidth: 1,
+        borderColor: 'red',
+    },
+
     questionBarContainer: {
         margin: 16,
         paddingHorizontal: 16,

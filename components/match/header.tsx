@@ -2,6 +2,8 @@ import { Image, StyleSheet, Text, View } from 'react-native';
 
 import { Circle } from 'react-native-progress';
 
+import vsImg from '@/assets/images/vs.png';
+
 import { ThemedText } from '@/components/ThemedText';
 
 type Player = {
@@ -43,7 +45,7 @@ export default function MatchHeader({ players }: HeaderProps) {
 
                 {/* VS */}
 
-                <ThemedText style={styles.vsText}>VS</ThemedText>
+                <Image source={vsImg} style={styles.vsImg} />
 
                 {/* Player 2 */}
                 <View style={styles.playerCard}>
@@ -101,16 +103,9 @@ const styles = StyleSheet.create({
     playerScore: { marginBottom: 12 },
     scoreNumber: { color: '#133ec0ff', fontWeight: 'bold', fontSize: 20 },
     scoreText: { fontSize: 12, fontWeight: '400', color: '#5e5e5eff' },
-    vsText: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        borderColor: '#ff4d4d',
-        borderWidth: 2,
-        backgroundColor: '#ff4d4d33',
-        color: '#ff1a1a',
-        paddingHorizontal: 16,
-        paddingVertical: 8,
-        borderRadius: 12,
-        textAlign: 'center',
+    vsImg: {
+        width: 72,
+        height: 72,
+        resizeMode: 'cover',
     },
 });

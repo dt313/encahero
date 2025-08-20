@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 
-import { FlatList, Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
+import { FlatList } from 'react-native-gesture-handler';
 import { Bar, Circle } from 'react-native-progress';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
@@ -38,7 +39,7 @@ export default function LearningList() {
 
     const onSelect = (id: string, index: number) => {
         setSelectedId(id);
-        listRef.current?.scrollToIndex({ index, viewPosition: 0.3 });
+        listRef.current?.scrollToIndex({ index, viewPosition: 0.4 });
     };
     const [progress, setProgress] = React.useState(0);
     const [indeterminate, setIndeterminate] = React.useState(true);
@@ -50,7 +51,7 @@ export default function LearningList() {
             interval = setInterval(() => {
                 setProgress((prevProgress) => Math.min(1, prevProgress + Math.random() / 5));
             }, 500);
-        }, 1500);
+        }, 1000);
         return () => {
             clearTimeout(timer);
             clearInterval(interval);
@@ -62,84 +63,91 @@ export default function LearningList() {
             <ThemedText type="title" style={{ paddingHorizontal: 12 }}>
                 Learning List
             </ThemedText>
+            <View style={{ flex: 1, width: '100%' }}>
+                <FlatList
+                    ref={listRef}
+                    data={data}
+                    keyExtractor={(item: any) => item.id}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={{
+                        paddingHorizontal: 12,
+                        height: 200,
+                        marginVertical: 24,
+                    }}
+                    nestedScrollEnabled={true}
+                    getItemLayout={(_, index) => ({
+                        length: ITEM_WIDTH,
+                        offset: ITEM_WIDTH * index,
+                        index,
+                    })}
+                    renderItem={({ item, index }) => {
+                        const isActive = item.id === selectedId;
+                        return (
+                            <Pressable
+                                onPress={() => onSelect(item.id, index)}
+                                // delayPressIn={0}
+                                style={[
+                                    styles.card,
+                                    { backgroundColor: cardBackground, borderColor: learningListCardBorderColor },
 
-            <FlatList
-                ref={listRef}
-                data={data}
-                keyExtractor={(item) => item.id}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{ paddingHorizontal: 12, height: 200, marginVertical: 24 }}
-                getItemLayout={(_, index) => ({
-                    length: ITEM_WIDTH,
-                    offset: ITEM_WIDTH * index,
-                    index,
-                })}
-                renderItem={({ item, index }) => {
-                    const isActive = item.id === selectedId;
-                    return (
-                        <Pressable
-                            onPress={() => onSelect(item.id, index)}
-                            style={[
-                                styles.card,
-                                { backgroundColor: cardBackground, borderColor: learningListCardBorderColor },
-
-                                isActive && [
-                                    styles.cardActive,
-                                    {
-                                        backgroundColor: activeCardBackground,
-                                        borderColor: learningListCardPrimaryColor,
-                                    },
-                                ],
-                            ]}
-                        >
-                            <ThemedText
-                                style={[styles.name, isActive && { color: learningListCardActiveTextColor }]}
-                                numberOfLines={1}
+                                    isActive && [
+                                        styles.cardActive,
+                                        {
+                                            backgroundColor: activeCardBackground,
+                                            borderColor: learningListCardPrimaryColor,
+                                        },
+                                    ],
+                                ]}
                             >
-                                {item.name}
-                            </ThemedText>
-
-                            {/* current / target */}
-                            <View style={styles.row}>
-                                <ThemedText style={styles.label}>Hôm nay</ThemedText>
-                                <ThemedText style={styles.value}>
-                                    {item.current}/{item.target}
+                                <ThemedText
+                                    style={[styles.name, isActive && { color: learningListCardActiveTextColor }]}
+                                    numberOfLines={1}
+                                >
+                                    {item.name}
                                 </ThemedText>
-                            </View>
-                            <Bar
-                                style={{ borderRadius: 30 }}
-                                color={learningListCardPrimaryColor}
-                                height={8}
-                                progress={progress}
-                                width={null}
-                                borderWidth={0}
-                                unfilledColor="#c6c6c666"
-                                indeterminate={indeterminate}
-                            />
-                            <ThemedText style={[styles.label, { marginTop: 6, marginBottom: 0 }]}>
-                                Tiến độ (%)
-                            </ThemedText>
-                            <View
-                                style={{
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                }}
-                            >
-                                <View style={styles.center}>
-                                    <ThemedText style={styles.text}>{Math.round(progress * 100)}%</ThemedText>
+
+                                {/* current / target */}
+                                <View style={styles.row}>
+                                    <ThemedText style={styles.label}>Hôm nay</ThemedText>
+                                    <ThemedText style={styles.value}>
+                                        {item.current}/{item.target}
+                                    </ThemedText>
                                 </View>
-                                <Circle
-                                    progress={progress}
-                                    size={80}
+                                <Bar
+                                    style={{ borderRadius: 30 }}
                                     color={learningListCardPrimaryColor}
+                                    height={8}
+                                    progress={progress}
+                                    width={null}
+                                    borderWidth={0}
+                                    unfilledColor="#c6c6c666"
                                     indeterminate={indeterminate}
                                 />
-                            </View>
-                        </Pressable>
-                    );
-                }}
-            />
+                                <ThemedText style={[styles.label, { marginTop: 6, marginBottom: 0 }]}>
+                                    Tiến độ (%)
+                                </ThemedText>
+                                <View
+                                    style={{
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                    }}
+                                >
+                                    <View style={styles.center}>
+                                        <ThemedText style={styles.text}>{Math.round(progress * 100)}%</ThemedText>
+                                    </View>
+                                    <Circle
+                                        progress={progress}
+                                        size={80}
+                                        color={learningListCardPrimaryColor}
+                                        indeterminate={indeterminate}
+                                    />
+                                </View>
+                            </Pressable>
+                        );
+                    }}
+                />
+            </View>
 
             <Button
                 buttonStyle={{
