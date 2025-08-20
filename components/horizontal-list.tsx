@@ -98,6 +98,7 @@ function HorizontalList({ headerName = 'Popular', containerStyle, isRandomColor 
                             <ThemedText type="subtitle" style={styles.itemTitle}>
                                 {item.name}
                             </ThemedText>
+
                             <ThemedText style={[styles.itemNumber, { color: lighterText }]}>
                                 12/{item.cards} cards
                             </ThemedText>

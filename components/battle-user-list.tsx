@@ -38,6 +38,7 @@ function BattleUserList() {
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
     const backgroundColor = useThemeColor({}, 'background');
+    const white = useThemeColor({}, 'white');
     const router = useRouter();
     const handleRandom = () => {
         setRandom(true);
@@ -83,7 +84,7 @@ function BattleUserList() {
 
     return (
         <View style={styles.container}>
-            <View style={[styles.randomBox, { backgroundColor }]}>
+            <View style={[styles.randomBox, { backgroundColor: white }]}>
                 {random ? (
                     // Đang tìm đối thủ
                     <View style={{ alignItems: 'center', gap: 12 }}>
