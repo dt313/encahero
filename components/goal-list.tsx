@@ -30,7 +30,7 @@ function GoalList({ title, list, containerStyle }: GoalListType) {
                             style={[styles.item, { backgroundColor: index % 2 === 0 ? bgColor : goalBg }]}
                         >
                             <View style={styles.header}>
-                                <ThemedText type="defaultSemiBold" style={styles.itemName}>
+                                <ThemedText type="defaultSemiBold" style={styles.itemName} numberOfLines={1}>
                                     {item.name}
                                 </ThemedText>
 

@@ -2,9 +2,11 @@ import { useCallback, useRef, useState } from 'react';
 
 import { FlatList, StyleSheet, Text, View, ViewStyle, useColorScheme } from 'react-native';
 
+import { ItemType } from '@/app/(tabs)/list';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { AddSquareIcon } from '@hugeicons/core-free-icons';
+import { AddSquareIcon, SettingsIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
+import { Bar } from 'react-native-progress';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
 
@@ -14,48 +16,16 @@ import { ThemedText } from './ThemedText';
 import Button from './button';
 import GoalPickerBottomSheet from './goal-picker';
 import ModalBottomSheet from './modal-bottom-sheet';
-
-const data = [
-    {
-        name: 'Common Words',
-        cards: 639,
-        icon: '👨‍🎓',
-    },
-    {
-        name: 'Business English',
-        cards: 420,
-        icon: '💼',
-    },
-    {
-        name: 'Travel & Tourism',
-        cards: 310,
-        icon: '✈️',
-    },
-    {
-        name: 'TOEIC Practice',
-        cards: 550,
-        icon: '📚',
-    },
-    {
-        name: 'Daily Conversations',
-        cards: 275,
-        icon: '🗣️',
-    },
-];
-
-type ItemType = {
-    name: string;
-    cards: number;
-    icon: string;
-};
+import RegisteredListStats from './registed-list-stats';
 
 interface HorizontalListProps {
     headerName?: string;
     containerStyle: ViewStyle;
     isRandomColor?: boolean;
+    list: ItemType[];
 }
 
-function HorizontalList({ headerName = 'Popular', containerStyle, isRandomColor = false }: HorizontalListProps) {
+function HorizontalList({ headerName = 'Popular', containerStyle, isRandomColor = false, list }: HorizontalListProps) {
     const lighterText = useThemeColor({}, 'lighterText');
     const white = useThemeColor({}, 'white');
     const textColor = useThemeColor({}, 'text');
@@ -66,7 +36,7 @@ function HorizontalList({ headerName = 'Popular', containerStyle, isRandomColor 
 
     // callbacks
     const handlePresentModalPress = useCallback((itemName: string) => {
-        const found = data.find((i: ItemType) => i.name === itemName) || null;
+        const found = list.find((i: ItemType) => i.name === itemName) || null;
         setSelectedItem(found);
         if (found) bottomSheetModalRef.current?.present();
     }, []);
@@ -80,7 +50,7 @@ function HorizontalList({ headerName = 'Popular', containerStyle, isRandomColor 
             <ThemedText style={styles.headerName}>{headerName}</ThemedText>
             <FlatList
                 horizontal
-                data={data}
+                data={list}
                 keyExtractor={(item) => item.name}
                 renderItem={({ item }) => {
                     const backgroundColor = isRandomColor ? getRandomColor(theme) : white;
@@ -92,16 +62,53 @@ function HorizontalList({ headerName = 'Popular', containerStyle, isRandomColor 
                                     style={{ paddingVertical: 0 }}
                                     onPress={() => handlePresentModalPress(item.name)}
                                 >
-                                    <HugeiconsIcon icon={AddSquareIcon} size={32} color={textColor} />
+                                    {item.isRegistered ? (
+                                        <HugeiconsIcon icon={SettingsIcon} size={24} color={textColor} />
+                                    ) : (
+                                        <HugeiconsIcon icon={AddSquareIcon} size={28} color={textColor} />
+                                    )}
                                 </Button>
                             </View>
-                            <ThemedText type="subtitle" style={styles.itemTitle}>
+
+                            <ThemedText type="subtitle" style={styles.itemTitle} numberOfLines={2}>
                                 {item.name}
                             </ThemedText>
 
-                            <ThemedText style={[styles.itemNumber, { color: lighterText }]}>
-                                12/{item.cards} cards
-                            </ThemedText>
+                            {item.isLearningList ? (
+                                <View style={{ flex: 1 }}>
+                                    <View>
+                                        {/* <ThemedText
+                                            style={{
+                                                fontWeight: 500,
+                                            }}
+                                        >
+                                            Đã học
+                                        </ThemedText> */}
+                                        <ThemedText
+                                            style={{
+                                                fontSize: 16,
+                                                fontWeight: 500,
+                                                marginBottom: 4,
+                                            }}
+                                        >
+                                            12
+                                            <ThemedText lighter>/100 cards</ThemedText>
+                                        </ThemedText>
+                                    </View>
+                                    <Bar
+                                        color="#4CAF50"
+                                        progress={0.4}
+                                        width={null}
+                                        borderWidth={0}
+                                        height={6}
+                                        unfilledColor="rgba(198, 198, 198, 0.4)"
+                                    />
+                                </View>
+                            ) : (
+                                <ThemedText style={[styles.itemNumber, { color: lighterText }]}>
+                                    12/{item.cards} cards
+                                </ThemedText>
+                            )}
                         </View>
                     );
                 }}
@@ -110,11 +117,15 @@ function HorizontalList({ headerName = 'Popular', containerStyle, isRandomColor 
             />
 
             <ModalBottomSheet bottomSheetModalRef={bottomSheetModalRef}>
-                <GoalPickerBottomSheet
-                    descriprion="Chọn số lượng task bạn phải hoàn thành trong 1 ngày"
-                    title={selectedItem ? selectedItem?.name : ''}
-                    onConfirm={handleConfirm}
-                />
+                {selectedItem?.isRegistered ? (
+                    <RegisteredListStats title={selectedItem.name} />
+                ) : (
+                    <GoalPickerBottomSheet
+                        descriprion="Chọn số lượng task bạn phải hoàn thành trong 1 ngày"
+                        title={selectedItem ? selectedItem?.name : ''}
+                        onConfirm={handleConfirm}
+                    />
+                )}
             </ModalBottomSheet>
         </View>
     );
@@ -126,6 +137,7 @@ const styles = StyleSheet.create({
         letterSpacing: 0.5,
         fontWeight: 600,
         fontSize: 24,
+        flex: 1,
     },
     list: {
         marginVertical: 24,
@@ -136,6 +148,7 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         rowGap: 8,
         maxWidth: 300,
+        minWidth: 250,
 
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
@@ -147,6 +160,7 @@ const styles = StyleSheet.create({
     itemHeader: {
         flexDirection: 'row',
         justifyContent: 'space-between',
+        alignItems: 'center',
         marginBottom: 12,
     },
 

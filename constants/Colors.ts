@@ -18,7 +18,7 @@ export const Colors = {
         primary: '#FF9800',
         text: '#11181C',
         lighterText: '#6d6d6dff',
-        background: '#fff',
+        background: '#ffffffff',
         white: '#fff',
         black: '#333',
         tint: tintColorLight,

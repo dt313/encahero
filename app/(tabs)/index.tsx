@@ -12,7 +12,7 @@ import GoalList from '@/components/goal-list';
 const HEADER_HEIGHT = 60;
 const list = [
     {
-        name: 'Common Words',
+        name: 'Common Words Common Words Common Words Common Words Common WordsCommon Words ',
         total: 100,
         count: 12,
     },
