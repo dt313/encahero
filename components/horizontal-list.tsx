@@ -77,9 +77,7 @@ function HorizontalList({ headerName = 'Popular', containerStyle, isRandomColor 
 
     return (
         <View style={[styles.wrapper, containerStyle]}>
-            <ThemedText type="title" style={styles.headerName}>
-                {headerName}
-            </ThemedText>
+            <ThemedText style={styles.headerName}>{headerName}</ThemedText>
             <FlatList
                 horizontal
                 data={data}
@@ -101,7 +99,7 @@ function HorizontalList({ headerName = 'Popular', containerStyle, isRandomColor 
                                 {item.name}
                             </ThemedText>
                             <ThemedText style={[styles.itemNumber, { color: lighterText }]}>
-                                {item.cards} cards
+                                12/{item.cards} cards
                             </ThemedText>
                         </View>
                     );
@@ -126,6 +124,7 @@ const styles = StyleSheet.create({
     headerName: {
         letterSpacing: 0.5,
         fontWeight: 600,
+        fontSize: 24,
     },
     list: {
         marginVertical: 24,

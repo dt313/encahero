@@ -14,7 +14,7 @@ function ListHeader() {
     const white = useThemeColor({}, 'white');
     const textColor = useThemeColor({}, 'text');
     const lighterText = useThemeColor({}, 'lighterText');
-
+    const inputRef = useRef<TextInput>(null);
     const widthAnim = useRef(new Animated.Value(52)).current;
 
     useEffect(() => {
@@ -25,13 +25,17 @@ function ListHeader() {
         }).start();
     }, [isSearching]);
 
+    const handleOpenSearch = () => {
+        setIsSearching(true);
+        // delay 50ms để TextInput render xong rồi focus
+        setTimeout(() => {
+            inputRef.current?.focus();
+        }, 50);
+    };
+
     return (
         <View style={styles.wrapper}>
-            {!isSearching && (
-                <ThemedText type="subtitle" style={{ fontSize: 24, fontWeight: 500 }}>
-                    Search
-                </ThemedText>
-            )}
+            {!isSearching && <ThemedText type="title">Search</ThemedText>}
 
             <Animated.View style={[styles.search, { flex: widthAnim }]}>
                 {isSearching && (
@@ -44,16 +48,14 @@ function ListHeader() {
                 )}
                 {isSearching && (
                     <TextInput
+                        ref={inputRef}
                         style={[styles.searchInput, { backgroundColor: white, color: textColor }]}
                         placeholder="Search..."
                         placeholderTextColor={lighterText}
                     />
                 )}
             </Animated.View>
-            <TouchableOpacity
-                style={[styles.searchIcon, { backgroundColor: white }]}
-                onPress={() => setIsSearching(true)}
-            >
+            <TouchableOpacity style={[styles.searchIcon, { backgroundColor: white }]} onPress={handleOpenSearch}>
                 <HugeiconsIcon icon={Search01Icon} color={textColor} />
             </TouchableOpacity>
         </View>

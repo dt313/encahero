@@ -51,9 +51,7 @@ function CategoryList() {
     const router = useRouter();
     return (
         <View style={[styles.wrapper]}>
-            <ThemedText type="title" style={styles.headerName}>
-                Category
-            </ThemedText>
+            <ThemedText style={styles.headerName}>Category</ThemedText>
 
             <View style={styles.body}>
                 {list.map((item: any, index: number) => {
@@ -85,6 +83,7 @@ const styles = StyleSheet.create({
     headerName: {
         letterSpacing: 0.5,
         fontWeight: 600,
+        fontSize: 24,
     },
 
     body: {

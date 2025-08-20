@@ -20,7 +20,7 @@ function List() {
                         }}
                     >
                         <HorizontalList isRandomColor containerStyle={{ marginTop: 24 }} />
-                        <HorizontalList headerName="Your List" containerStyle={{ marginTop: 24 }} />
+                        <HorizontalList headerName="Learning List" containerStyle={{ marginTop: 24 }} />
                         <CategoryList />
                     </View>
                 </ScrollView>

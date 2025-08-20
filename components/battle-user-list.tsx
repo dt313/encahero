@@ -7,9 +7,10 @@ import { useRouter } from 'expo-router';
 import { useThemeColor } from '@/hooks/useThemeColor';
 
 import { ThemedText } from './ThemedText';
+import BattleRequestModal from './battle-request-modal';
 import Button from './button';
 
-type User = {
+export type User = {
     id: string;
     name: string;
     avatar: string;
@@ -34,8 +35,9 @@ const users: User[] = [
 function BattleUserList() {
     const [random, setRandom] = useState(false);
 
+    const [modalVisible, setModalVisible] = useState(false);
+    const [selectedUser, setSelectedUser] = useState<User | null>(null);
     const backgroundColor = useThemeColor({}, 'background');
-
     const router = useRouter();
     const handleRandom = () => {
         setRandom(true);
@@ -54,6 +56,12 @@ function BattleUserList() {
             if (timeout) clearTimeout(timeout);
         };
     }, [random]);
+
+    const handleSpecificUserBattle = (user: User) => {
+        setSelectedUser(user);
+        setModalVisible(true);
+    };
+
     const renderItem = ({ item }: { item: User }) => (
         <View style={styles.userWrap}>
             <View style={styles.userCard}>
@@ -66,7 +74,7 @@ function BattleUserList() {
                     </ThemedText>
                 </View>
 
-                <TouchableOpacity style={styles.battleButton} onPress={() => router.push('/match/1')}>
+                <TouchableOpacity style={styles.battleButton} onPress={() => handleSpecificUserBattle(item)}>
                     <Text>⚔️</Text>
                 </TouchableOpacity>
             </View>
@@ -117,6 +125,16 @@ function BattleUserList() {
                     paddingTop: 12,
                     backgroundColor: backgroundColor,
                     borderRadius: 12,
+                }}
+            />
+
+            <BattleRequestModal
+                visible={modalVisible}
+                user={selectedUser}
+                mode="receiver"
+                onClose={() => {
+                    setModalVisible(false);
+                    setSelectedUser(null);
                 }}
             />
         </View>
@@ -183,7 +201,7 @@ const styles = StyleSheet.create({
         color: '#666',
     },
     battleButton: {
-        backgroundColor: '#FF9800',
+        backgroundColor: '#4facfe',
         borderRadius: 100,
         width: 40,
         height: 40,

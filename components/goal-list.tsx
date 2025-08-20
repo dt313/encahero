@@ -42,26 +42,28 @@ function GoalList({ title, list, containerStyle }: GoalListType) {
                                     Learn
                                 </Button>
                             </View>
-                            <View style={styles.numberBox}>
-                                <ThemedText
-                                    style={{
-                                        fontSize: 16,
-                                        fontWeight: 500,
-                                    }}
-                                >
-                                    {item.count}
-                                    <ThemedText lighter>/{item.total} cards</ThemedText>
-                                </ThemedText>
-                                <ThemedText type="title">120%</ThemedText>
+                            <View>
+                                <View style={styles.numberBox}>
+                                    <ThemedText
+                                        style={{
+                                            fontSize: 16,
+                                            fontWeight: 500,
+                                        }}
+                                    >
+                                        {item.count}
+                                        <ThemedText lighter>/{item.total} cards</ThemedText>
+                                    </ThemedText>
+                                    <ThemedText type="title">10%</ThemedText>
+                                </View>
+                                <Progress.Bar
+                                    style={{ flex: 1, height: 6 }}
+                                    color="#4CAF50"
+                                    progress={0.4}
+                                    width={null}
+                                    borderWidth={0}
+                                    unfilledColor="rgba(198, 198, 198, 0.4)"
+                                />
                             </View>
-                            <Progress.Bar
-                                style={{ flex: 1, height: 6 }}
-                                color="#4CAF50"
-                                progress={0.4}
-                                width={null}
-                                borderWidth={0}
-                                unfilledColor="rgba(198, 198, 198, 0.4)"
-                            />
                         </View>
                     );
                 })}

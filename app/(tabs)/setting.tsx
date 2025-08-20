@@ -14,10 +14,7 @@ const SETTINGS_DATA = [
         title: 'Tài khoản',
         data: [{ key: 'profile', label: 'Thông tin cá nhân' }],
     },
-    {
-        title: 'Học & Flashcard',
-        data: [{ key: 'mode', label: 'Chế độ học: Normal' }],
-    },
+
     {
         title: 'Thông báo',
         data: [
@@ -44,9 +41,6 @@ const SETTINGS_DATA = [
 
 export default function SettingsScreen() {
     const [switchState, setSwitchState] = useState({
-        showFront: true,
-        showBack: true,
-        dailyReminder: false,
         progressNotify: true,
         darkMode: false,
     });
@@ -54,6 +48,17 @@ export default function SettingsScreen() {
     const backgroundColor = useThemeColor({}, 'background');
 
     const handleToggle = (key: any) => {
+        switch (key) {
+            case 'progressNotify':
+                console.log('Notify Progress');
+                break;
+            case 'darkMode':
+                console.log('switch dark mode');
+                break;
+
+            default:
+                break;
+        }
         setSwitchState((prev) => ({ ...prev, [key]: !prev[key] }));
     };
 

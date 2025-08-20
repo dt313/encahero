@@ -1,57 +1,62 @@
+import { useCallback, useRef, useState } from 'react';
+
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { ArrowRight01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/ThemedText';
 import BackIcon from '@/components/back-icon';
+import Button from '@/components/button';
+import ModalBottomSheet from '@/components/modal-bottom-sheet';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
 
-const list = [
+type ListItem = {
+    name: string;
+    total: number;
+};
+
+const list: ListItem[] = [
     {
         name: 'Common Words',
         total: 100,
-        count: 12,
     },
     {
         name: 'Business Vocabulary',
         total: 80,
-        count: 25,
     },
     {
         name: 'Travel Phrases',
         total: 60,
-        count: 15,
     },
     {
         name: 'Academic Words',
         total: 120,
-        count: 40,
     },
     {
         name: 'Idioms & Expressions',
         total: 90,
-        count: 22,
     },
     {
         name: 'TOEIC Listening Keywords',
         total: 70,
-        count: 18,
     },
     {
         name: 'Daily Conversation',
         total: 110,
-        count: 30,
     },
 ];
 
 export default function CategoryDetail() {
     const { id } = useLocalSearchParams();
     const router = useRouter();
+    const modalBottomRef = useRef<BottomSheetModal>(null);
+    const [selectedItem, setSelectedItem] = useState<ListItem | undefined>();
     const handleBack = () => {
         try {
             router.back();
@@ -62,8 +67,19 @@ export default function CategoryDetail() {
 
     const textColor = useThemeColor({}, 'text');
 
+    const handleOpenBottomModal = useCallback((name: string) => {
+        modalBottomRef.current?.present();
+        const selected = list.find((item) => item.name === name);
+        setSelectedItem(selected);
+    }, []);
+
+    const handleGotoLink = () => {
+        router.push(`/category/${id}/collection/1`);
+        modalBottomRef.current?.close();
+    };
+
     return (
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
             <View style={styles.header}>
                 <BackIcon onPress={handleBack} />
                 <ThemedText type="title" style={styles.headerName} numberOfLines={1}>
@@ -75,10 +91,7 @@ export default function CategoryDetail() {
                 <View style={styles.body}>
                     {list.map((item: any, index: number) => {
                         return (
-                            <TouchableOpacity
-                                key={item.name}
-                                onPress={() => router.push(`/category/${id}/collection/1`)}
-                            >
+                            <TouchableOpacity key={item.name} onPress={() => handleOpenBottomModal(item.name)}>
                                 <View style={[styles.item, { borderColor: '#7d7d7d77' }]}>
                                     <View style={styles.itemHeader}>
                                         <ThemedText type="defaultSemiBold" style={styles.itemName}>
@@ -95,6 +108,24 @@ export default function CategoryDetail() {
                     })}
                 </View>
             </ScrollView>
+
+            <ModalBottomSheet bottomSheetModalRef={modalBottomRef}>
+                {selectedItem && (
+                    <View style={styles.modalContainer}>
+                        <ThemedText type="title" style={styles.modalTitle}>
+                            {selectedItem.name}
+                        </ThemedText>
+
+                        <ThemedText style={styles.modalSubtitle}>{selectedItem.total} card</ThemedText>
+
+                        <Button>Register</Button>
+
+                        <Button type="link" onPress={handleGotoLink}>
+                            View all cards →
+                        </Button>
+                    </View>
+                )}
+            </ModalBottomSheet>
         </SafeAreaView>
     );
 }
@@ -136,5 +167,39 @@ const styles = StyleSheet.create({
     itemHeader: {},
     itemName: {
         marginBottom: 4,
+    },
+
+    // modal
+    modalContainer: {
+        padding: 20,
+        rowGap: 16,
+    },
+    modalTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    modalSubtitle: {
+        fontSize: 16,
+        color: '#555',
+        textAlign: 'center',
+    },
+    registerButton: {
+        marginTop: 10,
+        backgroundColor: '#007bff',
+        borderRadius: 25,
+        paddingVertical: 12,
+        alignItems: 'center',
+    },
+    registerButtonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: '600',
+    },
+    linkText: {
+        marginTop: 14,
+        color: '#007bff',
+        fontSize: 15,
+        textAlign: 'center',
     },
 });
