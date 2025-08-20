@@ -14,6 +14,7 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 function Battle() {
     const [activeTab, setActiveTab] = useState('leaderboard');
     const textColor = useThemeColor({}, 'text');
+    const headerBottomColor = useThemeColor({}, 'battleHeaderBorder');
     const renderContent = () => {
         switch (activeTab) {
             case 'users':
@@ -29,7 +30,7 @@ function Battle() {
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            <View style={styles.tabs}>
+            <View style={[styles.tabs, { borderBottomColor: headerBottomColor }]}>
                 {['leaderboard', 'users', 'history'].map((tab) => (
                     <TouchableOpacity key={tab} onPress={() => setActiveTab(tab)} style={styles.tabButton}>
                         <ThemedText
@@ -55,8 +56,7 @@ const styles = StyleSheet.create({
     tabs: {
         flexDirection: 'row',
         justifyContent: 'space-around',
-        borderBottomWidth: 1,
-        borderBottomColor: '#ddd',
+        borderBottomWidth: 1.5,
         paddingVertical: 8,
     },
     tabButton: {

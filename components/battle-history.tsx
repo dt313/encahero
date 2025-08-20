@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     myRanking: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#65b5e3ff',
+        backgroundColor: '#c1cae9ff',
         padding: 16,
         borderRadius: 12,
         marginBottom: 24,

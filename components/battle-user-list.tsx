@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
-import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-import diceRoll from '@/assets/images/dice-roll-dice.gif';
+import { useRouter } from 'expo-router';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
 
@@ -36,6 +36,7 @@ function BattleUserList() {
 
     const backgroundColor = useThemeColor({}, 'background');
 
+    const router = useRouter();
     const handleRandom = () => {
         setRandom(true);
     };
@@ -64,7 +65,7 @@ function BattleUserList() {
                     </ThemedText>
                 </View>
 
-                <TouchableOpacity style={styles.battleButton} onPress={() => console.log('Thách đấu', item.name)}>
+                <TouchableOpacity style={styles.battleButton} onPress={() => router.push('/match/1')}>
                     <Text>⚔️</Text>
                 </TouchableOpacity>
             </View>
@@ -75,10 +76,27 @@ function BattleUserList() {
         <View style={styles.container}>
             <View style={[styles.randomBox, { backgroundColor }]}>
                 {random ? (
-                    <Image source={diceRoll} style={styles.dice} />
+                    // Đang tìm đối thủ
+                    <View style={{ alignItems: 'center', gap: 12 }}>
+                        <ActivityIndicator size="large" color="#4facfe" />
+                        <Text style={{ fontSize: 16, fontWeight: '600', color: '#333' }}>Đang tìm đối thủ...</Text>
+                        <Button
+                            buttonStyle={{
+                                backgroundColor: '#ff4e50',
+                                paddingVertical: 10,
+                                paddingHorizontal: 20,
+                                borderRadius: 12,
+                            }}
+                            // onPress={handleCancelQueue}
+                        >
+                            Huỷ tìm trận
+                        </Button>
+                    </View>
                 ) : (
+                    // Chưa tìm → hiển thị nút random
                     <Button
                         buttonStyle={{
+                            backgroundColor: '#4facfe',
                             paddingVertical: 12,
                             paddingHorizontal: 20,
                             borderRadius: 12,

@@ -45,6 +45,9 @@ export const Colors = {
         // quiz setting
         quizLinkTextColor: '#4f46e5',
         quizLinkBg: '#eef2ff',
+
+        // battle header
+        battleHeaderBorder: '#ddd',
     },
     dark: {
         primary: '#FF9800',
@@ -77,5 +80,6 @@ export const Colors = {
         // quiz setting
         quizLinkTextColor: '#f7f7f7ff',
         quizLinkBg: '#5c5d5dff',
+        battleHeaderBorder: '#5a5a5aff',
     },
 };

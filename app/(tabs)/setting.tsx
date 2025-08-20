@@ -65,7 +65,7 @@ export default function SettingsScreen() {
         }
     };
 
-    const renderItem = ({ item }) => {
+    const renderItem = ({ item }: { item: any }) => {
         if (item.type === 'switch') {
             return (
                 <View style={[styles.item, { backgroundColor }]}>
