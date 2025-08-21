@@ -49,6 +49,9 @@ export const Colors = {
 
         // battle header
         battleHeaderBorder: '#ddd',
+
+        // input
+        inputBorderColor: '#88888855',
     },
     dark: {
         primary: '#FF9800',
@@ -82,5 +85,6 @@ export const Colors = {
         quizLinkTextColor: '#f7f7f7ff',
         quizLinkBg: '#5c5d5dff',
         battleHeaderBorder: '#5a5a5aff',
+        inputBorderColor: '#88888855',
     },
 };

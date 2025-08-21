@@ -5,6 +5,8 @@ import { Image, Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } fro
 import { router } from 'expo-router';
 
 import { addToast } from '@/store/action/toast-action';
+import { LockPasswordIcon, Mail02Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch } from 'react-redux';
 
@@ -73,6 +75,8 @@ function AuthScreen({ type }: AuthProps) {
     const whiteColor = useThemeColor({}, 'white');
     const dividerColor = useThemeColor({}, 'dividerColor');
 
+    const inputBorderColor = useThemeColor({}, 'inputBorderColor');
+
     return (
         <ThemedView style={styles.wrapper}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -95,9 +99,16 @@ function AuthScreen({ type }: AuthProps) {
                     {/* input  */}
 
                     <View style={styles.inputContainer}>
-                        <Input label="Email" value={email} placeholder="example@gmail.com" onChangeText={setEmail} />
+                        <Input
+                            leftIcon={<HugeiconsIcon icon={Mail02Icon} color={inputBorderColor} size={24} />}
+                            label="Email"
+                            value={email}
+                            placeholder="example@gmail.com"
+                            onChangeText={setEmail}
+                        />
                         {tab === 'password' && (
                             <Input
+                                leftIcon={<HugeiconsIcon icon={LockPasswordIcon} color={inputBorderColor} size={24} />}
                                 label="Password"
                                 value={password}
                                 placeholder="Abcd123@"

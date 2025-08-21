@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 
 import { StyleSheet, TextInput, TextInputProps, TouchableOpacity, View } from 'react-native';
 
 import { ViewIcon, ViewOffSlashIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 
-import { useThemeColors } from '@/hooks/useThemeColor';
+import { useThemeColor, useThemeColors } from '@/hooks/useThemeColor';
 
 import { ThemedText } from './ThemedText';
 
@@ -14,38 +14,43 @@ type InputProps = {
     value: string;
     onChangeText: (text: string) => void;
     isPassword?: boolean;
+    leftIcon?: ReactNode;
 } & TextInputProps;
 
-function Input({ label, value, onChangeText, isPassword = false, ...rest }: InputProps) {
+function Input({ label, leftIcon = false, value, onChangeText, isPassword = false, ...rest }: InputProps) {
     const colors = useThemeColors();
     const [showPassword, setShowPassword] = useState(false);
+    const inputBorderColor = useThemeColor({}, 'inputBorderColor');
+
     return (
         <View>
             {label && <ThemedText style={styles.label}>{label}</ThemedText>}
-            <TextInput
-                style={[
-                    styles.input,
-                    {
-                        backgroundColor: colors.authInputBackground,
-                        color: colors.black,
-                    },
-                ]}
-                value={value}
-                onChangeText={onChangeText}
-                placeholderTextColor="#A0A0A0"
-                secureTextEntry={isPassword && !showPassword}
-                {...rest}
-            />
+            <View style={[styles.inputWrap, { borderColor: inputBorderColor }]}>
+                {leftIcon}
+                <TextInput
+                    style={[
+                        styles.input,
+                        {
+                            color: colors.black,
+                        },
+                    ]}
+                    value={value}
+                    onChangeText={onChangeText}
+                    placeholderTextColor="#A0A0A0"
+                    secureTextEntry={isPassword && !showPassword}
+                    {...rest}
+                />
 
-            {isPassword && (
-                <TouchableOpacity
-                    style={styles.icon}
-                    onPress={() => setShowPassword(!showPassword)}
-                    activeOpacity={0.7}
-                >
-                    <HugeiconsIcon icon={showPassword ? ViewIcon : ViewOffSlashIcon} size={24} color={colors.text} />
-                </TouchableOpacity>
-            )}
+                {isPassword && (
+                    <TouchableOpacity onPress={() => setShowPassword(!showPassword)} activeOpacity={0.7}>
+                        <HugeiconsIcon
+                            icon={showPassword ? ViewIcon : ViewOffSlashIcon}
+                            size={24}
+                            color={colors.text}
+                        />
+                    </TouchableOpacity>
+                )}
+            </View>
         </View>
     );
 }
@@ -61,20 +66,26 @@ const styles = StyleSheet.create({
         letterSpacing: 0.3,
         fontSize: 14,
     },
-    input: {
-        borderRadius: 8,
-        paddingHorizontal: 12,
-        paddingVertical: 12,
-        fontSize: 16,
-        fontWeight: 500,
+
+    inputWrap: {
+        flexDirection: 'row',
+        height: 52,
+        alignItems: 'center',
+        borderWidth: 1,
+        padding: 12,
+        borderRadius: 40,
         position: 'relative',
     },
 
-    icon: {
-        position: 'absolute',
-        right: 12,
-        top: '70%',
-        transform: [{ translateY: -12 }],
+    nonLeftInputWrap: {},
+
+    input: {
+        flex: 1,
+        borderRadius: 8,
+        paddingHorizontal: 12,
+        fontSize: 16,
+        fontWeight: 500,
+        position: 'relative',
     },
 });
 

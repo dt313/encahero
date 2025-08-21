@@ -4,14 +4,14 @@ import { Alert, StyleSheet, View } from 'react-native';
 
 import { useRouter } from 'expo-router';
 
-import { Mail02Icon } from '@hugeicons/core-free-icons';
+import { Mail01FreeIcons } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
-import { TextInput } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/ThemedText';
 import BackIcon from '@/components/back-icon';
 import Button from '@/components/button';
+import Input from '@/components/input';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
 
@@ -20,7 +20,7 @@ export default function MailOTP() {
     const [code, setCode] = useState('');
     const [codeSent, setCodeSent] = useState(false);
 
-    const lighterText = useThemeColor({}, 'lighterText');
+    const inputBorderColor = useThemeColor({}, 'inputBorderColor');
 
     const router = useRouter();
 
@@ -35,6 +35,7 @@ export default function MailOTP() {
 
     const handleConfirm = () => {
         Alert.alert('Success', `${code}`);
+        router.push('/reset-password');
     };
 
     const handleBack = () => {
@@ -51,10 +52,10 @@ export default function MailOTP() {
             </View>
 
             {/* Nhập Email */}
-            <View style={[styles.inputWrap, { borderColor: lighterText }]}>
-                <HugeiconsIcon icon={Mail02Icon} size={24} color={lighterText} />
-                <TextInput
-                    style={styles.input}
+            <View style={styles.inputWrap}>
+                <Input
+                    leftIcon={<HugeiconsIcon icon={Mail01FreeIcons} color={inputBorderColor} size={24} />}
+                    label="Email"
                     placeholder="Enter your email"
                     keyboardType="email-address"
                     value={email}
@@ -65,8 +66,7 @@ export default function MailOTP() {
 
             {codeSent && (
                 <View style={styles.inputWrap}>
-                    <TextInput
-                        style={styles.input}
+                    <Input
                         placeholder="Enter your OPT code"
                         keyboardType="number-pad"
                         value={code}
@@ -80,7 +80,7 @@ export default function MailOTP() {
                     Confirm Code
                 </Button>
             ) : (
-                <Button onPress={handleSendCode} buttonStyle={{ borderRadius: 100 }} type="disable">
+                <Button onPress={handleSendCode} buttonStyle={{ borderRadius: 100 }}>
                     Send Code
                 </Button>
             )}
@@ -107,18 +107,12 @@ const styles = StyleSheet.create({
     },
 
     inputWrap: {
-        flexDirection: 'row',
-        height: 52,
-        alignItems: 'center',
-        borderWidth: 1,
         marginBottom: 12,
-        padding: 12,
-        borderRadius: 40,
     },
+
     input: {
         flex: 1,
         height: '100%',
-
         paddingLeft: 12,
     },
 });
