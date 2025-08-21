@@ -2,6 +2,8 @@ import React, { useCallback, useState } from 'react';
 
 import { Alert, Image, ScrollView, StyleSheet, Switch, TouchableOpacity, View } from 'react-native';
 
+import { useRouter } from 'expo-router';
+
 import {
     ArrowRight01Icon,
     Clock01Icon,
@@ -27,12 +29,13 @@ export default function SettingsScreen() {
 
     const textColor = useThemeColor({}, 'text');
     const backgroundColor = useThemeColor({}, 'background');
+    const router = useRouter();
 
     // ✅ Common handler for items
     const handlePress = useCallback((label: string) => {
         switch (label) {
             case 'Password & Security':
-                Alert.alert('Navigate', 'Go to Password & Security');
+                router.push('/mail-otp');
                 break;
             case 'Privacy':
                 Alert.alert('Navigate', 'Go to Privacy');
