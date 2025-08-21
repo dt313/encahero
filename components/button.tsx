@@ -2,10 +2,12 @@ import { ReactNode } from 'react';
 
 import { StyleSheet, TextStyle, TouchableOpacity, TouchableOpacityProps, ViewStyle } from 'react-native';
 
+import { commonColor } from '@/constants/Colors';
+
 import { ThemedText } from './ThemedText';
 
 export type ButtonProps = {
-    type?: string;
+    type?: 'default' | 'link' | 'dangerous';
     leftIcon?: ReactNode;
     rightIcon?: ReactNode;
     children?: ReactNode;
@@ -30,7 +32,7 @@ function Button({
                 styles.button,
                 type === 'default' ? styles.default : undefined,
                 type === 'link' ? styles.link : undefined,
-                ,
+                type === 'dangerous' ? { backgroundColor: '#fee2e2' } : undefined,
                 buttonStyle,
             ]}
             onPress={onPress}
@@ -42,6 +44,8 @@ function Button({
                     styles.buttonText,
                     type === 'link' ? { color: '#FF9800' } : undefined,
                     type === 'default' ? { color: '#333' } : undefined,
+                    type === 'dangerous' ? { color: commonColor.failBorderColor } : undefined,
+
                     textStyle,
                 ]}
             >
@@ -57,11 +61,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'row',
+        paddingVertical: 12,
+        borderRadius: 8,
     },
     default: {
         backgroundColor: '#FF9800',
-        paddingVertical: 12,
-        borderRadius: 8,
     },
     buttonText: {
         fontSize: 16,

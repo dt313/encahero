@@ -8,6 +8,7 @@ import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useThemeColor } from '@/hooks/useThemeColor';
 
 import { ThemedText } from './ThemedText';
+import Button from './button';
 
 function QuizSetting() {
     const [reviewMode, setReviewMode] = useState(false);
@@ -65,9 +66,10 @@ function QuizSetting() {
             </Pressable>
 
             {/* Stop Learning Button */}
-            <Pressable style={styles.stopButton} onPress={handleStopLearning}>
-                <Text style={styles.stopButtonText}>🛑 Stop Learning This List</Text>
-            </Pressable>
+
+            <Button type="dangerous" onPress={handleStopLearning}>
+                🛑 Stop Learning This List
+            </Button>
         </View>
     );
 }

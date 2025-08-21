@@ -36,7 +36,7 @@ export default function MatchHeader({ players }: HeaderProps) {
                             <Image source={{ uri: players[0].avatar }} style={styles.avatar} />
                         </Circle>
                     </View>
-                    <ThemedText style={styles.playerName}>{players[0].name}</ThemedText>
+                    <Text style={styles.playerName}>{players[0].name}</Text>
                     <ThemedText style={styles.playerScore}>
                         <Text style={styles.scoreNumber}>{players[0].score} </Text>
                         <Text style={styles.scoreText}>điểm</Text>
@@ -61,7 +61,7 @@ export default function MatchHeader({ players }: HeaderProps) {
                             <Image source={{ uri: players[1].avatar }} style={styles.avatar} />
                         </Circle>
                     </View>
-                    <ThemedText style={styles.playerName}>{players[1].name}</ThemedText>
+                    <Text style={styles.playerName}>{players[1].name}</Text>
                     <ThemedText style={styles.playerScore}>
                         <Text style={styles.scoreNumber}>{players[1].score} </Text>
                         <Text style={styles.scoreText}>điểm</Text>
@@ -101,8 +101,8 @@ const styles = StyleSheet.create({
 
     playerName: { fontWeight: 'bold', fontSize: 18, marginBottom: 4 },
     playerScore: { marginBottom: 12 },
-    scoreNumber: { color: '#133ec0ff', fontWeight: 'bold', fontSize: 20 },
-    scoreText: { fontSize: 12, fontWeight: '400', color: '#5e5e5eff' },
+    scoreNumber: { color: '#ffcc00ff', fontWeight: 'bold', fontSize: 20 },
+    scoreText: { fontSize: 12, fontWeight: '400', color: '#212121ff' },
     vsImg: {
         width: 72,
         height: 72,
