@@ -80,7 +80,7 @@ export default function MailOTP() {
                     Confirm Code
                 </Button>
             ) : (
-                <Button onPress={handleSendCode} buttonStyle={{ borderRadius: 100 }}>
+                <Button onPress={handleSendCode} buttonStyle={{ borderRadius: 100 }} type="disable">
                     Send Code
                 </Button>
             )}

@@ -1,13 +1,13 @@
 import { ReactNode } from 'react';
 
-import { StyleSheet, TextStyle, TouchableOpacity, TouchableOpacityProps, ViewStyle } from 'react-native';
+import { Alert, StyleSheet, TextStyle, TouchableOpacity, TouchableOpacityProps, ViewStyle } from 'react-native';
 
 import { commonColor } from '@/constants/Colors';
 
 import { ThemedText } from './ThemedText';
 
 export type ButtonProps = {
-    type?: 'default' | 'link' | 'dangerous';
+    type?: 'default' | 'link' | 'dangerous' | 'disable';
     leftIcon?: ReactNode;
     rightIcon?: ReactNode;
     children?: ReactNode;
@@ -26,6 +26,13 @@ function Button({
     rightIcon,
     ...rest
 }: ButtonProps) {
+    const handlePress = () => {
+        if (type === 'disable') {
+            Alert.alert('Disable Button', 'You cannot press disable button');
+            return;
+        }
+        if (onPress) onPress();
+    };
     return (
         <TouchableOpacity
             style={[
@@ -33,9 +40,10 @@ function Button({
                 type === 'default' ? styles.default : undefined,
                 type === 'link' ? styles.link : undefined,
                 type === 'dangerous' ? { backgroundColor: '#fee2e2' } : undefined,
+                type === 'disable' ? { backgroundColor: '#5c5c5c77' } : undefined,
                 buttonStyle,
             ]}
-            onPress={onPress}
+            onPress={handlePress}
             {...rest}
         >
             {leftIcon}
@@ -45,6 +53,7 @@ function Button({
                     type === 'link' ? { color: '#FF9800' } : undefined,
                     type === 'default' ? { color: '#333' } : undefined,
                     type === 'dangerous' ? { color: commonColor.failBorderColor } : undefined,
+                    type === 'disable' ? { color: '#818181' } : undefined,
 
                     textStyle,
                 ]}
