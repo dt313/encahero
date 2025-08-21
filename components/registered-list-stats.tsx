@@ -9,7 +9,7 @@ import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useThemeColor } from '@/hooks/useThemeColor';
 
 import { ThemedText } from './ThemedText';
-import GoalPickerBottomSheet from './list-register';
+import ListRegister from './list-register';
 import ModalBottomSheet from './modal-bottom-sheet';
 
 type RegisteredStatsProps = {
@@ -86,10 +86,11 @@ export default function RegisteredListStats({ title }: RegisteredStatsProps) {
 
             {/* Modal Bottom Sheet */}
             <ModalBottomSheet bottomSheetModalRef={bottomSheetModalRef}>
-                <GoalPickerBottomSheet
-                    descriprion="Chọn số lượng task bạn phải hoàn thành trong 1 ngày"
+                <ListRegister
+                    description="Chọn số lượng task bạn phải hoàn thành trong 1 ngày"
                     title={'Hello'}
                     onConfirm={handleConfirm}
+                    isRegistered={true}
                 />
             </ModalBottomSheet>
         </View>

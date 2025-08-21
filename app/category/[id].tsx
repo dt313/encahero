@@ -13,18 +13,21 @@ import { ThemedText } from '@/components/ThemedText';
 import BackIcon from '@/components/back-icon';
 import ListRegister from '@/components/list-register';
 import ModalBottomSheet from '@/components/modal-bottom-sheet';
+import RegisteredListStats from '@/components/registered-list-stats';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
 
 type ListItem = {
     name: string;
     total: number;
+    isRegistered?: boolean;
 };
 
 const list: ListItem[] = [
     {
         name: 'Common Words',
         total: 100,
+        isRegistered: true,
     },
     {
         name: 'Business Vocabulary',
@@ -110,11 +113,13 @@ export default function CategoryDetail() {
             </ScrollView>
 
             <ModalBottomSheet bottomSheetModalRef={modalBottomRef}>
-                {selectedItem && (
+                {selectedItem?.isRegistered ? (
+                    <RegisteredListStats title={selectedItem.name} />
+                ) : (
                     <ListRegister
-                        title={selectedItem.name}
-                        onConfirm={() => {}}
                         description="Chọn số lượng task bạn phải hoàn thành trong 1 ngày"
+                        title={selectedItem ? selectedItem?.name : ''}
+                        onConfirm={() => {}}
                         onClose={closeBottomModalSheet}
                     />
                 )}

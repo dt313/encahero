@@ -130,6 +130,7 @@ function HorizontalList({ headerName = 'Popular', containerStyle, isRandomColor 
                         title={selectedItem ? selectedItem?.name : ''}
                         onConfirm={handleConfirm}
                         onClose={closeBottomModalSheet}
+                        isRegistered={selectedItem?.isRegistered}
                     />
                 )}
             </ModalBottomSheet>

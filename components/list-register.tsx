@@ -11,17 +11,21 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 import { ThemedText } from './ThemedText';
 import Button from './button';
 
+export type ListRegisterType = {
+    title: string;
+    description?: string;
+    onConfirm: (goal: number) => void;
+    onClose?: () => void;
+    isRegistered?: boolean;
+};
+
 export default function ListRegister({
     title,
     description,
     onConfirm,
     onClose = () => {},
-}: {
-    title: string;
-    description?: string;
-    onConfirm: (goal: number) => void;
-    onClose?: () => void;
-}) {
+    isRegistered = false,
+}: ListRegisterType) {
     const [goal, setGoal] = useState(100);
 
     const router = useRouter();
@@ -29,6 +33,8 @@ export default function ListRegister({
     const textColor = useThemeColor({}, 'text');
     const background = useThemeColor({}, 'background');
     const lighterText = useThemeColor({}, 'lighterText');
+
+    console.log({ isRegistered });
 
     const directLinkHandler = () => {
         router.push('/category/1/collection/1');
@@ -79,10 +85,12 @@ export default function ListRegister({
                     rowGap: 12,
                 }}
             >
-                <Button onPress={() => onConfirm(goal)}>Register</Button>
-                <Button type="link" onPress={directLinkHandler}>
-                    View all cards →
-                </Button>
+                <Button onPress={() => onConfirm(goal)}>{isRegistered ? 'Change' : 'Register'}</Button>
+                {!isRegistered && (
+                    <Button type="link" onPress={directLinkHandler}>
+                        View all cards →
+                    </Button>
+                )}
             </View>
         </View>
     );
