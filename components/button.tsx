@@ -72,6 +72,8 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     },
     link: {
+        paddingVertical: 0,
+        borderRadius: 0,
         backgroundColor: 'transparent',
     },
 });

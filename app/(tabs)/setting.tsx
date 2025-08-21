@@ -3,7 +3,6 @@ import React, { useCallback, useState } from 'react';
 import { Alert, Image, ScrollView, StyleSheet, Switch, TouchableOpacity, View } from 'react-native';
 
 import {
-    Analytics01Icon,
     ArrowRight01Icon,
     Clock01Icon,
     Comment01Icon,
@@ -108,12 +107,12 @@ export default function SettingsScreen() {
                         label="Feedback"
                         isLink
                     />
-                    <SettingItem
+                    {/* <SettingItem
                         onPress={handlePress}
                         icon={<HugeiconsIcon icon={Analytics01Icon} size={24} color={textColor} />}
                         label="Usage"
                         isLink
-                    />
+                    /> */}
                     <SettingItem
                         onPress={handlePress}
                         icon={<HugeiconsIcon icon={Clock01Icon} size={24} color={textColor} />}

@@ -93,6 +93,7 @@ const styles = StyleSheet.create({
     },
     itemName: {
         marginBottom: 12,
+        marginRight: 8,
         flex: 1,
         textOverflow: 'es',
     },
