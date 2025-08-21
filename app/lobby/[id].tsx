@@ -1,14 +1,12 @@
 // LobbyRoomScreen.tsx
 import React, { useEffect, useState } from 'react';
 
-import { ColorValue, Image, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View, useColorScheme } from 'react-native';
 
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 
 import vsImg from '@/assets/images/vs.png';
-
-import { useThemeColor } from '@/hooks/useThemeColor';
 
 type Player = {
     id: string;
@@ -35,7 +33,7 @@ const players: Player[] = [
 export default function LobbyRoomScreen() {
     const [countdown, setCountdown] = useState(3);
     const router = useRouter();
-    const matchGradient = useThemeColor({}, 'matchGradient');
+    const theme = useColorScheme();
 
     useEffect(() => {
         if (countdown > 0) {
@@ -48,9 +46,10 @@ export default function LobbyRoomScreen() {
 
     return (
         <LinearGradient
-            colors={matchGradient as [ColorValue, ColorValue, ...ColorValue[]]}
+            colors={['#8e2de299', '#4a00e099', '#4e260a99']}
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 1 }}
+            locations={[0, 0.6, 1]}
             style={styles.container}
         >
             <Image source={vsImg} style={styles.vsImg} />
@@ -77,6 +76,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: '#fff',
     },
 
     vsImg: {

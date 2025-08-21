@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { Alert, ColorValue, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
@@ -12,8 +12,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '@/components/ThemedText';
 import TypingCard from '@/components/flashcards/typing-card';
 import MatchHeader from '@/components/match/header';
-
-import { useThemeColor } from '@/hooks/useThemeColor';
 
 const players = [
     { id: 'p1', name: 'You', avatar: 'https://i.pravatar.cc/50?img=1', score: 15, progress: 0.4 },
@@ -27,7 +25,6 @@ export default function Match() {
     const [currentQuestion, setCurrentQuestion] = useState(3); // ví dụ câu thứ 3
     const [timeLeft, setTimeLeft] = useState(QUESTION_TIME);
     const router = useRouter();
-    const matchGradient = useThemeColor({}, 'matchGradient');
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -64,23 +61,23 @@ export default function Match() {
     const timerSec = (timeLeft / 1000).toFixed(1);
     return (
         <LinearGradient
-            colors={matchGradient as [ColorValue, ColorValue, ...ColorValue[]]}
+            colors={['#8e2de299', '#4a00e099', '#4e260a99']}
             start={{ x: 0.5, y: 0 }}
             end={{ x: 0.5, y: 1 }}
-            locations={[0, 0.6, 0.8]}
-            style={{ position: 'absolute', flex: 1, height: '100%' }}
+            locations={[0, 0.6, 1]}
+            style={{ position: 'absolute', flex: 1, height: '100%', backgroundColor: '#fff' }}
         >
             <SafeAreaView style={{ flex: 1, position: 'relative' }}>
                 <View style={styles.headerRight}>
                     <Pressable style={styles.exitButton} onPress={handleExit}>
-                        <HugeiconsIcon icon={Cancel01Icon} size={24} color="red" />
+                        <HugeiconsIcon icon={Cancel01Icon} size={24} color="black" />
                     </Pressable>
                 </View>
                 <MatchHeader players={players} />
 
                 {/* Question bar */}
                 <View style={styles.questionBarContainer}>
-                    <ThemedText style={styles.questionText}>
+                    <ThemedText darkColor="black" style={styles.questionText}>
                         Question {`${currentQuestion}/${TOTAL_QUESTIONS}`}
                     </ThemedText>
 
@@ -105,7 +102,7 @@ const styles = StyleSheet.create({
         padding: 4,
         borderRadius: 50,
         borderWidth: 1,
-        borderColor: 'red',
+        borderColor: 'black',
     },
 
     questionBarContainer: {

@@ -13,6 +13,7 @@ export const commonColor = {
     trueBorderColor: '#29b83aff',
     volumeColor: '#396feeff',
 };
+
 export const Colors = {
     light: {
         primary: '#FF9800',
@@ -48,10 +49,6 @@ export const Colors = {
 
         // battle header
         battleHeaderBorder: '#ddd',
-
-        // match
-        matchGradient: ['#ffffff', '#6dd5fa', '#2980b9'],
-        // lobby
     },
     dark: {
         primary: '#FF9800',
@@ -85,6 +82,5 @@ export const Colors = {
         quizLinkTextColor: '#f7f7f7ff',
         quizLinkBg: '#5c5d5dff',
         battleHeaderBorder: '#5a5a5aff',
-        matchGradient: ['#0F2027', '#203A43', '#2C5364'],
     },
 };
