@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 
 import { StyleSheet, View } from 'react-native';
 
+import { useRouter } from 'expo-router';
+
 import { Picker } from '@react-native-picker/picker';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
@@ -9,24 +11,33 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 import { ThemedText } from './ThemedText';
 import Button from './button';
 
-export default function GoalPickerBottomSheet({
+export default function ListRegister({
     title,
-    descriprion,
+    description,
     onConfirm,
+    onClose = () => {},
 }: {
     title: string;
-    descriprion?: string;
+    description?: string;
     onConfirm: (goal: number) => void;
+    onClose?: () => void;
 }) {
-    const [goal, setGoal] = useState(5); // mặc định 5 mục tiêu
+    const [goal, setGoal] = useState(100);
+
+    const router = useRouter();
 
     const textColor = useThemeColor({}, 'text');
     const background = useThemeColor({}, 'background');
     const lighterText = useThemeColor({}, 'lighterText');
+
+    const directLinkHandler = () => {
+        router.push('/category/1/collection/1');
+        onClose();
+    };
     return (
         <View style={styles.container}>
-            <ThemedText type="title">{title}</ThemedText>
-            {descriprion && (
+            <ThemedText type="subtitle">{title}</ThemedText>
+            {description && (
                 <ThemedText
                     style={{
                         marginTop: 8,
@@ -35,7 +46,7 @@ export default function GoalPickerBottomSheet({
                         color: lighterText,
                     }}
                 >
-                    {descriprion}
+                    {description}
                 </ThemedText>
             )}
 
@@ -65,9 +76,13 @@ export default function GoalPickerBottomSheet({
             <View
                 style={{
                     width: '100%',
+                    rowGap: 12,
                 }}
             >
-                <Button onPress={() => onConfirm(goal)}>Confirm</Button>
+                <Button onPress={() => onConfirm(goal)}>Register</Button>
+                <Button type="link" onPress={directLinkHandler}>
+                    View all cards →
+                </Button>
             </View>
         </View>
     );

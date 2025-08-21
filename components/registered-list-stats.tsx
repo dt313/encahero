@@ -9,7 +9,7 @@ import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useThemeColor } from '@/hooks/useThemeColor';
 
 import { ThemedText } from './ThemedText';
-import GoalPickerBottomSheet from './goal-picker';
+import GoalPickerBottomSheet from './list-register';
 import ModalBottomSheet from './modal-bottom-sheet';
 
 type RegisteredStatsProps = {

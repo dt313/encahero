@@ -14,7 +14,7 @@ import { getRandomColor } from '@/utils';
 
 import { ThemedText } from './ThemedText';
 import Button from './button';
-import GoalPickerBottomSheet from './goal-picker';
+import ListRegister from './list-register';
 import ModalBottomSheet from './modal-bottom-sheet';
 import RegisteredListStats from './registered-list-stats';
 
@@ -40,6 +40,11 @@ function HorizontalList({ headerName = 'Popular', containerStyle, isRandomColor 
         setSelectedItem(found);
         if (found) bottomSheetModalRef.current?.present();
     }, []);
+
+    const closeBottomModalSheet = () => {
+        if (!bottomSheetModalRef.current) return;
+        bottomSheetModalRef.current?.close();
+    };
 
     const handleConfirm = (goal: number) => {
         console.log(goal);
@@ -120,10 +125,11 @@ function HorizontalList({ headerName = 'Popular', containerStyle, isRandomColor 
                 {selectedItem?.isRegistered ? (
                     <RegisteredListStats title={selectedItem.name} />
                 ) : (
-                    <GoalPickerBottomSheet
-                        descriprion="Chọn số lượng task bạn phải hoàn thành trong 1 ngày"
+                    <ListRegister
+                        description="Chọn số lượng task bạn phải hoàn thành trong 1 ngày"
                         title={selectedItem ? selectedItem?.name : ''}
                         onConfirm={handleConfirm}
+                        onClose={closeBottomModalSheet}
                     />
                 )}
             </ModalBottomSheet>

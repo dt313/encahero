@@ -11,7 +11,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/ThemedText';
 import BackIcon from '@/components/back-icon';
-import Button from '@/components/button';
+import ListRegister from '@/components/list-register';
 import ModalBottomSheet from '@/components/modal-bottom-sheet';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
@@ -73,8 +73,8 @@ export default function CategoryDetail() {
         setSelectedItem(selected);
     }, []);
 
-    const handleGotoLink = () => {
-        router.push(`/category/${id}/collection/1`);
+    const closeBottomModalSheet = () => {
+        if (!modalBottomRef.current) return;
         modalBottomRef.current?.close();
     };
 
@@ -111,19 +111,12 @@ export default function CategoryDetail() {
 
             <ModalBottomSheet bottomSheetModalRef={modalBottomRef}>
                 {selectedItem && (
-                    <View style={styles.modalContainer}>
-                        <ThemedText type="title" style={styles.modalTitle}>
-                            {selectedItem.name}
-                        </ThemedText>
-
-                        <ThemedText style={styles.modalSubtitle}>{selectedItem.total} card</ThemedText>
-
-                        <Button>Register</Button>
-
-                        <Button type="link" onPress={handleGotoLink}>
-                            View all cards →
-                        </Button>
-                    </View>
+                    <ListRegister
+                        title={selectedItem.name}
+                        onConfirm={() => {}}
+                        description="Chọn số lượng task bạn phải hoàn thành trong 1 ngày"
+                        onClose={closeBottomModalSheet}
+                    />
                 )}
             </ModalBottomSheet>
         </SafeAreaView>
