@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 
-import { SectionList, StyleSheet, Text, TextInput, View } from 'react-native';
+import { SectionList, StyleSheet, TextInput, View } from 'react-native';
 
 import { useRouter } from 'expo-router';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { ThemedText } from '@/components/ThemedText';
 import BackIcon from '@/components/back-icon';
+
+import { useThemeColor } from '@/hooks/useThemeColor';
 
 // bạn đã có BackIcon trong project
 
@@ -32,6 +35,10 @@ const DATA: WordItem[] = [
 function Collection() {
     const router = useRouter();
     const [search, setSearch] = useState('');
+    const backgroundColor = useThemeColor({}, 'background');
+    const white = useThemeColor({}, 'white');
+    const textColor = useThemeColor({}, 'text');
+    const lighterText = useThemeColor({}, 'lighterText');
 
     // TODO:  use debounce here
     const filteredData = DATA.map((section) => ({
@@ -40,15 +47,16 @@ function Collection() {
     })).filter((section) => section.data.length > 0);
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={[styles.container, { backgroundColor }]}>
             {/* Header */}
             <View style={styles.header}>
                 <BackIcon onPress={() => router.back()} />
                 <TextInput
-                    style={styles.searchInput}
+                    style={[styles.searchInput, { backgroundColor: white, color: textColor }]}
                     placeholder="Search words..."
                     value={search}
                     onChangeText={setSearch}
+                    placeholderTextColor={lighterText}
                 />
             </View>
 
@@ -58,10 +66,12 @@ function Collection() {
                 keyExtractor={(item, index) => item + index}
                 renderItem={({ item }) => (
                     <View style={styles.item}>
-                        <Text style={styles.word}>{item}</Text>
+                        <ThemedText style={styles.word}>{item}</ThemedText>
                     </View>
                 )}
-                renderSectionHeader={({ section: { title } }) => <Text style={styles.sectionHeader}>{title}</Text>}
+                renderSectionHeader={({ section: { title } }) => (
+                    <ThemedText style={styles.sectionHeader}>{title}</ThemedText>
+                )}
             />
         </SafeAreaView>
     );
@@ -72,7 +82,6 @@ export default Collection;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
     },
     header: {
         flexDirection: 'row',
@@ -85,15 +94,16 @@ const styles = StyleSheet.create({
     searchInput: {
         flex: 1,
         marginLeft: 12,
-        backgroundColor: '#f1f1f1',
         borderRadius: 20,
         paddingHorizontal: 12,
-        paddingVertical: 6,
+        paddingVertical: 10,
+        borderWidth: 1,
+        borderColor: '#92929244',
     },
     sectionHeader: {
         paddingHorizontal: 16,
         paddingVertical: 6,
-        backgroundColor: '#f5f5f5',
+        backgroundColor: '#92929244',
         fontWeight: 'bold',
         fontSize: 16,
     },
@@ -101,7 +111,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         paddingVertical: 10,
         borderBottomWidth: 0.5,
-        borderBottomColor: '#ddd',
+        borderBottomColor: '#92929244',
     },
     word: {
         fontSize: 16,

@@ -60,6 +60,7 @@ export default function CategoryDetail() {
     const router = useRouter();
     const modalBottomRef = useRef<BottomSheetModal>(null);
     const [selectedItem, setSelectedItem] = useState<ListItem | undefined>();
+    const backgroundColor = useThemeColor({}, 'background');
     const handleBack = () => {
         try {
             router.back();
@@ -82,7 +83,7 @@ export default function CategoryDetail() {
     };
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor }}>
             <View style={styles.header}>
                 <BackIcon onPress={handleBack} />
                 <ThemedText type="title" style={styles.headerName} numberOfLines={1}>
