@@ -67,6 +67,7 @@ export default function MailOTP() {
             {codeSent && (
                 <View style={styles.inputWrap}>
                     <Input
+                        label="OTP Code"
                         placeholder="Enter your OPT code"
                         keyboardType="number-pad"
                         value={code}
@@ -76,11 +77,11 @@ export default function MailOTP() {
             )}
 
             {codeSent ? (
-                <Button onPress={handleConfirm} buttonStyle={{ borderRadius: 100 }}>
+                <Button onPress={handleConfirm} buttonStyle={{ borderRadius: 100, marginTop: 12 }}>
                     Confirm Code
                 </Button>
             ) : (
-                <Button onPress={handleSendCode} buttonStyle={{ borderRadius: 100 }}>
+                <Button onPress={handleSendCode} buttonStyle={{ borderRadius: 100, marginTop: 12 }}>
                     Send Code
                 </Button>
             )}
