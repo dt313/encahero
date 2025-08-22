@@ -41,7 +41,8 @@ export default function SettingsScreen() {
                 Alert.alert('Navigate', 'Go to Privacy');
                 break;
             case 'Feedback':
-                Alert.alert('Navigate', 'Go to Feedback');
+                router.push('/feedback');
+
                 break;
             case 'Usage':
                 Alert.alert('Navigate', 'Go to Usage');
@@ -80,6 +81,7 @@ export default function SettingsScreen() {
                         onPress={handlePress}
                         icon={<HugeiconsIcon icon={Key01Icon} size={24} color={textColor} />}
                         label="Password & Security"
+                        isLink
                     />
 
                     <SettingItem
