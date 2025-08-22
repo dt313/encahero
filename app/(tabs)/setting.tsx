@@ -37,12 +37,11 @@ export default function SettingsScreen() {
             case 'Password & Security':
                 router.push('/mail-otp');
                 break;
-            case 'Privacy':
-                Alert.alert('Navigate', 'Go to Privacy');
+            case 'Privacy Policy':
+                router.push('/privacy-policy');
                 break;
             case 'Feedback':
                 router.push('/feedback');
-
                 break;
             case 'Usage':
                 Alert.alert('Navigate', 'Go to Usage');
@@ -82,12 +81,13 @@ export default function SettingsScreen() {
                         icon={<HugeiconsIcon icon={Key01Icon} size={24} color={textColor} />}
                         label="Password & Security"
                         isLink
+                        nonBorder
                     />
 
                     <SettingItem
                         onPress={handlePress}
                         icon={<HugeiconsIcon icon={SecurityLockIcon} size={24} color={textColor} />}
-                        label="Privacy"
+                        label="Privacy Policy"
                         nonBorder
                         isLink
                     />
