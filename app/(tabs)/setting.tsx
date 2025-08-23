@@ -50,10 +50,11 @@ export default function SettingsScreen() {
                 Alert.alert('Navigate', 'Go to Reminders');
                 break;
             case 'Help':
-                Alert.alert('Navigate', 'Go to Help');
+                router.push('/help');
                 break;
             case 'About':
-                Alert.alert('Navigate', 'Go to About');
+                router.push('/about');
+
                 break;
             default:
                 break;
