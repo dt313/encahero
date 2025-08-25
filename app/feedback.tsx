@@ -2,12 +2,10 @@ import React, { useState } from 'react';
 
 import { Alert, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 
-import { useRouter } from 'expo-router';
-
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/ThemedText';
-import BackIcon from '@/components/back-icon';
+import HeaderWithBack from '@/components/header-with-back';
 import ImageUpload from '@/components/image-upload';
 
 import { useThemeColor, useThemeColors } from '@/hooks/useThemeColor';
@@ -15,7 +13,6 @@ import { useThemeColor, useThemeColors } from '@/hooks/useThemeColor';
 export default function FeedbackScreen() {
     const colors = useThemeColors();
     const inputBorderColor = useThemeColor({}, 'inputBorderColor');
-    const router = useRouter();
 
     const [feedback, setFeedback] = useState('');
 
@@ -24,19 +21,11 @@ export default function FeedbackScreen() {
         setFeedback('');
     };
 
-    const handleBack = () => {
-        router.back();
-    };
-
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-                <View style={styles.header}>
-                    <BackIcon onPress={handleBack} />
-                    <ThemedText type="title" style={styles.title}>
-                        Forgot Password
-                    </ThemedText>
-                </View>
+                <HeaderWithBack title="Feedback" />
+
                 <ThemedText style={styles.description}>We’d love to hear your thoughts or suggestions!</ThemedText>
 
                 <TextInput

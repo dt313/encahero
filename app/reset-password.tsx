@@ -2,15 +2,13 @@ import React, { useState } from 'react';
 
 import { Alert, StyleSheet, View } from 'react-native';
 
-import { useRouter } from 'expo-router';
-
 import { LockPasswordIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/ThemedText';
-import BackIcon from '@/components/back-icon';
 import Button from '@/components/button';
+import HeaderWithBack from '@/components/header-with-back';
 import Input from '@/components/input';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
@@ -21,10 +19,6 @@ export default function ResetPassword() {
     const [error, setError] = useState('');
 
     const inputBorderColor = useThemeColor({}, 'inputBorderColor');
-
-    const router = useRouter();
-
-    const handleBack = () => router.back();
 
     const handleReset = () => {
         setError('');
@@ -46,12 +40,7 @@ export default function ResetPassword() {
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.header}>
-                <BackIcon onPress={handleBack} />
-                <ThemedText type="title" style={styles.title}>
-                    Reset Your Password
-                </ThemedText>
-            </View>
+            <HeaderWithBack title="Reset Password" />
 
             <View style={[styles.inputWrap]}>
                 <Input
@@ -90,18 +79,6 @@ export default function ResetPassword() {
 
 const styles = StyleSheet.create({
     container: { flex: 1, padding: 20, backgroundColor: '#fff' },
-    header: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 24,
-    },
-    title: {
-        fontSize: 22,
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        textAlign: 'center',
-    },
 
     inputWrap: {
         marginBottom: 12,

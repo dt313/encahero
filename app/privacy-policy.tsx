@@ -1,8 +1,11 @@
 import React from 'react';
 
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { ThemedText } from '@/components/ThemedText';
+import HeaderWithBack from '@/components/header-with-back';
 
 function PrivacyPolicy() {
     const sections = [
@@ -45,12 +48,13 @@ function PrivacyPolicy() {
 
     return (
         <SafeAreaView style={styles.container}>
+            <HeaderWithBack title="Chính sách" />
             <ScrollView contentContainerStyle={styles.scrollContainer}>
-                <Text style={styles.title}>Chính sách quyền riêng tư (Privacy Policy)</Text>
+                <ThemedText style={styles.title}>Chính sách quyền riêng tư (Privacy Policy)</ThemedText>
                 {sections.map((section, index) => (
                     <View key={index} style={styles.section}>
-                        <Text style={styles.sectionTitle}>{section.title}</Text>
-                        <Text style={styles.text}>{section.content}</Text>
+                        <ThemedText type="defaultSemiBold">{section.title}</ThemedText>
+                        <ThemedText style={styles.text}>{section.content}</ThemedText>
                     </View>
                 ))}
             </ScrollView>
@@ -61,9 +65,9 @@ function PrivacyPolicy() {
 export default PrivacyPolicy;
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#fff' },
-    scrollContainer: { padding: 20 },
-    title: { fontSize: 22, fontWeight: 'bold', marginBottom: 20 },
+    container: { flex: 1, backgroundColor: '#fff', paddingHorizontal: 20 },
+    scrollContainer: { paddingTop: 4 },
+    title: { fontSize: 20, fontWeight: 'bold', marginBottom: 20 },
     section: { marginBottom: 15 },
     sectionTitle: { fontSize: 16, fontWeight: '600', marginBottom: 5 },
     text: { fontSize: 14, lineHeight: 20 },

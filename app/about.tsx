@@ -1,36 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-import { Alert, Linking, StyleSheet, TouchableOpacity, View } from 'react-native';
-
-import { useRouter } from 'expo-router';
+import { Linking, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/ThemedText';
-import BackIcon from '@/components/back-icon';
-
-import { useThemeColor, useThemeColors } from '@/hooks/useThemeColor';
+import HeaderWithBack from '@/components/header-with-back';
 
 export default function About() {
-    const colors = useThemeColors();
-    const inputBorderColor = useThemeColor({}, 'inputBorderColor');
-    const router = useRouter();
-
-    const [feedback, setFeedback] = useState('');
-
     const appVersion = '1.0.0';
     const developer = 'EncoHero Team';
     const githubUrl = 'https://github.com/encohero';
     const websiteUrl = 'https://encohero.com';
-
-    const handleSend = () => {
-        Alert.alert('Success', 'Your feedback has been sent!');
-        setFeedback('');
-    };
-
-    const handleBack = () => {
-        router.back();
-    };
 
     const openLink = (url: string) => {
         Linking.openURL(url).catch((err) => console.error('Cannot open link: ', err));
@@ -38,13 +19,7 @@ export default function About() {
 
     return (
         <SafeAreaView style={styles.container}>
-            {/* Header giữ nguyên */}
-            <View style={styles.header}>
-                <BackIcon onPress={handleBack} />
-                <ThemedText type="title" style={styles.title}>
-                    About
-                </ThemedText>
-            </View>
+            <HeaderWithBack title="About" />
 
             {/* Nội dung About */}
             <ThemedText style={styles.description}>Ứng dụng giúp bạn học tập hiệu quả hơn với flashcards.</ThemedText>

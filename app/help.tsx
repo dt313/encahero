@@ -1,19 +1,15 @@
 import React from 'react';
 
-import { ScrollView, StyleSheet, View } from 'react-native';
-
-import { useRouter } from 'expo-router';
+import { ScrollView, StyleSheet } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Collapsible } from '@/components/Collapsible';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import BackIcon from '@/components/back-icon';
+import HeaderWithBack from '@/components/header-with-back';
 
 export default function HelpScreen() {
-    const router = useRouter();
-
     const faqs = [
         {
             question: 'Ứng dụng này dùng để làm gì?',
@@ -36,12 +32,7 @@ export default function HelpScreen() {
     return (
         <ThemedView style={{ flex: 1 }}>
             <SafeAreaView style={styles.container}>
-                <View style={styles.header}>
-                    <BackIcon onPress={() => router.back()} />
-                    <ThemedText type="title" style={styles.title}>
-                        Help / FAQ
-                    </ThemedText>
-                </View>
+                <HeaderWithBack title="Help / FAQ" />
 
                 <ScrollView>
                     {faqs.map((item, index) => (

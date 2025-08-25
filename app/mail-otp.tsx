@@ -8,9 +8,8 @@ import { Mail01FreeIcons } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { ThemedText } from '@/components/ThemedText';
-import BackIcon from '@/components/back-icon';
 import Button from '@/components/button';
+import HeaderWithBack from '@/components/header-with-back';
 import Input from '@/components/input';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
@@ -38,18 +37,9 @@ export default function MailOTP() {
         router.push('/reset-password');
     };
 
-    const handleBack = () => {
-        router.back();
-    };
-
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.header}>
-                <BackIcon onPress={handleBack} />
-                <ThemedText type="title" style={styles.title}>
-                    Forgot Password
-                </ThemedText>
-            </View>
+            <HeaderWithBack title="Quên mật khẩu" />
 
             {/* Nhập Email */}
             <View style={styles.inputWrap}>
@@ -91,21 +81,6 @@ export default function MailOTP() {
 
 const styles = StyleSheet.create({
     container: { flex: 1, padding: 20, backgroundColor: '#fff' },
-
-    header: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-        marginBottom: 24,
-    },
-
-    title: {
-        fontSize: 22,
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        textAlign: 'center',
-    },
 
     inputWrap: {
         marginBottom: 12,
