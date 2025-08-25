@@ -136,6 +136,7 @@ function AuthScreen({ type }: AuthProps) {
                                 borderWidth: 1.5,
                                 borderColor: '#ceccccff',
                             }}
+                            textStyle={{ color }}
                             leftIcon={<Image style={styles.socialIcon} source={ggIcon} />}
                             onPress={handleGGButton}
                         >
