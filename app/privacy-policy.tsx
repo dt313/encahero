@@ -65,7 +65,7 @@ function PrivacyPolicy() {
 export default PrivacyPolicy;
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#fff', paddingHorizontal: 20 },
+    container: { flex: 1, paddingHorizontal: 20 },
     scrollContainer: { paddingTop: 4 },
     title: { fontSize: 20, fontWeight: 'bold', marginBottom: 20 },
     section: { marginBottom: 15 },
