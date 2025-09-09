@@ -16,7 +16,6 @@ import { ViToEng } from './multiple-choice';
 function TypingCard() {
     const [value, setValue] = useState('');
     const backgroundColor = useThemeColor({}, 'background');
-    const textColor = useThemeColor({}, 'text');
 
     const speak = () => {};
     const showAnswer = () => {};

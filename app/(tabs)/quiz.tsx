@@ -9,7 +9,8 @@ import { Bar } from 'react-native-progress';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/ThemedText';
-import ReviewCard from '@/components/flashcards/review-card';
+import Button from '@/components/button';
+import MultipleChoice from '@/components/flashcards/multiple-choice';
 import LearningList from '@/components/learning-list';
 import ModalBottomSheet from '@/components/modal-bottom-sheet';
 import QuizSetting from '@/components/quiz-setting';
@@ -66,8 +67,15 @@ function Quiz() {
 
             <View style={styles.flashcards}>
                 {/* <TypingCard /> */}
-                <ReviewCard />
-                {/* <MultipleChoice /> */}
+                {/* <ReviewCard /> */}
+                <MultipleChoice />
+            </View>
+
+            <View style={styles.btnBox}>
+                <Button type="link">🧠 Đã ghi nhớ</Button>
+                <Button type="link" textStyle={{ color: textColor }}>
+                    Skip →
+                </Button>
             </View>
 
             <ModalBottomSheet bottomSheetModalRef={leftRef}>
@@ -126,7 +134,14 @@ const styles = StyleSheet.create({
     },
 
     flashcards: {
-        flex: 1,
+        height: 'auto',
+    },
+
+    btnBox: {
+        marginTop: 12,
+        marginHorizontal: 12,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
     },
 });
 

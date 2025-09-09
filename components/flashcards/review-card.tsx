@@ -116,12 +116,12 @@ function ReviewCard() {
 const styles = StyleSheet.create({
     wrapper: {
         width: '100%',
-        flex: 1,
+        height: 500,
     },
 
     questionBox: {
         width: '100%',
-        height: '50%',
+        flex: 1,
         borderRadius: 16,
         padding: 12,
         rowGap: 12,

@@ -21,6 +21,8 @@ import TabSwitcher from '@/components/tab-swicher';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
 
+import { authServices } from '@/services';
+
 import { ThemedView } from './ThemedView';
 
 const TAB_SWITCHER = [
@@ -51,15 +53,30 @@ function AuthScreen({ type }: AuthProps) {
 
     const typeValue = useMemo(() => (type === 'register' ? 'Register' : 'Login'), [type]);
 
-    const handleSubmit = () => {
-        dispatch(
-            addToast({
-                position: 'top',
-                type: 'error',
-                message:
-                    'If you are targeting foldable devices or devices which can change the screen size or app window size, you can use the event listener available in the Dimensions module as shown in the below example.',
-            }),
-        );
+    const handleSubmit = async () => {
+        try {
+            if (tab === 'magic-link') {
+                if (type === 'register') {
+                    const res = await authServices.registerByMagicLink(email);
+                    console.log('res', res);
+                } else if (type === 'login') {
+                    console.log('login');
+
+                    const res = await authServices.loginByMagicLink(email);
+                    console.log('res', res);
+                }
+            }
+        } catch (error) {
+            console.log('error', error);
+        }
+        // dispatch(
+        //     addToast({
+        //         position: 'top',
+        //         type: 'error',
+        //         message:
+        //             'If you are targeting foldable devices or devices which can change the screen size or app window size, you can use the event listener available in the Dimensions module as shown in the below example.',
+        //     }),
+        // );
     };
 
     const handleGGButton = () => {
