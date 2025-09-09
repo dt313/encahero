@@ -7,6 +7,12 @@ import { router } from 'expo-router';
 import { addToast } from '@/store/action/toast-action';
 import { LockPasswordIcon, Mail02Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
+import {
+    GoogleSignin,
+    isErrorWithCode,
+    isSuccessResponse,
+    statusCodes,
+} from '@react-native-google-signin/google-signin';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch } from 'react-redux';
 
@@ -21,9 +27,13 @@ import TabSwitcher from '@/components/tab-swicher';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
 
-import { authServices } from '@/services';
-
 import { ThemedView } from './ThemedView';
+
+GoogleSignin.configure({
+    webClientId: process.env.EXPO_PUBLIC_GG_WEB_CLIENT_ID,
+    iosClientId: process.env.EXPO_PUBLIC_GG_IOS_CLIENT_ID,
+    scopes: ['email', 'profile'],
+});
 
 const TAB_SWITCHER = [
     {
@@ -53,34 +63,50 @@ function AuthScreen({ type }: AuthProps) {
 
     const typeValue = useMemo(() => (type === 'register' ? 'Register' : 'Login'), [type]);
 
-    const handleSubmit = async () => {
-        try {
-            if (tab === 'magic-link') {
-                if (type === 'register') {
-                    const res = await authServices.registerByMagicLink(email);
-                    console.log('res', res);
-                } else if (type === 'login') {
-                    console.log('login');
+    const handleSubmit = async () => {};
 
-                    const res = await authServices.loginByMagicLink(email);
-                    console.log('res', res);
-                }
+    const handleGGButton = async () => {
+        try {
+            await GoogleSignin.hasPlayServices();
+            const response = await GoogleSignin.signIn();
+
+            if (isSuccessResponse(response)) {
+                console.log('Google Sign-In Success:', response);
+                // FOR USING ON BACKEND!
+                // const res = await fetch("http://192.168.100.6:5000/verify-token", {
+                //   method: "POST",
+                //   headers: { "Content-Type": "application/json" },
+                //   body: JSON.stringify({ idToken }),
+                // });
+                // const data = await res.json();
+                // if (data?.success) {
+                //   setLoading(false);
+                //   setUserInfo(data);
+                // }
+                // console.log("Backend response:", data);
+            } else {
+                console.log('Google Sign-In Failed:', response);
             }
         } catch (error) {
-            console.log('error', error);
+            if (isErrorWithCode(error)) {
+                switch (error.code) {
+                    case statusCodes.SIGN_IN_CANCELLED:
+                        console.log('User cancelled the login flow');
+                        break;
+                    case statusCodes.IN_PROGRESS:
+                        console.log('Sign in is in progress already');
+                        break;
+                    case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
+                        console.log('Play services not available or outdated');
+                        break;
+                    default:
+                        console.log('Some other error happened:', error);
+                }
+            } else {
+                console.log('An unexpected error occurred:', error);
+            }
+        } finally {
         }
-        // dispatch(
-        //     addToast({
-        //         position: 'top',
-        //         type: 'error',
-        //         message:
-        //             'If you are targeting foldable devices or devices which can change the screen size or app window size, you can use the event listener available in the Dimensions module as shown in the below example.',
-        //     }),
-        // );
-    };
-
-    const handleGGButton = () => {
-        dispatch(addToast({ position: 'bottom', type: 'success' }));
     };
 
     const handleFbButton = () => {
