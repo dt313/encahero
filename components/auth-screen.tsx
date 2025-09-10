@@ -27,6 +27,8 @@ import TabSwitcher from '@/components/tab-swicher';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
 
+import { authServices } from '@/services';
+
 import { ThemedView } from './ThemedView';
 
 GoogleSignin.configure({
@@ -63,7 +65,15 @@ function AuthScreen({ type }: AuthProps) {
 
     const typeValue = useMemo(() => (type === 'register' ? 'Register' : 'Login'), [type]);
 
-    const handleSubmit = async () => {};
+    const handleSubmit = async () => {
+        try {
+            console.log('Submit');
+            const res = await authServices.test();
+            console.log('Magic Link Response:', res);
+        } catch (error) {
+            console.log('Error during magic link login:', error);
+        }
+    };
 
     const handleGGButton = async () => {
         try {
@@ -71,19 +81,26 @@ function AuthScreen({ type }: AuthProps) {
             const response = await GoogleSignin.signIn();
 
             if (isSuccessResponse(response)) {
-                console.log('Google Sign-In Success:', response);
-                // FOR USING ON BACKEND!
-                // const res = await fetch("http://192.168.100.6:5000/verify-token", {
-                //   method: "POST",
-                //   headers: { "Content-Type": "application/json" },
-                //   body: JSON.stringify({ idToken }),
-                // });
-                // const data = await res.json();
-                // if (data?.success) {
-                //   setLoading(false);
-                //   setUserInfo(data);
-                // }
-                // console.log("Backend response:", data);
+                const idToken = response.data.idToken;
+                let res = null;
+                if (!idToken) {
+                    console.log('No idToken found in Google Sign-In response');
+                    return;
+                }
+
+                switch (type) {
+                    case 'login':
+                        res = await authServices.ggLogin(idToken);
+                        break;
+
+                    case 'register':
+                        res = await authServices.ggRegister(idToken);
+                        break;
+                    default:
+                        break;
+                }
+
+                console.log('Google Auth Success : ', res);
             } else {
                 console.log('Google Sign-In Failed:', response);
             }
