@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+import { storage } from '@/utils';
+
 const instance = axios.create({
     baseURL: 'http://192.168.1.103:3000/api/v1',
     headers: {
@@ -10,6 +12,11 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
     async function (config) {
+        const token = await storage.getAccessToken();
+
+        if (token && config.headers) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
         return config;
     },
     function (error) {

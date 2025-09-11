@@ -38,24 +38,32 @@ export const initializeAuth = () => async (dispatch: Dispatch<ReduxActionType>) 
     }
 };
 
-export const socialLoginAsync = (idToken: string) => async (dispatch: Dispatch) => {
-    try {
-        const res = await authServices.ggLogin(idToken);
-        const { accessToken, refreshToken, user } = res.data;
+export const socialAuthAsync =
+    (idToken: string, isRegister: boolean = false) =>
+    async (dispatch: Dispatch) => {
+        let res = null;
+        try {
+            if (isRegister) {
+                res = await authServices.ggRegister(idToken);
+            } else {
+                res = await authServices.ggLogin(idToken);
+            }
 
-        if (!accessToken || !refreshToken || !user) {
-            throw new Error('Invalid login response');
+            const { accessToken, refreshToken, user } = res.data;
+
+            if (!accessToken || !refreshToken || !user) {
+                throw new Error('Invalid login response');
+            }
+
+            await storage.setAccessToken(accessToken);
+            await storage.setRefreshToken(refreshToken);
+            await storage.setUser(user);
+
+            dispatch(login(user)); // cập nhật Redux state
+        } catch (error: any) {
+            throw error;
         }
-
-        await storage.setAccessToken(accessToken);
-        await storage.setRefreshToken(refreshToken);
-        await storage.setUser(user);
-
-        dispatch(login(user)); // cập nhật Redux state
-    } catch (error: any) {
-        throw error;
-    }
-};
+    };
 
 export const logoutAsync = () => async (dispatch: Dispatch) => {
     try {

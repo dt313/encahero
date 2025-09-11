@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 
 import GoogleSignin from '@/config/gg-signin';
 import { AppDispatch } from '@/store';
-import { socialLoginAsync } from '@/store/action/auth-action';
+import { socialAuthAsync } from '@/store/action/auth-action';
 import { isSuccessResponse } from '@react-native-google-signin/google-signin';
 import { useDispatch } from 'react-redux';
 
@@ -27,11 +27,10 @@ export default function Login() {
             if (!idToken) {
                 throw new Error('No idToken found in Google Sign-In response');
             }
-            await dispatch(socialLoginAsync(idToken));
+            await dispatch(socialAuthAsync(idToken));
             router.replace('/');
         } catch (error) {
             showErrorToast(error);
-        } finally {
         }
     };
     return <AuthScreen type={'login'} onPressGGLogin={handlePressGGLogin} />;
