@@ -1,0 +1,69 @@
+// src/utils/tokenStorage.ts
+import * as SecureStore from 'expo-secure-store';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+// ================= KEYS =================
+const ACCESS_TOKEN_KEY = 'access_token';
+const REFRESH_TOKEN_KEY = 'refresh_token';
+const USER_OBJECT = 'user';
+
+// ================= ACCESS TOKEN =================
+export async function setAccessToken(token: string) {
+    await AsyncStorage.setItem(ACCESS_TOKEN_KEY, token);
+}
+
+export async function getAccessToken(): Promise<string | null> {
+    return await AsyncStorage.getItem(ACCESS_TOKEN_KEY);
+}
+
+export async function clearAccessToken() {
+    await AsyncStorage.removeItem(ACCESS_TOKEN_KEY);
+}
+
+// ================= REFRESH TOKEN =================
+export async function setRefreshToken(token: string) {
+    await SecureStore.setItemAsync(REFRESH_TOKEN_KEY, token);
+}
+
+export async function getRefreshToken(): Promise<string | null> {
+    return await SecureStore.getItemAsync(REFRESH_TOKEN_KEY);
+}
+
+export async function clearRefreshToken() {
+    await SecureStore.deleteItemAsync(REFRESH_TOKEN_KEY);
+}
+
+// user
+export async function setUser(user: object) {
+    try {
+        await AsyncStorage.setItem(USER_OBJECT, JSON.stringify(user));
+    } catch (error) {
+        console.error('Error saving user:', error);
+    }
+}
+
+// Lấy user object
+export async function getUser(): Promise<object | null> {
+    try {
+        const userString = await AsyncStorage.getItem(USER_OBJECT);
+        return userString ? JSON.parse(userString) : null;
+    } catch (error) {
+        console.error('Error reading user:', error);
+        return null;
+    }
+}
+
+export async function clearUser() {
+    try {
+        await AsyncStorage.removeItem(USER_OBJECT);
+    } catch (error) {
+        console.error('Error clearing user:', error);
+    }
+}
+
+// ================= CLEAR ALL =================
+export async function clearAllTokens() {
+    await clearAccessToken();
+    await clearRefreshToken();
+}

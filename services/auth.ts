@@ -3,31 +3,26 @@ import axios from 'axios';
 
 export const loginByMagicLink = async (email: string) => {
     try {
-        return instance.post('/auth/magic-login-link', { email });
+        const res = await instance.post('/auth/magic-login-link', { email });
+        return res;
     } catch (error: any) {
-        console.log('error loginByMagicLink', error.message);
-        return error;
+        throw error; // lỗi khác (network, timeout, ...)
     }
 };
 
 export const ggLogin = async (token: string) => {
     try {
-        const res = await instance.post(`/auth/google-login`, { token });
-        return res.data;
+        return await instance.post(`/auth/google-login`, { token });
     } catch (error: any) {
-        console.log('error ggLogin', error.message);
-        return error;
+        throw error;
     }
 };
 
 export const ggRegister = async (token: string) => {
     try {
-        const res = await instance.post(`/auth/google-register`, { token });
-        console.log('Register ; ', res);
-        return res.data;
+        return await instance.post(`/auth/google-register`, { token });
     } catch (error: any) {
-        console.log('error ggRegister', error.message);
-        return error;
+        throw error;
     }
 };
 

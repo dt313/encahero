@@ -1,10 +1,12 @@
 import ReduxActionType from '@/types/redux-action-type';
 
+import { TOAST_DURATION } from '@/constants';
+
 import { generateRandomId } from '@/utils';
 
 export const ADD_TOAST = 'ADD_TOAST';
 export const HIDE_TOAST = 'HIDE_TOAST';
-const DURATION = 3000;
+
 export const addToast = (payload: object): ReduxActionType => {
     return {
         type: ADD_TOAST,
@@ -12,8 +14,8 @@ export const addToast = (payload: object): ReduxActionType => {
             id: generateRandomId(),
             type: 'info',
             title: 'info',
-            message: 'Hello World',
-            duration: DURATION,
+            message: 'Toast',
+            duration: TOAST_DURATION,
             position: 'bottom',
             ...payload,
         },

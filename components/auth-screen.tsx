@@ -7,12 +7,7 @@ import { router } from 'expo-router';
 import { addToast } from '@/store/action/toast-action';
 import { LockPasswordIcon, Mail02Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
-import {
-    GoogleSignin,
-    isErrorWithCode,
-    isSuccessResponse,
-    statusCodes,
-} from '@react-native-google-signin/google-signin';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch } from 'react-redux';
 
@@ -50,9 +45,10 @@ const TAB_SWITCHER = [
 
 type AuthProps = {
     type: 'login' | 'register';
+    onPressGGLogin: () => void;
 };
 
-function AuthScreen({ type }: AuthProps) {
+function AuthScreen({ type, onPressGGLogin }: AuthProps) {
     const [tab, setTab] = useState<string>(TAB_SWITCHER[0].value);
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
@@ -68,61 +64,10 @@ function AuthScreen({ type }: AuthProps) {
     const handleSubmit = async () => {
         try {
             console.log('Submit');
-            const res = await authServices.test();
+            const res = await authServices.loginByMagicLink('abc@gmail.com');
             console.log('Magic Link Response:', res);
         } catch (error) {
             console.log('Error during magic link login:', error);
-        }
-    };
-
-    const handleGGButton = async () => {
-        try {
-            await GoogleSignin.hasPlayServices();
-            const response = await GoogleSignin.signIn();
-
-            if (isSuccessResponse(response)) {
-                const idToken = response.data.idToken;
-                let res = null;
-                if (!idToken) {
-                    console.log('No idToken found in Google Sign-In response');
-                    return;
-                }
-
-                switch (type) {
-                    case 'login':
-                        res = await authServices.ggLogin(idToken);
-                        break;
-
-                    case 'register':
-                        res = await authServices.ggRegister(idToken);
-                        break;
-                    default:
-                        break;
-                }
-
-                console.log('Google Auth Success : ', res);
-            } else {
-                console.log('Google Sign-In Failed:', response);
-            }
-        } catch (error) {
-            if (isErrorWithCode(error)) {
-                switch (error.code) {
-                    case statusCodes.SIGN_IN_CANCELLED:
-                        console.log('User cancelled the login flow');
-                        break;
-                    case statusCodes.IN_PROGRESS:
-                        console.log('Sign in is in progress already');
-                        break;
-                    case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
-                        console.log('Play services not available or outdated');
-                        break;
-                    default:
-                        console.log('Some other error happened:', error);
-                }
-            } else {
-                console.log('An unexpected error occurred:', error);
-            }
-        } finally {
         }
     };
 
@@ -198,7 +143,7 @@ function AuthScreen({ type }: AuthProps) {
                             }}
                             textStyle={{ color }}
                             leftIcon={<Image style={styles.socialIcon} source={ggIcon} />}
-                            onPress={handleGGButton}
+                            onPress={onPressGGLogin}
                         >
                             Continue with Google
                         </Button>
@@ -217,8 +162,8 @@ function AuthScreen({ type }: AuthProps) {
                     </View>
 
                     {/* Register Link */}
-                    <View style={styles.registerContainer}>
-                        <Text style={styles.registerText}>
+                    <View style={styles.footerContainer}>
+                        <Text style={styles.footerText}>
                             {type === 'register' ? 'Are you already a member? ' : 'Not a Collect member yet? '}
                         </Text>
                         <Button
@@ -291,17 +236,18 @@ const styles = StyleSheet.create({
         marginRight: 12,
     },
 
-    registerContainer: {
+    footerContainer: {
         position: 'absolute',
         bottom: 32,
         left: 0,
         right: 0,
         height: 40, // hoặc tuỳ chỉnh
+        marginBottom: 32,
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'row',
     },
-    registerText: {
+    footerText: {
         fontSize: 16,
         fontWeight: 500,
         letterSpacing: 0.3,

@@ -4,6 +4,8 @@ import { Alert, Image, ScrollView, StyleSheet, Switch, TouchableOpacity, View } 
 
 import { useRouter } from 'expo-router';
 
+import { AppDispatch } from '@/store';
+import { logoutAsync } from '@/store/action/auth-action';
 import {
     ArrowRight01Icon,
     Clock01Icon,
@@ -17,6 +19,7 @@ import {
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useDispatch } from 'react-redux';
 
 import { ThemedText } from '@/components/ThemedText';
 import Button from '@/components/button';
@@ -30,7 +33,12 @@ export default function SettingsScreen() {
     const textColor = useThemeColor({}, 'text');
     const backgroundColor = useThemeColor({}, 'background');
     const router = useRouter();
+    const dispatch = useDispatch<AppDispatch>();
 
+    const handleLogout = () => {
+        dispatch(logoutAsync());
+        router.replace('/login');
+    };
     // ✅ Common handler for items
     const handlePress = useCallback((label: string) => {
         switch (label) {
@@ -144,7 +152,7 @@ export default function SettingsScreen() {
                 </View>
 
                 {/* Logout */}
-                <Button type="dangerous" buttonStyle={{ margin: 20 }}>
+                <Button type="dangerous" buttonStyle={{ margin: 20 }} onPress={handleLogout}>
                     Logout
                 </Button>
             </ScrollView>
