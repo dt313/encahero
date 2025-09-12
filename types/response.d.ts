@@ -1,7 +1,7 @@
 type Response = {
-    status: number
-    message: string
-    data?: any
-}
+    status: number;
+    message: string;
+    data?: any;
+};
 
-export default Response
+export default Response;
