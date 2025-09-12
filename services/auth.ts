@@ -1,8 +1,6 @@
 import instance from '@/config/axios';
 import axios from 'axios';
 
-import { storage } from '@/utils';
-
 export const loginByMagicLink = async (email: string) => {
     try {
         const res = await instance.post('/auth/magic-login-link', { email });
@@ -12,17 +10,17 @@ export const loginByMagicLink = async (email: string) => {
     }
 };
 
-export const ggLogin = async (token: string) => {
+export const ggLogin = async (token: string, deviceId: string) => {
     try {
-        return await instance.post(`/auth/google-login`, { token });
+        return await instance.post(`/auth/google-login`, { token, deviceId });
     } catch (error: any) {
         throw error;
     }
 };
 
-export const ggRegister = async (token: string) => {
+export const ggRegister = async (token: string, deviceId: string) => {
     try {
-        return await instance.post(`/auth/google-register`, { token });
+        return await instance.post(`/auth/google-register`, { token, deviceId });
     } catch (error: any) {
         throw error;
     }
@@ -36,21 +34,6 @@ export const test = async () => {
     } catch (error: any) {
         console.log('error test', error.message);
         return error;
-    }
-};
-
-export const refreshToken = async () => {
-    try {
-        const token = await storage.getRefreshToken();
-        const res = await instance.post(`/auth/refresh-token`, { token });
-        const { accessToken } = res.data;
-        if (!accessToken) {
-            throw new Error('Failed to get access token from refresh');
-        }
-        storage.setAccessToken(accessToken);
-        return accessToken;
-    } catch (error) {
-        throw error;
     }
 };
 

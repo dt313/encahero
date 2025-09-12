@@ -3,7 +3,7 @@ import { Dispatch } from '@reduxjs/toolkit';
 
 import { TOAST_TYPE } from '@/constants';
 
-import { storage } from '@/utils';
+import { getDeviceFingerprint, storage } from '@/utils';
 
 import { authServices } from '@/services';
 
@@ -43,10 +43,12 @@ export const socialAuthAsync =
     async (dispatch: Dispatch) => {
         let res = null;
         try {
+            const deviceFinger = getDeviceFingerprint();
+            console.log({ deviceFinger });
             if (isRegister) {
-                res = await authServices.ggRegister(idToken);
+                res = await authServices.ggRegister(idToken, deviceFinger);
             } else {
-                res = await authServices.ggLogin(idToken);
+                res = await authServices.ggLogin(idToken, deviceFinger);
             }
 
             const { accessToken, refreshToken, user } = res.data;
@@ -60,6 +62,7 @@ export const socialAuthAsync =
                 storage.setRefreshToken(refreshToken),
                 storage.setUser(user),
             ]);
+
             dispatch(login(user)); // cập nhật Redux state
         } catch (error: any) {
             throw error;

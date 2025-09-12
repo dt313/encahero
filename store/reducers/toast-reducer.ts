@@ -15,7 +15,7 @@ const toast: ToastType = {
 const initialState: {
     list: ToastType[];
 } = {
-    list: [toast],
+    list: [],
 };
 function toastReducer(state = initialState, action: ReduxActionType) {
     switch (action.type) {
