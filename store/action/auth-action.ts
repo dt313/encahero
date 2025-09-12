@@ -55,10 +55,11 @@ export const socialAuthAsync =
                 throw new Error('Invalid login response');
             }
 
-            await storage.setAccessToken(accessToken);
-            await storage.setRefreshToken(refreshToken);
-            await storage.setUser(user);
-
+            await Promise.all([
+                storage.setAccessToken(accessToken),
+                storage.setRefreshToken(refreshToken),
+                storage.setUser(user),
+            ]);
             dispatch(login(user)); // cập nhật Redux state
         } catch (error: any) {
             throw error;
@@ -68,10 +69,9 @@ export const socialAuthAsync =
 export const logoutAsync = () => async (dispatch: Dispatch) => {
     try {
         // call api logout
-
-        // remove all token and data
-        await storage.clearAllTokens();
-        await storage.clearUser();
+        const accessToken = await storage.getAccessToken();
+        await authServices.logout(accessToken as string | undefined);
+        await Promise.all([storage.clearAllTokens(), storage.clearUser()]);
         dispatch(logout());
     } catch (error: any) {
         dispatch(addToast({ type: TOAST_TYPE.ERROR, message: error }));

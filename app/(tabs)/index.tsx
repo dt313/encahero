@@ -1,5 +1,3 @@
-import { useEffect } from 'react';
-
 import { Image, Platform, ScrollView, StyleSheet, View } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -10,8 +8,6 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import Charts from '@/components/charts';
 import GoalList from '@/components/goal-list';
-
-import { userService } from '@/services';
 
 const HEADER_HEIGHT = 60;
 const list = [
@@ -53,18 +49,18 @@ const list = [
 ];
 
 function Home() {
-    useEffect(() => {
-        const fetchUsers = async () => {
-            try {
-                const res = await userService.getUsers();
-                console.log(res);
-            } catch (error) {
-                console.log(error);
-            }
-        };
+    // useEffect(() => {
+    //     const fetchUsers = async () => {
+    //         try {
+    //             const res = await userService.getUsers();
+    //             console.log(res);
+    //         } catch (error) {
+    //             console.log(error);
+    //         }
+    //     };
 
-        fetchUsers();
-    }, []);
+    //     fetchUsers();
+    // }, []);
 
     return (
         <ScrollView>

@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
+
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { Stack, useNavigationContainerRef } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
@@ -12,27 +14,42 @@ import ToastContainer from '@/components/toast-container';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 
+import { navigationRef } from '@/utils/navigate';
+
+if (__DEV__) {
+    require('../ReactotronConfig'); // hoặc đường dẫn chính xác tới ReactotronConfig.js
+}
+
 export default function RootLayout() {
     const colorScheme = useColorScheme();
     const [loaded] = useFonts({
         SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     });
 
+    const expoNavRef = useNavigationContainerRef();
+
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            if (expoNavRef.isReady()) {
+                (navigationRef as any).current = expoNavRef.current;
+                console.log('Navigation is ready ✅');
+            }
+        }, 50);
+
+        return () => clearTimeout(timeout);
+    }, [expoNavRef]);
+
     if (!loaded) {
-        // Async font loading only occurs in development.
         return null;
     }
 
-    // FIXME :
-    // TODO :
-    // implement it
     return (
         <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
             <StoreProvider>
                 <GestureHandlerRootView>
                     <ToastContainer />
                     <BottomSheetModalProvider>
-                        <Stack>
+                        <Stack ref={expoNavRef}>
                             <Stack.Screen name="index" options={{ headerShown: false }} />
                             <Stack.Screen name="category" options={{ headerShown: false }} />
                             <Stack.Screen name="match" options={{ headerShown: false }} />

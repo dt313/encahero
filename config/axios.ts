@@ -1,9 +1,11 @@
+import { router } from 'expo-router';
+
 import axios from 'axios';
 
 import { storage } from '@/utils';
 
 const instance = axios.create({
-    baseURL: 'http://192.168.1.103:3000/api/v1',
+    baseURL: process.env.EXPO_PUBLIC_API_URL,
     headers: {
         'Content-Type': 'application/json',
     },
@@ -29,17 +31,47 @@ instance.interceptors.response.use(
     function (response) {
         return response.data;
     },
-    function (error: any) {
+    async function (error: any) {
         console.log('--- Axios response error --- ');
-        console.log(error.response.data);
 
         let messageError = 'Internal Server Error';
         let statusCode = 500;
         let status = 'INTERNAL_SERVER_ERROR';
+        const originalRequest = error.config;
         if (error.response && error.response.data) {
             messageError = error.response.data.message;
             statusCode = error.response.data.statusCode;
             status = error.response.data.status;
+        }
+
+        if (status === 'UNAUTHORIZED') {
+            // handle token expired
+            if (messageError === 'Access token expired') {
+                if (!originalRequest.retry) {
+                    originalRequest._retry = true;
+                    console.log('------- refresh ------- ');
+                    try {
+                        const accessToken = await refreshToken();
+                        error.config.headers.Authorization = `Bearer ${accessToken}`;
+                        return axios(error.config);
+                    } catch (error) {
+                        console.log('Refresh token', error);
+                    }
+                }
+            } else {
+                try {
+                    await Promise.all([
+                        storage.clearAllTokens(),
+                        storage.clearUser(),
+                        instance.get('/auth/logout').catch(() => {}), // bỏ qua lỗi logout
+                    ]);
+
+                    router.replace('/login');
+                } catch (error) {
+                    console.error('Logout error', error);
+                    router.replace('/login'); // vẫn điều hướng nếu có lỗi
+                }
+            }
         }
 
         // Lỗi network hoặc unexpected → reject promise
@@ -50,5 +82,20 @@ instance.interceptors.response.use(
         });
     },
 );
+
+const refreshToken = async () => {
+    try {
+        const token = await storage.getRefreshToken();
+        const res = await instance.post(`/auth/refresh-token`, { token });
+        const { accessToken } = res.data;
+        if (!accessToken) {
+            throw new Error('Failed to get access token from refresh');
+        }
+        storage.setAccessToken(accessToken);
+        return accessToken;
+    } catch (error) {
+        throw error;
+    }
+};
 
 export default instance;

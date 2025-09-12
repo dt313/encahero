@@ -12,7 +12,6 @@ import { ThemedText } from '@/components/ThemedText';
 function IndexScreen() {
     const { isLoggedIn } = useSelector((state: RootState) => state.auth);
     const [ready, setReady] = useState(false);
-    console.log('APP ', { isLoggedIn });
     const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {

@@ -1,6 +1,8 @@
 import instance from '@/config/axios';
 import axios from 'axios';
 
+import { storage } from '@/utils';
+
 export const loginByMagicLink = async (email: string) => {
     try {
         const res = await instance.post('/auth/magic-login-link', { email });
@@ -34,5 +36,28 @@ export const test = async () => {
     } catch (error: any) {
         console.log('error test', error.message);
         return error;
+    }
+};
+
+export const refreshToken = async () => {
+    try {
+        const token = await storage.getRefreshToken();
+        const res = await instance.post(`/auth/refresh-token`, { token });
+        const { accessToken } = res.data;
+        if (!accessToken) {
+            throw new Error('Failed to get access token from refresh');
+        }
+        storage.setAccessToken(accessToken);
+        return accessToken;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const logout = async (token: string | undefined) => {
+    try {
+        return await instance.post(`/auth/logout`, { token });
+    } catch (error: any) {
+        throw error;
     }
 };

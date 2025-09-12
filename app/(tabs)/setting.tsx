@@ -26,6 +26,8 @@ import Button from '@/components/button';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
 
+import { userService } from '@/services';
+
 export default function SettingsScreen() {
     const [darkMode, setDarkMode] = useState(false);
     const [pushNotif, setPushNotif] = useState(true);
@@ -39,11 +41,16 @@ export default function SettingsScreen() {
         dispatch(logoutAsync());
         router.replace('/login');
     };
+
+    const handleTest = async () => {
+        await userService.getUsers();
+    };
     // ✅ Common handler for items
     const handlePress = useCallback((label: string) => {
         switch (label) {
             case 'Password & Security':
-                router.push('/mail-otp');
+                // router.push('/mail-otp');
+                handleTest();
                 break;
             case 'Privacy Policy':
                 router.push('/privacy-policy');
