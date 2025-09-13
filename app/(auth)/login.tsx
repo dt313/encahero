@@ -33,5 +33,20 @@ export default function Login() {
             showErrorToast(error);
         }
     };
-    return <AuthScreen type={'login'} onPressGGLogin={handlePressGGLogin} />;
+
+    const handleSubmit = async (email: string, password: string) => {
+        console.log('normal login : ', { email, password });
+    };
+
+    const handleSendMagicLink = async (email: string) => {
+        console.log('magic-link : ', { email });
+    };
+    return (
+        <AuthScreen
+            type={'login'}
+            onPressGGLogin={handlePressGGLogin}
+            onSubmit={handleSubmit}
+            onSend={handleSendMagicLink}
+        />
+    );
 }

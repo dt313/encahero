@@ -44,7 +44,6 @@ export const socialAuthAsync =
         let res = null;
         try {
             const deviceFinger = getDeviceFingerprint();
-            console.log({ deviceFinger });
             if (isRegister) {
                 res = await authServices.ggRegister(idToken, deviceFinger);
             } else {

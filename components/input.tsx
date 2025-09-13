@@ -15,9 +15,18 @@ type InputProps = {
     onChangeText: (text: string) => void;
     isPassword?: boolean;
     leftIcon?: ReactNode;
+    errorMessage?: string | undefined;
 } & TextInputProps;
 
-function Input({ label, leftIcon = false, value, onChangeText, isPassword = false, ...rest }: InputProps) {
+function Input({
+    label,
+    leftIcon = false,
+    value,
+    errorMessage,
+    onChangeText,
+    isPassword = false,
+    ...rest
+}: InputProps) {
     const colors = useThemeColors();
     const [showPassword, setShowPassword] = useState(false);
     const inputBorderColor = useThemeColor({}, 'inputBorderColor');
@@ -51,6 +60,8 @@ function Input({ label, leftIcon = false, value, onChangeText, isPassword = fals
                     </TouchableOpacity>
                 )}
             </View>
+
+            {errorMessage && <ThemedText style={{ color: 'red' }}>{errorMessage}</ThemedText>}
         </View>
     );
 }
@@ -61,7 +72,7 @@ const styles = StyleSheet.create({
     },
     label: {
         marginBottom: 4,
-        fontWeight: '500',
+        fontWeight: 500,
         color: '#8b8b8bff',
         letterSpacing: 0.3,
         fontSize: 14,

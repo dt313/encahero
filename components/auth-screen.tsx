@@ -8,6 +8,7 @@ import { addToast } from '@/store/action/toast-action';
 import { LockPasswordIcon, Mail02Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { Controller, useForm } from 'react-hook-form';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch } from 'react-redux';
 
@@ -21,8 +22,6 @@ import Input from '@/components/input';
 import TabSwitcher from '@/components/tab-swicher';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
-
-import { authServices } from '@/services';
 
 import { ThemedView } from './ThemedView';
 
@@ -43,15 +42,31 @@ const TAB_SWITCHER = [
     },
 ];
 
+type FormValues = {
+    email: string;
+    password: string;
+};
+
 type AuthProps = {
     type: 'login' | 'register';
     onPressGGLogin: () => void;
+    onSend: (email: string) => void;
+    onSubmit: (email: string, password: string) => void;
 };
 
-function AuthScreen({ type, onPressGGLogin }: AuthProps) {
+function AuthScreen({ type, onPressGGLogin, onSubmit, onSend }: AuthProps) {
     const [tab, setTab] = useState<string>(TAB_SWITCHER[0].value);
-    const [email, setEmail] = useState<string>('');
-    const [password, setPassword] = useState<string>('');
+    const {
+        control,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<FormValues>({
+        defaultValues: {
+            email: '',
+            password: '',
+        },
+        mode: 'onChange', // validate realtime
+    });
 
     const dispatch = useDispatch();
 
@@ -61,11 +76,16 @@ function AuthScreen({ type, onPressGGLogin }: AuthProps) {
 
     const typeValue = useMemo(() => (type === 'register' ? 'Register' : 'Login'), [type]);
 
-    const handleSubmit = async () => {
+    const submit = async (data: FormValues) => {
         try {
-            console.log('Submit');
-            const res = await authServices.loginByMagicLink('abc@gmail.com');
-            console.log('Magic Link Response:', res);
+            // TODO: create constant for this
+            if (tab === 'magic-link') {
+                onSend(data.email);
+
+                // onSend(email);
+            } else {
+                onSubmit(data.email, data.password);
+            }
         } catch (error) {
             console.log('Error during magic link login:', error);
         }
@@ -104,27 +124,60 @@ function AuthScreen({ type, onPressGGLogin }: AuthProps) {
                     {/* input  */}
 
                     <View style={styles.inputContainer}>
-                        <Input
-                            leftIcon={<HugeiconsIcon icon={Mail02Icon} color={inputBorderColor} size={24} />}
-                            label="Email"
-                            value={email}
-                            placeholder="example@gmail.com"
-                            onChangeText={setEmail}
+                        <Controller
+                            control={control}
+                            name="email"
+                            rules={{
+                                required: 'Email is required',
+                                pattern: {
+                                    value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                                    message: 'Invalid email format',
+                                },
+                            }}
+                            render={({ field: { onChange, onBlur, value } }) => (
+                                <Input
+                                    leftIcon={<HugeiconsIcon icon={Mail02Icon} color={inputBorderColor} size={24} />}
+                                    label="Email"
+                                    value={value}
+                                    placeholder="example@gmail.com"
+                                    onChangeText={onChange}
+                                    onBlur={onBlur}
+                                    errorMessage={errors.email?.message}
+                                />
+                            )}
                         />
+
                         {tab === 'password' && (
-                            <Input
-                                leftIcon={<HugeiconsIcon icon={LockPasswordIcon} color={inputBorderColor} size={24} />}
-                                label="Password"
-                                value={password}
-                                placeholder="Abcd123@"
-                                onChangeText={setPassword}
-                                isPassword
+                            <Controller
+                                control={control}
+                                name="password"
+                                rules={{
+                                    required: 'Password is required',
+                                    minLength: {
+                                        value: 6,
+                                        message: 'Password must be at least 6 characters',
+                                    },
+                                }}
+                                render={({ field: { onChange, onBlur, value } }) => (
+                                    <Input
+                                        leftIcon={
+                                            <HugeiconsIcon icon={LockPasswordIcon} color={inputBorderColor} size={24} />
+                                        }
+                                        label="Password"
+                                        value={value}
+                                        placeholder="Abcd123@"
+                                        onChangeText={onChange}
+                                        onBlur={onBlur}
+                                        isPassword
+                                        errorMessage={errors.password?.message}
+                                    />
+                                )}
                             />
                         )}
                     </View>
 
                     {/* button */}
-                    <Button onPress={handleSubmit}>{tab === 'password' ? typeValue : 'Send'}</Button>
+                    <Button onPress={handleSubmit(submit)}>{tab === 'password' ? typeValue : 'Send'}</Button>
 
                     {/* Divider */}
                     <View style={styles.dividerContainer}>
@@ -227,7 +280,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: '#8E8E93',
         marginHorizontal: 16,
-        fontWeight: '500',
+        fontWeight: 500,
     },
 
     socialIcon: {

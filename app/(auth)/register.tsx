@@ -34,5 +34,20 @@ export default function Register() {
             showErrorToast(error);
         }
     };
-    return <AuthScreen type={'register'} onPressGGLogin={handlePressGGRegister} />;
+
+    const handleSubmit = async (email: string, password: string) => {
+        console.log('normal login : ', { email, password });
+    };
+
+    const handleSendMagicLink = async (email: string) => {
+        console.log('magic-link : ', { email });
+    };
+    return (
+        <AuthScreen
+            type={'register'}
+            onPressGGLogin={handlePressGGRegister}
+            onSubmit={handleSubmit}
+            onSend={handleSendMagicLink}
+        />
+    );
 }
