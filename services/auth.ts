@@ -10,6 +10,22 @@ export const loginByMagicLink = async (email: string) => {
     }
 };
 
+export const epLogin = async (email: string, password: string, deviceId: string) => {
+    try {
+        return await instance.post(`/auth/login`, { email, password, deviceId });
+    } catch (error: any) {
+        throw error;
+    }
+};
+
+export const epRegister = async (email: string, password: string, deviceId: string) => {
+    try {
+        return await instance.post(`/auth/register`, { email, password, deviceId });
+    } catch (error: any) {
+        throw error;
+    }
+};
+
 export const ggLogin = async (token: string, deviceId: string) => {
     try {
         return await instance.post(`/auth/google-login`, { token, deviceId });

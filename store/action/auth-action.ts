@@ -68,6 +68,37 @@ export const socialAuthAsync =
         }
     };
 
+export const epAuth =
+    (email: string, password: string, isRegister: boolean = false) =>
+    async (dispatch: Dispatch) => {
+        let res = null;
+        try {
+            const deviceFinger = getDeviceFingerprint();
+
+            if (isRegister) {
+                res = await authServices.epRegister(email, password, deviceFinger);
+            } else {
+                res = await authServices.epLogin(email, password, deviceFinger);
+            }
+
+            const { accessToken, refreshToken, user } = res.data;
+
+            if (!accessToken || !refreshToken || !user) {
+                throw new Error('Invalid login response');
+            }
+
+            await Promise.all([
+                storage.setAccessToken(accessToken),
+                storage.setRefreshToken(refreshToken),
+                storage.setUser(user),
+            ]);
+
+            dispatch(login(user)); // cập nhật Redux state
+        } catch (error: any) {
+            throw error;
+        }
+    };
+
 export const logoutAsync = () => async (dispatch: Dispatch) => {
     try {
         // call api logout

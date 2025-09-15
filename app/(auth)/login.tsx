@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 
 import GoogleSignin from '@/config/gg-signin';
 import { AppDispatch } from '@/store';
-import { socialAuthAsync } from '@/store/action/auth-action';
+import { epAuth, socialAuthAsync } from '@/store/action/auth-action';
 import { isSuccessResponse } from '@react-native-google-signin/google-signin';
 import { useDispatch } from 'react-redux';
 
@@ -35,7 +35,12 @@ export default function Login() {
     };
 
     const handleSubmit = async (email: string, password: string) => {
-        console.log('normal login : ', { email, password });
+        try {
+            dispatch(epAuth(email, password));
+            router.replace('/');
+        } catch (error) {
+            showErrorToast(error);
+        }
     };
 
     const handleSendMagicLink = async (email: string) => {
