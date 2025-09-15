@@ -2,13 +2,15 @@ import { useRouter } from 'expo-router';
 
 import GoogleSignin from '@/config/gg-signin';
 import { AppDispatch } from '@/store';
-import { socialAuthAsync } from '@/store/action/auth-action';
+import { epAuth, socialAuthAsync } from '@/store/action/auth-action';
 import { isSuccessResponse } from '@react-native-google-signin/google-signin';
 import { useDispatch } from 'react-redux';
 
 import AuthScreen from '@/components/auth-screen';
 
 import useToast from '@/hooks/useToast';
+
+import { mailService } from '@/services';
 
 export default function Register() {
     const { showErrorToast } = useToast();
@@ -36,11 +38,21 @@ export default function Register() {
     };
 
     const handleSubmit = async (email: string, password: string) => {
-        console.log('normal login : ', { email, password });
+        try {
+            dispatch(epAuth(email, password));
+            router.replace('/');
+        } catch (error) {
+            showErrorToast(error);
+        }
     };
 
     const handleSendMagicLink = async (email: string) => {
-        console.log('magic-link : ', { email });
+        try {
+            const res = await mailService.sendRegisterMagicLink(email);
+            console.log({ res });
+        } catch (error) {
+            showErrorToast(error);
+        }
     };
     return (
         <AuthScreen

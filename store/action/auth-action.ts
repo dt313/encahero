@@ -99,6 +99,31 @@ export const epAuth =
         }
     };
 
+export const magicAuth = (token: string) => async (dispatch: Dispatch) => {
+    let res = null;
+    try {
+        const deviceFinger = getDeviceFingerprint();
+
+        res = await authServices.magicAuth(token, deviceFinger);
+
+        const { accessToken, refreshToken, user } = res.data;
+
+        if (!accessToken || !refreshToken || !user) {
+            throw new Error('Invalid login response');
+        }
+
+        await Promise.all([
+            storage.setAccessToken(accessToken),
+            storage.setRefreshToken(refreshToken),
+            storage.setUser(user),
+        ]);
+
+        dispatch(login(user)); // cập nhật Redux state
+    } catch (error: any) {
+        throw error;
+    }
+};
+
 export const logoutAsync = () => async (dispatch: Dispatch) => {
     try {
         // call api logout
@@ -107,6 +132,15 @@ export const logoutAsync = () => async (dispatch: Dispatch) => {
         await Promise.all([storage.clearAllTokens(), storage.clearUser()]);
         dispatch(logout());
     } catch (error: any) {
-        dispatch(addToast({ type: TOAST_TYPE.ERROR, message: error }));
+        let message = 'Logout Error';
+
+        if (typeof error === 'string') {
+            message = error;
+        } else if (error instanceof Error) {
+            message = error.message;
+        } else if (typeof error === 'object' && error !== null && 'message' in error) {
+            message = (error as any).message;
+        }
+        dispatch(addToast({ type: TOAST_TYPE.ERROR, message: message }));
     }
 };

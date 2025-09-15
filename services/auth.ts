@@ -1,15 +1,6 @@
 import instance from '@/config/axios';
 import axios from 'axios';
 
-export const loginByMagicLink = async (email: string) => {
-    try {
-        const res = await instance.post('/auth/magic-login-link', { email });
-        return res;
-    } catch (error: any) {
-        throw error; // lỗi khác (network, timeout, ...)
-    }
-};
-
 export const epLogin = async (email: string, password: string, deviceId: string) => {
     try {
         return await instance.post(`/auth/login`, { email, password, deviceId });
@@ -21,6 +12,14 @@ export const epLogin = async (email: string, password: string, deviceId: string)
 export const epRegister = async (email: string, password: string, deviceId: string) => {
     try {
         return await instance.post(`/auth/register`, { email, password, deviceId });
+    } catch (error: any) {
+        throw error;
+    }
+};
+
+export const magicAuth = async (token: string, deviceId: string) => {
+    try {
+        return await instance.post(`/auth/magic-link`, { token, deviceId });
     } catch (error: any) {
         throw error;
     }

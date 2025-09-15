@@ -34,8 +34,6 @@ export default function ListRegister({
     const background = useThemeColor({}, 'background');
     const lighterText = useThemeColor({}, 'lighterText');
 
-    console.log({ isRegistered });
-
     const directLinkHandler = () => {
         router.push('/category/1/collection/1');
         onClose();

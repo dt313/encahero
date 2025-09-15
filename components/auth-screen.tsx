@@ -4,13 +4,11 @@ import { Image, Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } fro
 
 import { router } from 'expo-router';
 
-import { addToast } from '@/store/action/toast-action';
 import { LockPasswordIcon, Mail02Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { Controller, useForm } from 'react-hook-form';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useDispatch } from 'react-redux';
 
 import fbIcon from '@/assets/images/fb-icon.png';
 import ggIcon from '@/assets/images/gg-icon.png';
@@ -68,8 +66,6 @@ function AuthScreen({ type, onPressGGLogin, onSubmit, onSend }: AuthProps) {
         mode: 'onChange', // validate realtime
     });
 
-    const dispatch = useDispatch();
-
     const handleChangeTabSwitch = (value: string) => {
         setTab(value);
     };
@@ -81,8 +77,6 @@ function AuthScreen({ type, onPressGGLogin, onSubmit, onSend }: AuthProps) {
             // TODO: create constant for this
             if (tab === 'magic-link') {
                 onSend(data.email);
-
-                // onSend(email);
             } else {
                 onSubmit(data.email, data.password);
             }
@@ -92,7 +86,7 @@ function AuthScreen({ type, onPressGGLogin, onSubmit, onSend }: AuthProps) {
     };
 
     const handleFbButton = () => {
-        dispatch(addToast({ position: 'bottom', type: 'warning' }));
+        // dispatch(addToast({ position: 'bottom', type: 'warning' }));
     };
 
     // color theme

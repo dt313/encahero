@@ -10,10 +10,13 @@ import AuthScreen from '@/components/auth-screen';
 
 import useToast from '@/hooks/useToast';
 
+import { mailService } from '@/services';
+
 export default function Login() {
     const { showErrorToast } = useToast();
     const dispatch = useDispatch<AppDispatch>();
     const router = useRouter();
+
     const handlePressGGLogin = async () => {
         try {
             await GoogleSignin.hasPlayServices();
@@ -44,7 +47,12 @@ export default function Login() {
     };
 
     const handleSendMagicLink = async (email: string) => {
-        console.log('magic-link : ', { email });
+        try {
+            const res = await mailService.sendLoginMagicLink(email);
+            console.log({ res });
+        } catch (error) {
+            showErrorToast(error);
+        }
     };
     return (
         <AuthScreen

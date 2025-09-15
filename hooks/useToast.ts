@@ -3,11 +3,6 @@ import { useDispatch } from 'react-redux';
 
 import { TOAST_POSITION, TOAST_TYPE } from '@/constants';
 
-type ErrorResponse = {
-    message: string;
-    status: string;
-    statusCode: number;
-};
 function useToast() {
     const dispatch = useDispatch();
 

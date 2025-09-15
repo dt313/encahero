@@ -49,19 +49,6 @@ const list = [
 ];
 
 function Home() {
-    // useEffect(() => {
-    //     const fetchUsers = async () => {
-    //         try {
-    //             const res = await userService.getUsers();
-    //             console.log(res);
-    //         } catch (error) {
-    //             console.log(error);
-    //         }
-    //     };
-
-    //     fetchUsers();
-    // }, []);
-
     return (
         <ScrollView>
             <SafeAreaView
