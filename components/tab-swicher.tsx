@@ -59,7 +59,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent',
         borderRadius: 12,
         padding: 4,
-        marginBottom: 32,
+        marginBottom: 12,
+        alignItems: 'center',
     },
     tab: {
         paddingHorizontal: 20,

@@ -8,6 +8,7 @@ import { LockPasswordIcon, Mail02Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { Controller, useForm } from 'react-hook-form';
+import { ScrollView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import fbIcon from '@/assets/images/fb-icon.png';
@@ -20,6 +21,7 @@ import Input from '@/components/input';
 import TabSwitcher from '@/components/tab-swicher';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
+import useToast from '@/hooks/useToast';
 
 import { ThemedView } from './ThemedView';
 
@@ -43,6 +45,7 @@ const TAB_SWITCHER = [
 type FormValues = {
     email: string;
     password: string;
+    confirmPassword: string;
 };
 
 type AuthProps = {
@@ -62,10 +65,12 @@ function AuthScreen({ type, onPressGGLogin, onSubmit, onSend }: AuthProps) {
         defaultValues: {
             email: '',
             password: '',
+            confirmPassword: '',
         },
         mode: 'onChange', // validate realtime
     });
 
+    const { showErrorToast } = useToast();
     const handleChangeTabSwitch = (value: string) => {
         setTab(value);
     };
@@ -81,7 +86,7 @@ function AuthScreen({ type, onPressGGLogin, onSubmit, onSend }: AuthProps) {
                 onSubmit(data.email, data.password);
             }
         } catch (error) {
-            console.log('Error during magic link login:', error);
+            showErrorToast(error);
         }
     };
 
@@ -98,135 +103,173 @@ function AuthScreen({ type, onPressGGLogin, onSubmit, onSend }: AuthProps) {
 
     return (
         <ThemedView style={styles.wrapper}>
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <SafeAreaView style={styles.content}>
-                    <View style={styles.title}>
-                        <ThemedText type="title">
-                            {typeValue} to <Text style={styles.appName}>Encahero</Text>
-                        </ThemedText>
-                        <HelloWave />
-                    </View>
-                    {/* Tab Switcher */}
-                    <TabSwitcher
-                        tabs={TAB_SWITCHER}
-                        activeTab={tab}
-                        onTabChange={handleChangeTabSwitch}
-                        containerStyle={{
-                            marginTop: 24,
-                        }}
-                    />
-                    {/* input  */}
-
-                    <View style={styles.inputContainer}>
-                        <Controller
-                            control={control}
-                            name="email"
-                            rules={{
-                                required: 'Email is required',
-                                pattern: {
-                                    value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
-                                    message: 'Invalid email format',
-                                },
+            <ScrollView>
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    <SafeAreaView style={styles.content}>
+                        <View style={styles.title}>
+                            <ThemedText type="title">
+                                {typeValue} to <Text style={styles.appName}>Encahero</Text>
+                            </ThemedText>
+                            <HelloWave />
+                        </View>
+                        {/* Tab Switcher */}
+                        <TabSwitcher
+                            tabs={TAB_SWITCHER}
+                            activeTab={tab}
+                            onTabChange={handleChangeTabSwitch}
+                            containerStyle={{
+                                marginTop: 24,
                             }}
-                            render={({ field: { onChange, onBlur, value } }) => (
-                                <Input
-                                    leftIcon={<HugeiconsIcon icon={Mail02Icon} color={inputBorderColor} size={24} />}
-                                    label="Email"
-                                    value={value}
-                                    placeholder="example@gmail.com"
-                                    onChangeText={onChange}
-                                    onBlur={onBlur}
-                                    errorMessage={errors.email?.message}
-                                />
-                            )}
                         />
+                        {/* input  */}
 
-                        {tab === 'password' && (
+                        <View style={styles.inputContainer}>
                             <Controller
                                 control={control}
-                                name="password"
+                                name="email"
                                 rules={{
-                                    required: 'Password is required',
-                                    minLength: {
-                                        value: 6,
-                                        message: 'Password must be at least 6 characters',
+                                    required: 'Email is required',
+                                    pattern: {
+                                        value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                                        message: 'Invalid email format',
                                     },
                                 }}
                                 render={({ field: { onChange, onBlur, value } }) => (
                                     <Input
                                         leftIcon={
-                                            <HugeiconsIcon icon={LockPasswordIcon} color={inputBorderColor} size={24} />
+                                            <HugeiconsIcon icon={Mail02Icon} color={inputBorderColor} size={24} />
                                         }
-                                        label="Password"
+                                        label="Email"
                                         value={value}
-                                        placeholder="Abcd123@"
+                                        placeholder="example@gmail.com"
                                         onChangeText={onChange}
                                         onBlur={onBlur}
-                                        isPassword
-                                        errorMessage={errors.password?.message}
+                                        errorMessage={errors.email?.message}
                                     />
                                 )}
                             />
-                        )}
-                    </View>
 
-                    {/* button */}
-                    <Button onPress={handleSubmit(submit)}>{tab === 'password' ? typeValue : 'Send'}</Button>
+                            {tab === 'password' && (
+                                <Controller
+                                    control={control}
+                                    name="password"
+                                    rules={{
+                                        required: 'Password is required',
+                                        minLength: {
+                                            value: 6,
+                                            message: 'Password must be at least 6 characters',
+                                        },
+                                    }}
+                                    render={({ field: { onChange, onBlur, value } }) => (
+                                        <Input
+                                            leftIcon={
+                                                <HugeiconsIcon
+                                                    icon={LockPasswordIcon}
+                                                    color={inputBorderColor}
+                                                    size={24}
+                                                />
+                                            }
+                                            label="Password"
+                                            value={value}
+                                            placeholder="Abcd123@"
+                                            onChangeText={onChange}
+                                            onBlur={onBlur}
+                                            isPassword
+                                            errorMessage={errors.password?.message}
+                                        />
+                                    )}
+                                />
+                            )}
 
-                    {/* Divider */}
-                    <View style={styles.dividerContainer}>
-                        <View style={[styles.dividerLine, { backgroundColor: dividerColor }]} />
-                        <Text style={styles.dividerText}>OR</Text>
-                        <View style={[styles.dividerLine, { backgroundColor: dividerColor }]} />
-                    </View>
+                            {type === 'register' && tab === 'password' && (
+                                <Controller
+                                    control={control}
+                                    name="confirmPassword"
+                                    rules={{
+                                        required: 'Confirm Password is required',
+                                        validate: (value, formValues) =>
+                                            value === formValues.password || 'Passwords do not match',
+                                    }}
+                                    render={({ field: { onChange, onBlur, value } }) => (
+                                        <Input
+                                            leftIcon={
+                                                <HugeiconsIcon
+                                                    icon={LockPasswordIcon}
+                                                    color={inputBorderColor}
+                                                    size={24}
+                                                />
+                                            }
+                                            label="Confirm Password"
+                                            value={value}
+                                            placeholder="Re-enter password"
+                                            onChangeText={onChange}
+                                            onBlur={onBlur}
+                                            isPassword
+                                            errorMessage={errors.confirmPassword?.message}
+                                        />
+                                    )}
+                                />
+                            )}
+                        </View>
 
-                    {/* Social Buttons */}
-                    <View style={styles.inputContainer}>
-                        <Button
-                            buttonStyle={{
-                                backgroundColor: 'transparent',
-                                borderWidth: 1.5,
-                                borderColor: '#ceccccff',
-                            }}
-                            textStyle={{ color }}
-                            leftIcon={<Image style={styles.socialIcon} source={ggIcon} />}
-                            onPress={onPressGGLogin}
-                        >
-                            Continue with Google
-                        </Button>
-                        <Button
-                            buttonStyle={{
-                                backgroundColor: color,
-                                borderWidth: 1.5,
-                                borderColor: color,
-                            }}
-                            textStyle={{ color: whiteColor }}
-                            leftIcon={<Image style={styles.socialIcon} source={fbIcon} />}
-                            onPress={handleFbButton}
-                        >
-                            Continue with Facebook
-                        </Button>
-                    </View>
+                        {/* button */}
+                        <Button onPress={handleSubmit(submit)}>{tab === 'password' ? typeValue : 'Send'}</Button>
 
-                    {/* Register Link */}
-                    <View style={styles.footerContainer}>
-                        <Text style={styles.footerText}>
-                            {type === 'register' ? 'Are you already a member? ' : 'Not a Collect member yet? '}
-                        </Text>
-                        <Button
-                            type="link"
-                            onPress={() => {
-                                if (type === 'register') router.back();
-                                else {
-                                    router.push('/register');
-                                }
-                            }}
-                        >
-                            {type === 'register' ? 'Login' : 'Register'} Now
-                        </Button>
-                    </View>
-                </SafeAreaView>
-            </TouchableWithoutFeedback>
+                        {/* Divider */}
+                        <View style={styles.dividerContainer}>
+                            <View style={[styles.dividerLine, { backgroundColor: dividerColor }]} />
+                            <Text style={styles.dividerText}>OR</Text>
+                            <View style={[styles.dividerLine, { backgroundColor: dividerColor }]} />
+                        </View>
+
+                        {/* Social Buttons */}
+                        <View style={styles.inputContainer}>
+                            <Button
+                                buttonStyle={{
+                                    backgroundColor: 'transparent',
+                                    borderWidth: 1.5,
+                                    borderColor: '#ceccccff',
+                                }}
+                                textStyle={{ color }}
+                                leftIcon={<Image style={styles.socialIcon} source={ggIcon} />}
+                                onPress={onPressGGLogin}
+                            >
+                                Continue with Google
+                            </Button>
+                            <Button
+                                buttonStyle={{
+                                    backgroundColor: color,
+                                    borderWidth: 1.5,
+                                    borderColor: color,
+                                }}
+                                textStyle={{ color: whiteColor }}
+                                leftIcon={<Image style={styles.socialIcon} source={fbIcon} />}
+                                onPress={handleFbButton}
+                            >
+                                Continue with Facebook
+                            </Button>
+                        </View>
+
+                        {/* Register Link */}
+                        <View style={styles.footerContainer}>
+                            <Text style={styles.footerText}>
+                                {type === 'register' ? 'Are you already a member? ' : 'Not a Collect member yet? '}
+                            </Text>
+                            <Button
+                                type="link"
+                                onPress={() => {
+                                    if (type === 'register') router.back();
+                                    else {
+                                        router.push('/register');
+                                    }
+                                }}
+                            >
+                                {type === 'register' ? 'Login' : 'Register'} Now
+                            </Button>
+                        </View>
+                    </SafeAreaView>
+                </TouchableWithoutFeedback>
+            </ScrollView>
         </ThemedView>
     );
 }
@@ -238,7 +281,7 @@ const styles = StyleSheet.create({
     content: {
         flex: 1,
         paddingHorizontal: 24,
-        paddingTop: 80,
+        paddingTop: 40,
     },
     title: {
         display: 'flex',
@@ -257,7 +300,7 @@ const styles = StyleSheet.create({
     inputContainer: {
         marginBottom: 32,
         display: 'flex',
-        rowGap: 16,
+        rowGap: 8,
     },
 
     // divider
@@ -284,11 +327,6 @@ const styles = StyleSheet.create({
     },
 
     footerContainer: {
-        position: 'absolute',
-        bottom: 32,
-        left: 0,
-        right: 0,
-        height: 40, // hoặc tuỳ chỉnh
         marginBottom: 32,
         justifyContent: 'center',
         alignItems: 'center',

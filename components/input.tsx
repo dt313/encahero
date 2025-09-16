@@ -5,6 +5,8 @@ import { StyleSheet, TextInput, TextInputProps, TouchableOpacity, View } from 'r
 import { ViewIcon, ViewOffSlashIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 
+import { commonColor } from '@/constants/Colors';
+
 import { useThemeColor, useThemeColors } from '@/hooks/useThemeColor';
 
 import { ThemedText } from './ThemedText';
@@ -61,15 +63,24 @@ function Input({
                 )}
             </View>
 
-            {errorMessage && <ThemedText style={{ color: 'red' }}>{errorMessage}</ThemedText>}
+            {errorMessage && (
+                <ThemedText
+                    style={{
+                        color: commonColor.failBorderColor,
+                        fontSize: 14,
+                        fontWeight: 500,
+                        textAlign: 'center',
+                        marginTop: 4,
+                    }}
+                >
+                    {errorMessage}
+                </ThemedText>
+            )}
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        marginVertical: 8,
-    },
     label: {
         marginBottom: 4,
         fontWeight: 500,
@@ -87,8 +98,6 @@ const styles = StyleSheet.create({
         borderRadius: 40,
         position: 'relative',
     },
-
-    nonLeftInputWrap: {},
 
     input: {
         flex: 1,
