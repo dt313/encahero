@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import { useRouter } from 'expo-router';
 
 import GoogleSignin from '@/config/gg-signin';
@@ -10,11 +12,15 @@ import AuthScreen from '@/components/auth-screen';
 
 import useToast from '@/hooks/useToast';
 
+import { getErrorMessage } from '@/utils';
+
 import { mailService } from '@/services';
 
 export default function Register() {
     const { showErrorToast } = useToast();
     const dispatch = useDispatch<AppDispatch>();
+    const [errorMessage, setErrorMessage] = useState('');
+    const [infoMessage, setInfoMessage] = useState('');
     const router = useRouter();
 
     const handlePressGGRegister = async () => {
@@ -39,20 +45,26 @@ export default function Register() {
 
     const handleSubmit = async (email: string, password: string) => {
         try {
-            dispatch(epAuth(email, password));
+            await dispatch(epAuth(email, password));
             router.replace('/');
         } catch (error) {
-            showErrorToast(error);
+            setErrorMessage(getErrorMessage(error));
         }
     };
 
     const handleSendMagicLink = async (email: string) => {
         try {
             const res = await mailService.sendRegisterMagicLink(email);
-            console.log({ res });
+            if (res.data === true) {
+                setInfoMessage('Magic link đã được gửi đến email của bạn. Vui lòng kiểm tra hộp thư.');
+            }
         } catch (error) {
-            showErrorToast(error);
+            setErrorMessage(getErrorMessage(error));
         }
+    };
+    const hideMessage = () => {
+        if (infoMessage) setInfoMessage('');
+        if (errorMessage) setErrorMessage('');
     };
     return (
         <AuthScreen
@@ -60,6 +72,9 @@ export default function Register() {
             onPressGGLogin={handlePressGGRegister}
             onSubmit={handleSubmit}
             onSend={handleSendMagicLink}
+            infoMessage={infoMessage}
+            errorMessage={errorMessage}
+            hideMessage={hideMessage}
         />
     );
 }

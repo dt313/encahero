@@ -3,7 +3,7 @@ import { Dispatch } from '@reduxjs/toolkit';
 
 import { TOAST_TYPE } from '@/constants';
 
-import { getDeviceFingerprint, storage } from '@/utils';
+import { getDeviceFingerprint, getErrorMessage, storage } from '@/utils';
 
 import { authServices } from '@/services';
 
@@ -93,7 +93,7 @@ export const epAuth =
                 storage.setUser(user),
             ]);
 
-            dispatch(login(user)); // cập nhật Redux state
+            dispatch(login(user));
         } catch (error: any) {
             throw error;
         }
@@ -132,15 +132,7 @@ export const logoutAsync = () => async (dispatch: Dispatch) => {
         await Promise.all([storage.clearAllTokens(), storage.clearUser()]);
         dispatch(logout());
     } catch (error: any) {
-        let message = 'Logout Error';
-
-        if (typeof error === 'string') {
-            message = error;
-        } else if (error instanceof Error) {
-            message = error.message;
-        } else if (typeof error === 'object' && error !== null && 'message' in error) {
-            message = (error as any).message;
-        }
+        const message = getErrorMessage(error, 'Logout Error');
         dispatch(addToast({ type: TOAST_TYPE.ERROR, message: message }));
     }
 };

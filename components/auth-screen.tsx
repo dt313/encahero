@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
-import { Image, Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native';
+import { ActivityIndicator, Image, Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native';
 
 import { router } from 'expo-router';
 
@@ -13,6 +13,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import fbIcon from '@/assets/images/fb-icon.png';
 import ggIcon from '@/assets/images/gg-icon.png';
+
+import { commonColor } from '@/constants/Colors';
 
 import { HelloWave } from '@/components/HelloWave';
 import { ThemedText } from '@/components/ThemedText';
@@ -50,15 +52,19 @@ type FormValues = {
 
 type AuthProps = {
     type: 'login' | 'register';
-    onPressGGLogin: () => void;
-    onSend: (email: string) => void;
-    onSubmit: (email: string, password: string) => void;
+    onPressGGLogin: () => Promise<void>;
+    onSend: (email: string) => Promise<void>;
+    hideMessage: () => void;
+    onSubmit: (email: string, password: string) => Promise<void>;
+    infoMessage?: string;
+    errorMessage?: string;
 };
 
-function AuthScreen({ type, onPressGGLogin, onSubmit, onSend }: AuthProps) {
+function AuthScreen({ type, onPressGGLogin, onSubmit, onSend, infoMessage, errorMessage, hideMessage }: AuthProps) {
     const [tab, setTab] = useState<string>(TAB_SWITCHER[0].value);
     const {
         control,
+        watch,
         handleSubmit,
         formState: { errors },
     } = useForm<FormValues>({
@@ -70,23 +76,35 @@ function AuthScreen({ type, onPressGGLogin, onSubmit, onSend }: AuthProps) {
         mode: 'onChange', // validate realtime
     });
 
+    const [loading, setLoading] = useState(false);
+
+    const values = watch();
+
+    useEffect(() => {
+        hideMessage();
+    }, [values.email, values.password, values.confirmPassword]);
+
     const { showErrorToast } = useToast();
     const handleChangeTabSwitch = (value: string) => {
         setTab(value);
+        hideMessage();
     };
 
     const typeValue = useMemo(() => (type === 'register' ? 'Register' : 'Login'), [type]);
 
     const submit = async (data: FormValues) => {
         try {
+            setLoading(true);
             // TODO: create constant for this
             if (tab === 'magic-link') {
-                onSend(data.email);
+                await onSend(data.email);
             } else {
-                onSubmit(data.email, data.password);
+                await onSubmit(data.email, data.password);
             }
         } catch (error) {
             showErrorToast(error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -210,10 +228,28 @@ function AuthScreen({ type, onPressGGLogin, onSubmit, onSend }: AuthProps) {
                                     )}
                                 />
                             )}
+                            {errorMessage && (
+                                <ThemedText style={[styles.message, { color: commonColor.failBorderColor }]}>
+                                    {errorMessage}
+                                </ThemedText>
+                            )}
+                            {infoMessage && (
+                                <ThemedText style={[styles.message, { color: commonColor.trueBorderColor }]}>
+                                    {infoMessage}
+                                </ThemedText>
+                            )}
                         </View>
 
                         {/* button */}
-                        <Button onPress={handleSubmit(submit)}>{tab === 'password' ? typeValue : 'Send'}</Button>
+                        <Button onPress={handleSubmit(submit)} disabled={loading}>
+                            {loading ? (
+                                <ActivityIndicator size="small" color={color} />
+                            ) : tab === 'password' ? (
+                                typeValue
+                            ) : (
+                                'Send'
+                            )}
+                        </Button>
 
                         {/* Divider */}
                         <View style={styles.dividerContainer}>
@@ -301,6 +337,13 @@ const styles = StyleSheet.create({
         marginBottom: 32,
         display: 'flex',
         rowGap: 8,
+    },
+
+    // infoMessage
+    message: {
+        fontWeight: 500,
+        textAlign: 'center',
+        fontSize: 15,
     },
 
     // divider

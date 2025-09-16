@@ -3,21 +3,13 @@ import { useDispatch } from 'react-redux';
 
 import { TOAST_POSITION, TOAST_TYPE } from '@/constants';
 
+import { getErrorMessage } from '@/utils';
+
 function useToast() {
     const dispatch = useDispatch();
 
     const showErrorToast = (error: any, position?: string, title?: string) => {
-        let message: string;
-
-        if (typeof error === 'string') {
-            message = error;
-        } else if (error instanceof Error) {
-            message = error.message;
-        } else if (error?.message) {
-            message = error.message;
-        } else {
-            message = 'Unexpected error';
-        }
+        let message: string = getErrorMessage(error);
 
         dispatch(
             addToast({
