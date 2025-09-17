@@ -8,6 +8,12 @@ const ACCESS_TOKEN_KEY = 'access_token';
 const REFRESH_TOKEN_KEY = 'refresh_token';
 const USER_OBJECT = 'user';
 
+type User = {
+    firstName: string | null;
+    lastName: string | null;
+    username: string;
+};
+
 // ================= ACCESS TOKEN =================
 export async function setAccessToken(token: string) {
     await AsyncStorage.setItem(ACCESS_TOKEN_KEY, token);
@@ -43,11 +49,11 @@ export async function setUser(user: object) {
     }
 }
 
-// Lấy user object
-export async function getUser(): Promise<object | null> {
+// get user object
+export async function getUser(): Promise<User | null> {
     try {
         const userString = await AsyncStorage.getItem(USER_OBJECT);
-        return userString ? JSON.parse(userString) : null;
+        return userString ? (JSON.parse(userString) as User) : null;
     } catch (error) {
         console.error('Error reading user:', error);
         return null;

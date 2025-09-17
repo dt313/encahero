@@ -45,7 +45,7 @@ export default function Register() {
 
     const handleSubmit = async (email: string, password: string) => {
         try {
-            await dispatch(epAuth(email, password));
+            await dispatch(epAuth(email, password, true));
             router.replace('/');
         } catch (error) {
             setErrorMessage(getErrorMessage(error));

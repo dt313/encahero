@@ -1,5 +1,8 @@
+import { useMemo } from 'react';
+
 import { Image, Platform, ScrollView, StyleSheet, View } from 'react-native';
 
+import getNameOfUser from '@/helper/get-name-of-user';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import avatar from '@/assets/images/peeps-avatar-alpha.png';
@@ -49,6 +52,9 @@ const list = [
 ];
 
 function Home() {
+    const displayName = useMemo(async () => {
+        return await getNameOfUser();
+    }, []);
     return (
         <ScrollView>
             <SafeAreaView
@@ -59,7 +65,9 @@ function Home() {
             >
                 <ThemedView style={styles.header}>
                     <View style={styles.textWrapper}>
-                        <ThemedText type="title">Hello, Danh Tuan</ThemedText>
+                        <ThemedText type="title" style={styles.greeting} numberOfLines={1} ellipsizeMode="tail">
+                            Hello, {displayName}
+                        </ThemedText>
                         <ThemedText lightColor="#636363ff">Lets check how you feel to day</ThemedText>
                     </View>
                     <Image style={styles.avatar} source={avatar} />
@@ -83,7 +91,11 @@ const styles = StyleSheet.create({
         height: HEADER_HEIGHT,
     },
 
-    textWrapper: { rowGap: 4 },
+    greeting: {
+        marginRight: 12,
+    },
+
+    textWrapper: { rowGap: 4, maxWidth: '80%' },
 
     avatar: {
         width: HEADER_HEIGHT,
