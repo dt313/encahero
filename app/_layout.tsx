@@ -7,6 +7,7 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 
+import QueryProvider from '@/components/query-client-provider';
 import StoreProvider from '@/components/store-provider';
 import ToastContainer from '@/components/toast-container';
 
@@ -27,31 +28,33 @@ export default function RootLayout() {
     }
 
     return (
-        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-            <StoreProvider>
-                <GestureHandlerRootView>
-                    <ToastContainer />
-                    <BottomSheetModalProvider>
-                        <Stack>
-                            <Stack.Screen name="index" options={{ headerShown: false }} />
-                            <Stack.Screen name="category" options={{ headerShown: false }} />
-                            <Stack.Screen name="match" options={{ headerShown: false }} />
-                            <Stack.Screen name="lobby" options={{ headerShown: false }} />
-                            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-                            <Stack.Screen name="mail-otp" options={{ headerShown: false }} />
-                            <Stack.Screen name="reset-password" options={{ headerShown: false }} />
-                            <Stack.Screen name="feedback" options={{ headerShown: false }} />
-                            <Stack.Screen name="privacy-policy" options={{ headerShown: false }} />
-                            <Stack.Screen name="help" options={{ headerShown: false }} />
-                            <Stack.Screen name="about" options={{ headerShown: false }} />
-                            <Stack.Screen name="+not-found" />
-                        </Stack>
-                    </BottomSheetModalProvider>
+        <QueryProvider>
+            <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+                <StoreProvider>
+                    <GestureHandlerRootView>
+                        <ToastContainer />
+                        <BottomSheetModalProvider>
+                            <Stack>
+                                <Stack.Screen name="index" options={{ headerShown: false }} />
+                                <Stack.Screen name="category" options={{ headerShown: false }} />
+                                <Stack.Screen name="match" options={{ headerShown: false }} />
+                                <Stack.Screen name="lobby" options={{ headerShown: false }} />
+                                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                                <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+                                <Stack.Screen name="mail-otp" options={{ headerShown: false }} />
+                                <Stack.Screen name="reset-password" options={{ headerShown: false }} />
+                                <Stack.Screen name="feedback" options={{ headerShown: false }} />
+                                <Stack.Screen name="privacy-policy" options={{ headerShown: false }} />
+                                <Stack.Screen name="help" options={{ headerShown: false }} />
+                                <Stack.Screen name="about" options={{ headerShown: false }} />
+                                <Stack.Screen name="+not-found" />
+                            </Stack>
+                        </BottomSheetModalProvider>
 
-                    <StatusBar style="auto" />
-                </GestureHandlerRootView>
-            </StoreProvider>
-        </ThemeProvider>
+                        <StatusBar style="auto" />
+                    </GestureHandlerRootView>
+                </StoreProvider>
+            </ThemeProvider>
+        </QueryProvider>
     );
 }

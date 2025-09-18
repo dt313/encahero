@@ -44,6 +44,8 @@ instance.interceptors.response.use(
             status = error.response.data.status;
         }
 
+        console.log(messageError);
+
         if (status === 'UNAUTHORIZED') {
             // handle token expired
             if (messageError === 'Access token expired') {

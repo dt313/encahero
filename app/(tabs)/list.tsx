@@ -2,11 +2,14 @@ import React from 'react';
 
 import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 
+import { useQuery } from '@tanstack/react-query';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import CategoryList from '@/components/category-list';
 import HorizontalList from '@/components/horizontal-list';
 import ListHeader from '@/components/list-header';
+
+import { collectionService } from '@/services';
 
 export type ItemType = {
     name: string;
@@ -85,6 +88,25 @@ const data2: ItemType[] = [
 ];
 
 function List() {
+    const {
+        data: learningList = [],
+        isLoading,
+        error,
+    } = useQuery({
+        queryKey: ['goalList'],
+        queryFn: () => collectionService.getMyLearningList(),
+    });
+
+    const {
+        data: allList = [],
+        isLoading: isLoadingAll,
+        error: errorAll,
+    } = useQuery({
+        queryKey: ['allList'],
+        queryFn: () => collectionService.getAllCollection(),
+    });
+
+    console.log({ allList });
     return (
         <SafeAreaView style={[styles.wrapper]}>
             <ListHeader />
@@ -95,8 +117,13 @@ function List() {
                             paddingHorizontal: 20,
                         }}
                     >
-                        <HorizontalList isRandomColor containerStyle={{ marginTop: 24 }} list={data} />
-                        <HorizontalList headerName="Learning List" containerStyle={{ marginTop: 24 }} list={data2} />
+                        <HorizontalList isRandomColor containerStyle={{ marginTop: 24 }} list={allList} />
+                        <HorizontalList
+                            headerName="Learning List"
+                            containerStyle={{ marginTop: 24 }}
+                            list={learningList}
+                            isLearningList={true}
+                        />
                         <CategoryList />
                     </View>
                 </ScrollView>

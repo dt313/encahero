@@ -1,23 +1,42 @@
+import { useMemo } from 'react';
+
 import { Image, StyleSheet, View } from 'react-native';
+
+import { useQuery } from '@tanstack/react-query';
 
 import chargerIcon from '@/assets/images/charger.png';
 import thunderIcon from '@/assets/images/thunder.png';
 
+import { progressService } from '@/services';
+
 import { ThemedText } from './ThemedText';
 
-const data = [
-    {
-        title: 'Today',
-        count: '112',
-        image: chargerIcon,
-    },
-    {
-        title: 'This Week',
-        count: '1120',
-        image: thunderIcon,
-    },
-];
 function Statistic() {
+    const {
+        data: stats,
+        isLoading,
+        error,
+    } = useQuery({
+        queryKey: ['userStatsDailyAndWeekly'],
+        queryFn: () => progressService.getStatsDailyAndWeekly(),
+    });
+
+    const data = useMemo(
+        () => [
+            {
+                title: 'Today',
+                count: stats?.today ?? 0,
+                image: chargerIcon,
+            },
+            {
+                title: 'This Week',
+                count: stats?.week ?? 0,
+                image: thunderIcon,
+            },
+        ],
+        [stats],
+    );
+
     return (
         <View style={styles.wrapper}>
             {data.map((item) => {

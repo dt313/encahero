@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { ReactNode, useCallback, useRef, useState } from 'react';
 
 import { FlatList, StyleSheet, Text, View, ViewStyle, useColorScheme } from 'react-native';
 
@@ -22,14 +22,89 @@ interface HorizontalListProps {
     headerName?: string;
     containerStyle: ViewStyle;
     isRandomColor?: boolean;
-    list: ItemType[];
+    isLearningList?: boolean;
+    list: any;
 }
 
-function HorizontalList({ headerName = 'Popular', containerStyle, isRandomColor = false, list }: HorizontalListProps) {
-    const lighterText = useThemeColor({}, 'lighterText');
-    const white = useThemeColor({}, 'white');
-    const textColor = useThemeColor({}, 'text');
+type ListItemType = {
+    isRandomColor: boolean;
+    isRegistered: boolean | undefined;
+    isLearningList: boolean | undefined;
+    onOpenModal: (name: string) => void;
+    name: string;
+    icon: ReactNode | string;
+    cardCount: number;
+};
+
+const ListItem = ({
+    isRandomColor = false,
+    isRegistered = false,
+    isLearningList = false,
+    onOpenModal,
+    name,
+    icon,
+    cardCount = 0,
+}: ListItemType) => {
     const theme = useColorScheme();
+    const lighterText = useThemeColor({}, 'lighterText');
+    const textColor = useThemeColor({}, 'text');
+    const white = useThemeColor({}, 'white');
+
+    const backgroundColor = isRandomColor ? getRandomColor(theme) : white;
+    return (
+        <View style={[styles.item, { backgroundColor: backgroundColor }]}>
+            <View style={styles.itemHeader}>
+                <Text style={styles.itemIcon}>{icon}</Text>
+                <Button style={{ paddingVertical: 0 }} onPress={() => onOpenModal(name)}>
+                    {isRegistered ? (
+                        <HugeiconsIcon icon={SettingsIcon} size={24} color={textColor} />
+                    ) : (
+                        <HugeiconsIcon icon={AddSquareIcon} size={28} color={textColor} />
+                    )}
+                </Button>
+            </View>
+
+            <ThemedText type="subtitle" style={styles.itemTitle} numberOfLines={2}>
+                {name}
+            </ThemedText>
+
+            {isLearningList ? (
+                <View style={{ flex: 1 }}>
+                    <View>
+                        <ThemedText
+                            style={{
+                                fontSize: 16,
+                                fontWeight: 500,
+                                marginBottom: 4,
+                            }}
+                        >
+                            12
+                            <ThemedText lighter>/{cardCount} cards</ThemedText>
+                        </ThemedText>
+                    </View>
+                    <Bar
+                        color="#4CAF50"
+                        progress={0.4}
+                        width={null}
+                        borderWidth={0}
+                        height={6}
+                        unfilledColor="rgba(198, 198, 198, 0.4)"
+                    />
+                </View>
+            ) : (
+                <ThemedText style={[styles.itemNumber, { color: lighterText }]}>{cardCount} cards</ThemedText>
+            )}
+        </View>
+    );
+};
+
+function HorizontalList({
+    headerName = 'Popular',
+    containerStyle,
+    isRandomColor = false,
+    list,
+    isLearningList,
+}: HorizontalListProps) {
     const [selectedItem, setSelectedItem] = useState<ItemType | null>(null);
     // ref
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
@@ -50,72 +125,42 @@ function HorizontalList({ headerName = 'Popular', containerStyle, isRandomColor 
         console.log(goal);
     };
 
+    console.log({ list });
     return (
         <View style={[styles.wrapper, containerStyle]}>
             <ThemedText style={styles.headerName}>{headerName}</ThemedText>
             <FlatList
                 horizontal
                 data={list}
-                keyExtractor={(item) => item.name}
+                keyExtractor={(item) => item.id}
                 renderItem={({ item }) => {
-                    const backgroundColor = isRandomColor ? getRandomColor(theme) : white;
-                    return (
-                        <View style={[styles.item, { backgroundColor: backgroundColor }]}>
-                            <View style={styles.itemHeader}>
-                                <Text style={styles.itemIcon}>{item.icon}</Text>
-                                <Button
-                                    style={{ paddingVertical: 0 }}
-                                    onPress={() => handlePresentModalPress(item.name)}
-                                >
-                                    {item.isRegistered ? (
-                                        <HugeiconsIcon icon={SettingsIcon} size={24} color={textColor} />
-                                    ) : (
-                                        <HugeiconsIcon icon={AddSquareIcon} size={28} color={textColor} />
-                                    )}
-                                </Button>
-                            </View>
-
-                            <ThemedText type="subtitle" style={styles.itemTitle} numberOfLines={2}>
-                                {item.name}
-                            </ThemedText>
-
-                            {item.isLearningList ? (
-                                <View style={{ flex: 1 }}>
-                                    <View>
-                                        {/* <ThemedText
-                                            style={{
-                                                fontWeight: 500,
-                                            }}
-                                        >
-                                            Đã học
-                                        </ThemedText> */}
-                                        <ThemedText
-                                            style={{
-                                                fontSize: 16,
-                                                fontWeight: 500,
-                                                marginBottom: 4,
-                                            }}
-                                        >
-                                            12
-                                            <ThemedText lighter>/100 cards</ThemedText>
-                                        </ThemedText>
-                                    </View>
-                                    <Bar
-                                        color="#4CAF50"
-                                        progress={0.4}
-                                        width={null}
-                                        borderWidth={0}
-                                        height={6}
-                                        unfilledColor="rgba(198, 198, 198, 0.4)"
-                                    />
-                                </View>
-                            ) : (
-                                <ThemedText style={[styles.itemNumber, { color: lighterText }]}>
-                                    12/{item.cards} cards
-                                </ThemedText>
-                            )}
-                        </View>
-                    );
+                    if (isLearningList) {
+                        return (
+                            <ListItem
+                                key={item.id}
+                                isRandomColor={isRandomColor}
+                                isRegistered={true}
+                                onOpenModal={handlePresentModalPress}
+                                icon="1️⃣"
+                                name={item?.collection?.name}
+                                isLearningList={isLearningList}
+                                cardCount={item?.collection?.card_count}
+                            />
+                        );
+                    } else {
+                        return (
+                            <ListItem
+                                key={item.id}
+                                isRandomColor={isRandomColor}
+                                isRegistered={true}
+                                onOpenModal={handlePresentModalPress}
+                                icon="1️⃣"
+                                name={item.name}
+                                isLearningList={false}
+                                cardCount={item.card_count}
+                            />
+                        );
+                    }
                 }}
                 contentContainerStyle={{ columnGap: 8, paddingVertical: 16 }}
                 showsHorizontalScrollIndicator={false}

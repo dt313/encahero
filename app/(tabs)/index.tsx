@@ -13,43 +13,6 @@ import Charts from '@/components/charts';
 import GoalList from '@/components/goal-list';
 
 const HEADER_HEIGHT = 60;
-const list = [
-    {
-        name: 'Common Words Common Words Common Words Common Words Common WordsCommon Words ',
-        total: 100,
-        count: 12,
-    },
-    {
-        name: 'Business Vocabulary',
-        total: 80,
-        count: 25,
-    },
-    {
-        name: 'Travel Phrases',
-        total: 60,
-        count: 15,
-    },
-    {
-        name: 'Academic Words',
-        total: 120,
-        count: 40,
-    },
-    {
-        name: 'Idioms & Expressions',
-        total: 90,
-        count: 22,
-    },
-    {
-        name: 'TOEIC Listening Keywords',
-        total: 70,
-        count: 18,
-    },
-    {
-        name: 'Daily Conversation',
-        total: 110,
-        count: 30,
-    },
-];
 
 function Home() {
     const displayName = useMemo(async () => {
@@ -75,7 +38,7 @@ function Home() {
 
                 <Charts />
 
-                <GoalList containerStyle={{ marginTop: 16 }} title="Today's Goal" list={list} />
+                <GoalList containerStyle={{ marginTop: 16 }} title="Today's Goal" />
             </SafeAreaView>
         </ScrollView>
     );
