@@ -1,5 +1,4 @@
 import instance from '@/config/axios';
-import axios from 'axios';
 
 export const epLogin = async (email: string, password: string, deviceId: string) => {
     try {
@@ -38,17 +37,6 @@ export const ggRegister = async (token: string, deviceId: string) => {
         return await instance.post(`/auth/google-register`, { token, deviceId });
     } catch (error: any) {
         throw error;
-    }
-};
-
-export const test = async () => {
-    try {
-        const res = await axios.get('http://192.168.1.103:3000/api/v1');
-        console.log('res test', res.data);
-        return res.data;
-    } catch (error: any) {
-        console.log('error test', error.message);
-        return error;
     }
 };
 

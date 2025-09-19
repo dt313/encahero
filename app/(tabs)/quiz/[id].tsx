@@ -1,31 +1,56 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
+import { useLocalSearchParams } from 'expo-router';
+
+import { RootState } from '@/store/reducers';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { BookOpen02Icon, Settings01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
+import { useIsFocused } from '@react-navigation/native';
 import { Bar } from 'react-native-progress';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSelector } from 'react-redux';
 
 import { ThemedText } from '@/components/ThemedText';
 import Button from '@/components/button';
-import MultipleChoice from '@/components/flashcards/multiple-choice';
 import LearningList from '@/components/learning-list';
 import ModalBottomSheet from '@/components/modal-bottom-sheet';
 import QuizSetting from '@/components/quiz-setting';
+import RandomQuiz, { Quiz } from '@/components/random-quiz';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
 
-function Quiz() {
+import { quizService } from '@/services';
+
+function QuizScreen() {
     const white = useThemeColor({}, 'white');
     const textColor = useThemeColor({}, 'text');
-    // Viết hoa chữ cái đầu mỗi từ
+    const leftRef = useRef<BottomSheetModal>(null);
+    const rightRef = useRef<BottomSheetModal>(null);
+
+    const { id } = useLocalSearchParams();
+    const collections = useSelector((state: RootState) => state.learningList.collections);
+
+    const [quizs, setQuizs] = useState([]);
+    const [currentQuiz, setCurrentQuiz] = useState<Quiz>();
+    const isFocus = useIsFocused();
+
+    useEffect(() => {
+        const fetchQuiz = async () => {
+            let collectionId = 1;
+            const res = await quizService.getRandomQuizOfCollection(collectionId);
+            setQuizs(res);
+            setCurrentQuiz(res[0]);
+        };
+
+        fetchQuiz();
+    }, [id, isFocus, collections]);
+
     const capitalizeWords = (text: string) => {
         return text.replace(/\b\w/g, (char) => char.toUpperCase());
     };
-    const leftRef = useRef<BottomSheetModal>(null);
-    const rightRef = useRef<BottomSheetModal>(null);
 
     // callbacks
     const handleOpenListMenu = useCallback(() => {
@@ -65,11 +90,7 @@ function Quiz() {
                 <ThemedText style={[styles.progressNumber]}>200</ThemedText>
             </View>
 
-            <View style={styles.flashcards}>
-                {/* <TypingCard /> */}
-                {/* <ReviewCard /> */}
-                <MultipleChoice />
-            </View>
+            <View style={styles.flashcards}>{currentQuiz && <RandomQuiz quiz={currentQuiz} />}</View>
 
             <View style={styles.btnBox}>
                 <Button type="link">🧠 Đã ghi nhớ</Button>
@@ -145,4 +166,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Quiz;
+export default QuizScreen;

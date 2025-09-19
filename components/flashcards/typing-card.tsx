@@ -2,7 +2,9 @@ import { useState } from 'react';
 
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { Eraser01Icon, Idea01Icon, VolumeHighIcon } from '@hugeicons/core-free-icons';
+import * as Speech from 'expo-speech';
+
+import { Idea01Icon, VolumeHighIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 
 import { commonColor } from '@/constants/Colors';
@@ -11,23 +13,39 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 
 import { ThemedText } from '../ThemedText';
 import Input from '../input';
+import { Quiz } from '../random-quiz';
 import { ViToEng } from './multiple-choice';
 
-function TypingCard() {
+function TypingCard({ quiz }: { quiz: Quiz }) {
     const [value, setValue] = useState('');
+    const [isShowAnswer, setIsShowAnswer] = useState(false);
+    const [isCorrect, setIsCorrect] = useState<null | boolean>(null);
     const backgroundColor = useThemeColor({}, 'background');
 
-    const speak = () => {};
-    const showAnswer = () => {};
-    const next = () => {};
+    const speak = () => {
+        Speech.stop();
+        Speech.speak(quiz.en_word);
+    };
+
+    const showAnswer = () => {
+        setValue(quiz.en_word);
+        setIsShowAnswer(true);
+    };
+    // const next = () => {};
 
     const handleSubmit = (text: string) => {
         console.log(text);
+        const correct = text.trim().toLowerCase() === quiz.en_word.toLowerCase();
+        setIsCorrect(correct);
     };
+    let borderColor = '#ccc';
+    if (isCorrect === true) borderColor = commonColor.trueBorderColor;
+    else if (isCorrect === false) borderColor = commonColor.failBorderColor;
+    else if (isShowAnswer) borderColor = '#FF9800';
 
     return (
         <View style={[styles.wrapper, { backgroundColor: backgroundColor }]}>
-            <ViToEng />
+            <ViToEng meaning={quiz.meaning} example={quiz.ex[0]} url={quiz?.image_url} />
             <View style={styles.tools}>
                 <View style={styles.toolItem}>
                     <ThemedText style={styles.type}>New</ThemedText>
@@ -38,12 +56,14 @@ function TypingCard() {
                 <TouchableOpacity style={styles.toolItem} onPress={showAnswer}>
                     <HugeiconsIcon icon={Idea01Icon} size={28} color="#FF9800" />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.toolItem} onPress={next}>
+                {/* <TouchableOpacity style={styles.toolItem} onPress={next}>
                     <HugeiconsIcon icon={Eraser01Icon} size={28} color={commonColor.failBorderColor} />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </View>
             <Input
+                borderColor={borderColor}
                 placeholder="Type your answer here ..."
+                editable={!isShowAnswer && isCorrect !== true}
                 value={value}
                 onChangeText={setValue}
                 onSubmitEditing={(e) => {

@@ -1,17 +1,16 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { Cancel01Icon, Tick01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 
-import testImage from '@/assets/images/gg-icon.png';
-
 import { commonColor } from '@/constants/Colors';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
 
 import { ThemedText } from '../ThemedText';
+import { Quiz, QuizDirection } from '../random-quiz';
 import TextWithSound from '../text-with-sound';
 
 enum AnswerState {
@@ -44,16 +43,24 @@ type AnswerType = {
     state: AnswerState;
 };
 
-const EngToVi = () => {
+const EngToVi = ({ text }: { text: string }) => {
     return (
         <View>
-            <TextWithSound textType="title" text="Hello" />
+            <TextWithSound textType="title" text={text} />
             <ThemedText type="subtitle">(noun) /ˌvɒlənˈtɪər/</ThemedText>
         </View>
     );
 };
 
-export const ViToEng = () => {
+export const ViToEng = ({
+    meaning = '',
+    example = '',
+    url = "'",
+}: {
+    meaning: string;
+    example: string;
+    url?: string;
+}) => {
     return (
         <View>
             <ThemedText type="subtitle" style={{ fontSize: 18 }}>
@@ -65,7 +72,7 @@ export const ViToEng = () => {
                     fontWeight: 400,
                 }}
             >
-                anh em
+                {meaning}
             </ThemedText>
             <ThemedText type="subtitle" style={{ fontSize: 18 }}>
                 Ví dụ:{' '}
@@ -76,32 +83,47 @@ export const ViToEng = () => {
                     fontWeight: 400,
                 }}
             >
-                I ______ a used car from that garage for only $3000
+                {example}
             </ThemedText>
 
-            <Image
-                source={testImage}
-                style={{
-                    maxHeight: 100,
-                    maxWidth: 200,
-                    resizeMode: 'contain',
-                }}
-            />
+            {url && (
+                <Image
+                    source={{ uri: url }}
+                    style={{
+                        maxHeight: 100,
+                        maxWidth: 200,
+                        resizeMode: 'contain',
+                    }}
+                />
+            )}
         </View>
     );
 };
 
-function MultipleChoice() {
+function MultipleChoice({ quiz, type }: { quiz: Quiz; type: QuizDirection }) {
     const backgroundColor = useThemeColor({}, 'background');
     const textColor = useThemeColor({}, 'text');
-    const [answers, setAnswers] = useState(data);
+    const [answers, setAnswers] = useState<AnswerType[]>([]);
+    const correctAnswer = type === QuizDirection.V2E ? quiz.en_word : quiz.vn_word;
 
-    const answer = 'Xinh dep';
+    useEffect(() => {
+        const choices = type === QuizDirection.V2E ? quiz.en_choice : quiz.vn_choice;
+
+        const shuffled = [...choices].sort(() => Math.random() - 0.5);
+
+        // Khởi tạo answers
+        const initAnswers: AnswerType[] = shuffled.map((text) => ({
+            text,
+            state: AnswerState.UNSET,
+        }));
+
+        setAnswers(initAnswers);
+    }, [quiz]);
 
     const handleAnswer = (ans: string) => {
         const stateAnswer = answers.map((a) => {
             if (a.text === ans) {
-                if (ans === answer) a.state = AnswerState.TRUE;
+                if (ans === correctAnswer) a.state = AnswerState.TRUE;
                 else a.state = AnswerState.FALSE;
             }
 
@@ -128,8 +150,12 @@ function MultipleChoice() {
                 <View style={styles.wordType}>
                     <ThemedText style={styles.type}>New</ThemedText>
                 </View>
-                {/* <EngToVi /> */}
-                <ViToEng />
+
+                {type === QuizDirection.E2V ? (
+                    <EngToVi text={quiz.en_word} />
+                ) : (
+                    <ViToEng meaning={quiz.meaning} example={quiz.ex[0]} url={quiz?.image_url} />
+                )}
             </View>
             <View style={[styles.answersBox, { backgroundColor: backgroundColor }]}>
                 {answers.map((ans, index) => {

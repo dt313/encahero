@@ -4,71 +4,63 @@ import { useRouter } from 'expo-router';
 
 import { ArrowRight01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
+import { useQuery } from '@tanstack/react-query';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
 
+import { categoryService } from '@/services';
+
 import { ThemedText } from './ThemedText';
 
-const list = [
-    {
-        name: 'Common Words',
-        total: 100,
-        count: 12,
-    },
-    {
-        name: 'Business Vocabulary',
-        total: 80,
-        count: 25,
-    },
-    {
-        name: 'Travel Phrases',
-        total: 60,
-        count: 15,
-    },
-    {
-        name: 'Academic Words',
-        total: 120,
-        count: 40,
-    },
-    {
-        name: 'Idioms & Expressions',
-        total: 90,
-        count: 22,
-    },
-    {
-        name: 'TOEIC Listening Keywords',
-        total: 70,
-        count: 18,
-    },
-    {
-        name: 'Daily Conversation',
-        total: 110,
-        count: 30,
-    },
-];
-function CategoryList() {
+type CategoryItemType = {
+    id: number;
+    name: string;
+    collectionCount: number;
+};
+
+const CategoryItem = ({ id, name, collectionCount }: CategoryItemType) => {
     const textColor = useThemeColor({}, 'text');
     const router = useRouter();
+    return (
+        <TouchableOpacity onPress={() => router.push(`/category/${id}`)}>
+            <View style={[styles.item, { borderColor: '#7d7d7d77' }]}>
+                <View style={styles.header}>
+                    <ThemedText type="defaultSemiBold" style={styles.itemName}>
+                        {name}
+                    </ThemedText>
+                    <ThemedText lighter>{collectionCount} list</ThemedText>
+                </View>
+                <View>
+                    <HugeiconsIcon icon={ArrowRight01Icon} color={textColor} />
+                </View>
+            </View>
+        </TouchableOpacity>
+    );
+};
+
+function CategoryList() {
+    const {
+        data: categories = [],
+        isLoading,
+        error,
+    } = useQuery({
+        queryKey: ['allList'],
+        queryFn: categoryService.getCategories,
+    });
+
     return (
         <View style={[styles.wrapper]}>
             <ThemedText style={styles.headerName}>Category</ThemedText>
 
             <View style={styles.body}>
-                {list.map((item: any, index: number) => {
+                {categories.map((item: any, index: number) => {
                     return (
-                        <TouchableOpacity key={item.name} onPress={() => router.push('/category/1')}>
-                            <View style={[styles.item, { borderColor: '#7d7d7d77' }]}>
-                                <View style={styles.header}>
-                                    <ThemedText type="defaultSemiBold" style={styles.itemName}>
-                                        {item.name}
-                                    </ThemedText>
-                                    <ThemedText lighter>{item.total} list</ThemedText>
-                                </View>
-                                <View>
-                                    <HugeiconsIcon icon={ArrowRight01Icon} color={textColor} />
-                                </View>
-                            </View>
-                        </TouchableOpacity>
+                        <CategoryItem
+                            key={index}
+                            id={item.id}
+                            name={item.name}
+                            collectionCount={item.collection_count}
+                        />
                     );
                 })}
             </View>

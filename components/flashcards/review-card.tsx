@@ -11,34 +11,35 @@ import FlipCard from 'react-native-flip-card';
 import { useThemeColor } from '@/hooks/useThemeColor';
 
 import { ThemedText } from '../ThemedText';
+import { Quiz } from '../random-quiz';
 
 type AnswerType = {
     title: string;
-    name: 'easy' | 'medium' | 'hard';
+    name: 'E' | 'M' | 'H';
     icon: string;
 };
-const anwsers: AnswerType[] = [
+const answers: AnswerType[] = [
     {
         title: 'Easy',
-        name: 'easy',
+        name: 'E',
         icon: '😊',
     },
 
     {
         title: 'Medium',
-        name: 'medium',
+        name: 'M',
 
         icon: '🤔',
     },
 
     {
         title: 'Hard',
-        name: 'hard',
+        name: 'H',
         icon: '😡',
     },
 ];
 
-function ReviewCard() {
+function ReviewCard({ quiz }: { quiz: Quiz }) {
     const backgroundColor = useThemeColor({}, 'background');
     const textColor = useThemeColor({}, 'text');
 
@@ -48,10 +49,13 @@ function ReviewCard() {
         setFlip(!flip);
     };
 
+    const handleSubmit = (name: AnswerType) => {
+        console.log(name);
+    };
+
     const speak = () => {
         Speech.stop();
-        const thingToSay = 'Hello World';
-        Speech.speak(thingToSay);
+        Speech.speak(quiz.en_word);
     };
     return (
         <View style={styles.wrapper}>
@@ -73,10 +77,10 @@ function ReviewCard() {
                         perspective={1000}
                     >
                         <View style={styles.card}>
-                            <ThemedText type="title">Truth</ThemedText>
+                            <ThemedText type="title">{quiz.en_word}</ThemedText>
                         </View>
                         <View style={styles.card}>
-                            <ThemedText type="title">Su That</ThemedText>
+                            <ThemedText type="title">{quiz.vn_word}</ThemedText>
                         </View>
                     </FlipCard>
                 </View>
@@ -94,9 +98,9 @@ function ReviewCard() {
                 </View>
             </View>
             <View style={[styles.replyBox, { backgroundColor: backgroundColor }]}>
-                {anwsers.map((ans) => {
+                {answers.map((ans) => {
                     return (
-                        <TouchableOpacity key={ans.title} style={styles.btn}>
+                        <TouchableOpacity key={ans.title} style={styles.btn} onPress={() => handleSubmit(ans.name)}>
                             <Text
                                 style={{
                                     fontSize: 24,
@@ -192,9 +196,9 @@ const styles = StyleSheet.create({
         height: '100%',
     },
 
-    easy: { color: '#4CAF50', fontWeight: '600' }, // xanh lá
-    medium: { color: '#FFC107', fontWeight: '600' }, // vàng cam
-    hard: { color: '#F44336', fontWeight: '600' }, // đỏ
+    E: { color: '#4CAF50', fontWeight: '600' }, // xanh lá
+    M: { color: '#FFC107', fontWeight: '600' }, // vàng cam
+    H: { color: '#F44336', fontWeight: '600' }, // đỏ
 });
 
 export default ReviewCard;

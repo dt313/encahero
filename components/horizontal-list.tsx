@@ -30,10 +30,12 @@ type ListItemType = {
     isRandomColor: boolean;
     isRegistered: boolean | undefined;
     isLearningList: boolean | undefined;
-    onOpenModal: (name: string) => void;
+    onOpenModal: (name: number) => void;
     name: string;
     icon: ReactNode | string;
     cardCount: number;
+    masteredCount?: number;
+    id: number;
 };
 
 const ListItem = ({
@@ -44,6 +46,8 @@ const ListItem = ({
     name,
     icon,
     cardCount = 0,
+    masteredCount,
+    id,
 }: ListItemType) => {
     const theme = useColorScheme();
     const lighterText = useThemeColor({}, 'lighterText');
@@ -55,7 +59,7 @@ const ListItem = ({
         <View style={[styles.item, { backgroundColor: backgroundColor }]}>
             <View style={styles.itemHeader}>
                 <Text style={styles.itemIcon}>{icon}</Text>
-                <Button style={{ paddingVertical: 0 }} onPress={() => onOpenModal(name)}>
+                <Button style={{ paddingVertical: 0 }} onPress={() => onOpenModal(id)}>
                     {isRegistered ? (
                         <HugeiconsIcon icon={SettingsIcon} size={24} color={textColor} />
                     ) : (
@@ -78,7 +82,7 @@ const ListItem = ({
                                 marginBottom: 4,
                             }}
                         >
-                            12
+                            {masteredCount}
                             <ThemedText lighter>/{cardCount} cards</ThemedText>
                         </ThemedText>
                     </View>
@@ -110,8 +114,8 @@ function HorizontalList({
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
     // callbacks
-    const handlePresentModalPress = useCallback((itemName: string) => {
-        const found = list.find((i: ItemType) => i.name === itemName) || null;
+    const handlePresentModalPress = useCallback((itemId: string | number) => {
+        const found = list.find((i: any) => i.id === itemId) || null;
         setSelectedItem(found);
         if (found) bottomSheetModalRef.current?.present();
     }, []);
@@ -125,7 +129,6 @@ function HorizontalList({
         console.log(goal);
     };
 
-    console.log({ list });
     return (
         <View style={[styles.wrapper, containerStyle]}>
             <ThemedText style={styles.headerName}>{headerName}</ThemedText>
@@ -145,6 +148,8 @@ function HorizontalList({
                                 name={item?.collection?.name}
                                 isLearningList={isLearningList}
                                 cardCount={item?.collection?.card_count}
+                                masteredCount={item.mastered_card_count}
+                                id={item.id}
                             />
                         );
                     } else {
@@ -152,12 +157,13 @@ function HorizontalList({
                             <ListItem
                                 key={item.id}
                                 isRandomColor={isRandomColor}
-                                isRegistered={true}
+                                isRegistered={false}
                                 onOpenModal={handlePresentModalPress}
                                 icon="1️⃣"
                                 name={item.name}
                                 isLearningList={false}
                                 cardCount={item.card_count}
+                                id={item.id}
                             />
                         );
                     }

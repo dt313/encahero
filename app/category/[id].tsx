@@ -7,6 +7,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { ArrowRight01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
+import { useQuery } from '@tanstack/react-query';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/ThemedText';
@@ -16,6 +17,8 @@ import ModalBottomSheet from '@/components/modal-bottom-sheet';
 import RegisteredListStats from '@/components/registered-list-stats';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
+
+import { categoryService } from '@/services';
 
 type ListItem = {
     name: string;
@@ -61,6 +64,16 @@ export default function CategoryDetail() {
     const modalBottomRef = useRef<BottomSheetModal>(null);
     const [selectedItem, setSelectedItem] = useState<ListItem | undefined>();
     const backgroundColor = useThemeColor({}, 'background');
+
+    const {
+        data: collections = [],
+        isLoading,
+        error,
+    } = useQuery({
+        queryKey: ['collectionsOfCategory'],
+        queryFn: () => categoryService.getCollectionsOfCategory(Number(id)),
+    });
+
     const handleBack = () => {
         try {
             router.back();
@@ -87,13 +100,13 @@ export default function CategoryDetail() {
             <View style={styles.header}>
                 <BackIcon onPress={handleBack} />
                 <ThemedText type="title" style={styles.headerName} numberOfLines={1}>
-                    Common Words {id}
+                    {collections[0]?.category?.name}
                 </ThemedText>
             </View>
 
             <ScrollView>
                 <View style={styles.body}>
-                    {list.map((item: any, index: number) => {
+                    {collections.map((item: any, index: number) => {
                         return (
                             <TouchableOpacity key={item.name} onPress={() => handleOpenBottomModal(item.name)}>
                                 <View style={[styles.item, { borderColor: '#7d7d7d77' }]}>
@@ -101,7 +114,7 @@ export default function CategoryDetail() {
                                         <ThemedText type="defaultSemiBold" style={styles.itemName}>
                                             {item.name}
                                         </ThemedText>
-                                        <ThemedText lighter>{item.total} cards</ThemedText>
+                                        <ThemedText lighter>{item.card_count} cards</ThemedText>
                                     </View>
                                     <View>
                                         <HugeiconsIcon icon={ArrowRight01Icon} color={textColor} />

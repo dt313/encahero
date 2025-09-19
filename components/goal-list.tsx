@@ -1,9 +1,16 @@
+import { useEffect } from 'react';
+
 import { StyleSheet, View, ViewStyle } from 'react-native';
 
+import { useRouter } from 'expo-router';
+
+import { initLearningList } from '@/store/action/learning-list-action';
+import { RootState } from '@/store/reducers';
 import { ArrowRight01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useQuery } from '@tanstack/react-query';
 import * as Progress from 'react-native-progress';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
 
@@ -18,18 +25,20 @@ type GoalListType = {
 };
 
 type GoalItemType = {
+    id: number;
     index: number;
     name: string;
     todayCount: number;
     taskCount: number;
 };
 
-const GoalItem = ({ index, name, todayCount, taskCount }: GoalItemType) => {
+const GoalItem = ({ index, id, name, todayCount, taskCount }: GoalItemType) => {
     const bgColor = useThemeColor({}, 'white');
     const goalBg = useThemeColor({}, 'goalBg');
     const lighterText = useThemeColor({}, 'lighterText');
 
     const progress = taskCount > 0 ? todayCount / taskCount : 0;
+    const router = useRouter();
     return (
         <View style={[styles.item, { backgroundColor: index % 2 === 0 ? bgColor : goalBg }]}>
             <View style={styles.header}>
@@ -41,6 +50,12 @@ const GoalItem = ({ index, name, todayCount, taskCount }: GoalItemType) => {
                     type="link"
                     textStyle={{ color: lighterText, paddingVertical: 0, fontWeight: 400 }}
                     rightIcon={<HugeiconsIcon icon={ArrowRight01Icon} color={lighterText} />}
+                    onPress={() =>
+                        router.push({
+                            pathname: '/quiz/[id]',
+                            params: { id: id },
+                        })
+                    }
                 >
                     Learn
                 </Button>
@@ -79,24 +94,33 @@ const GoalItem = ({ index, name, todayCount, taskCount }: GoalItemType) => {
 };
 
 function GoalList({ title, containerStyle }: GoalListType) {
+    const dispatch = useDispatch();
+    const collections = useSelector((state: RootState) => state.learningList.collections);
+
     const {
         data: learningList = [],
         isLoading,
         error,
     } = useQuery({
         queryKey: ['goalList'],
-        queryFn: () => collectionService.getMyLearningList(),
+        queryFn: collectionService.getMyLearningList,
+        enabled: collections.length === 0, // ✅ chỉ fetch khi chưa có trong Redux
     });
 
-    console.log({ learningList });
+    useEffect(() => {
+        if (learningList.length && collections.length === 0) {
+            dispatch(initLearningList(learningList));
+        }
+    }, [learningList, collections.length, dispatch]);
     return (
         <View style={[containerStyle]}>
             <ThemedText type="subtitle">{title}</ThemedText>
             <View style={styles.body}>
-                {learningList.map((item: any, index: number) => {
+                {collections.map((item: any, index: number) => {
                     return (
                         <GoalItem
                             key={item.id}
+                            id={item.id}
                             index={index}
                             name={item.collection.name}
                             taskCount={item.task_count}

@@ -18,6 +18,7 @@ type InputProps = {
     isPassword?: boolean;
     leftIcon?: ReactNode;
     errorMessage?: string | undefined;
+    borderColor?: string;
 } & TextInputProps;
 
 function Input({
@@ -27,6 +28,7 @@ function Input({
     errorMessage,
     onChangeText,
     isPassword = false,
+    borderColor,
     ...rest
 }: InputProps) {
     const colors = useThemeColors();
@@ -36,7 +38,7 @@ function Input({
     return (
         <View>
             {label && <ThemedText style={styles.label}>{label}</ThemedText>}
-            <View style={[styles.inputWrap, { borderColor: inputBorderColor }]}>
+            <View style={[styles.inputWrap, { borderColor: borderColor || inputBorderColor }]}>
                 {leftIcon}
                 <TextInput
                     style={[

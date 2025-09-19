@@ -2,8 +2,11 @@ import React from 'react';
 
 import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 
+import { RootState } from '@/store/reducers';
+import { useIsFocused } from '@react-navigation/native';
 import { useQuery } from '@tanstack/react-query';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSelector } from 'react-redux';
 
 import CategoryList from '@/components/category-list';
 import HorizontalList from '@/components/horizontal-list';
@@ -19,94 +22,19 @@ export type ItemType = {
     isLearningList?: boolean;
 };
 
-const data: ItemType[] = [
-    {
-        name: 'Common Words Common Words Common Words Common Words Common Words Common Words  Common Words Common Words',
-        cards: 639,
-        icon: '👨‍🎓',
-        isRegistered: true,
-    },
-    {
-        name: 'Business English',
-        cards: 420,
-        icon: '💼',
-    },
-    {
-        name: 'Travel & Tourism',
-        cards: 310,
-        icon: '✈️',
-    },
-    {
-        name: 'TOEIC Practice',
-        cards: 550,
-        icon: '📚',
-        isRegistered: true,
-    },
-    {
-        name: 'Daily Conversations',
-        cards: 275,
-        icon: '🗣️',
-    },
-];
-
-const data2: ItemType[] = [
-    {
-        name: 'Common Words',
-        cards: 639,
-        icon: '👨‍🎓',
-        isRegistered: true,
-        isLearningList: true,
-    },
-    {
-        name: 'Business English',
-        cards: 420,
-        icon: '💼',
-        isRegistered: true,
-        isLearningList: true,
-    },
-    {
-        name: 'Travel & Tourism',
-        cards: 310,
-        icon: '✈️',
-        isRegistered: true,
-        isLearningList: true,
-    },
-    {
-        name: 'TOEIC Practice',
-        cards: 550,
-        icon: '📚',
-        isRegistered: true,
-        isLearningList: true,
-    },
-    {
-        name: 'Daily Conversations',
-        cards: 275,
-        icon: '🗣️',
-        isRegistered: true,
-        isLearningList: true,
-    },
-];
-
 function List() {
-    const {
-        data: learningList = [],
-        isLoading,
-        error,
-    } = useQuery({
-        queryKey: ['goalList'],
-        queryFn: () => collectionService.getMyLearningList(),
-    });
-
+    const collections = useSelector((state: RootState) => state.learningList.collections);
+    const isFocused = useIsFocused();
     const {
         data: allList = [],
         isLoading: isLoadingAll,
         error: errorAll,
     } = useQuery({
         queryKey: ['allList'],
-        queryFn: () => collectionService.getAllCollection(),
+        queryFn: collectionService.getAllCollection,
+        enabled: isFocused,
     });
 
-    console.log({ allList });
     return (
         <SafeAreaView style={[styles.wrapper]}>
             <ListHeader />
@@ -121,7 +49,7 @@ function List() {
                         <HorizontalList
                             headerName="Learning List"
                             containerStyle={{ marginTop: 24 }}
-                            list={learningList}
+                            list={collections}
                             isLearningList={true}
                         />
                         <CategoryList />
