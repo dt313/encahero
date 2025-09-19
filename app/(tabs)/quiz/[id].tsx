@@ -5,6 +5,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 
 import { RootState } from '@/store/reducers';
+import { CollectionProgress } from '@/store/reducers/learning-list-reducer';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { BookOpen02Icon, Settings01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
@@ -25,28 +26,40 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 import { quizService } from '@/services';
 
 function QuizScreen() {
-    const white = useThemeColor({}, 'white');
-    const textColor = useThemeColor({}, 'text');
     const leftRef = useRef<BottomSheetModal>(null);
     const rightRef = useRef<BottomSheetModal>(null);
 
     const { id } = useLocalSearchParams();
     const collections = useSelector((state: RootState) => state.learningList.collections);
 
-    const [quizs, setQuizs] = useState([]);
-    const [currentQuiz, setCurrentQuiz] = useState<Quiz>();
+    const [quizList, setQuizList] = useState<Quiz[]>([]);
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [currentCollection, setCurrentCollection] = useState<CollectionProgress>();
     const isFocus = useIsFocused();
 
     useEffect(() => {
         const fetchQuiz = async () => {
             let collectionId = 1;
             const res = await quizService.getRandomQuizOfCollection(collectionId);
-            setQuizs(res);
-            setCurrentQuiz(res[0]);
+            console.log({ length: res.length });
+            setQuizList(res);
+            setCurrentIndex(0);
         };
 
         fetchQuiz();
     }, [id, isFocus, collections]);
+
+    console.log({ id });
+
+    useEffect(() => {
+        if (!collections) return;
+        let collection = null;
+        if (id) collection = collections.find((c: CollectionProgress) => c.collection.id === Number(id));
+        else collection = collections[0];
+        setCurrentCollection(collection);
+    }, [id, collections]);
+
+    console.log({ currentCollection });
 
     const capitalizeWords = (text: string) => {
         return text.replace(/\b\w/g, (char) => char.toUpperCase());
@@ -62,6 +75,20 @@ function QuizScreen() {
         rightRef.current?.present();
     }, []);
 
+    const handleSkip = () => {
+        if (currentIndex < quizList.length - 1) {
+            setCurrentIndex(currentIndex + 1);
+        } else {
+            setCurrentIndex(0);
+        }
+    };
+
+    const learned = currentCollection?.today_learned_count ?? 0;
+    const total = currentCollection?.task_count ?? 1; // tránh chia cho 0
+    const progress = learned / total;
+
+    const white = useThemeColor({}, 'white');
+    const textColor = useThemeColor({}, 'text');
     return (
         <SafeAreaView style={{ paddingHorizontal: 20, flex: 1 }}>
             <View style={styles.header}>
@@ -69,7 +96,7 @@ function QuizScreen() {
                     <HugeiconsIcon icon={BookOpen02Icon} size={24} color={textColor} />
                 </TouchableOpacity>
                 <ThemedText type="subtitle" style={styles.headerName} numberOfLines={1} ellipsizeMode="tail">
-                    {capitalizeWords('Hello anh em nhe toi la tuan bhehehe')}
+                    {capitalizeWords(currentCollection ? currentCollection?.collection?.name : 'Name')}
                 </ThemedText>
                 <TouchableOpacity style={[styles.btnWrap, { backgroundColor: white }]} onPress={handleOpenSettingBox}>
                     <HugeiconsIcon icon={Settings01Icon} size={24} color={textColor} />
@@ -77,30 +104,30 @@ function QuizScreen() {
             </View>
 
             <View style={styles.progress}>
-                <ThemedText style={styles.progressNumber}>1</ThemedText>
+                <ThemedText style={styles.progressNumber}>{currentCollection?.today_learned_count}</ThemedText>
                 <Bar
                     style={{ flex: 1, marginHorizontal: 12, borderRadius: 30 }}
                     color="#4CAF50"
                     height={12}
-                    progress={0.4}
+                    progress={progress}
                     width={null}
                     borderWidth={0}
                     unfilledColor="rgba(198, 198, 198, 0.4)"
                 />
-                <ThemedText style={[styles.progressNumber]}>200</ThemedText>
+                <ThemedText style={[styles.progressNumber]}>{currentCollection?.task_count}</ThemedText>
             </View>
 
-            <View style={styles.flashcards}>{currentQuiz && <RandomQuiz quiz={currentQuiz} />}</View>
+            <View style={styles.flashcards}>{quizList.length > 0 && <RandomQuiz quiz={quizList[currentIndex]} />}</View>
 
             <View style={styles.btnBox}>
                 <Button type="link">🧠 Đã ghi nhớ</Button>
-                <Button type="link" textStyle={{ color: textColor }}>
+                <Button type="link" textStyle={{ color: textColor }} onPress={handleSkip}>
                     Skip →
                 </Button>
             </View>
 
             <ModalBottomSheet bottomSheetModalRef={leftRef}>
-                <LearningList />
+                <LearningList selectedIndex={currentCollection?.collection.id} />
             </ModalBottomSheet>
 
             <ModalBottomSheet bottomSheetModalRef={rightRef}>
@@ -145,7 +172,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-around',
-        marginBottom: 12,
+        marginBottom: 24,
         paddingHorizontal: 12,
     },
 

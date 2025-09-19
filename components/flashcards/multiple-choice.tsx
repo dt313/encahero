@@ -19,25 +19,6 @@ enum AnswerState {
     TRUE = 'TRUE',
 }
 
-const data: AnswerType[] = [
-    {
-        text: 'Xinh dep',
-        state: AnswerState.UNSET,
-    },
-    {
-        text: 'Tinh nguyen vien',
-        state: AnswerState.UNSET,
-    },
-    {
-        text: 'Anh/em trai',
-        state: AnswerState.UNSET,
-    },
-    {
-        text: 'tong cong',
-        state: AnswerState.UNSET,
-    },
-];
-
 type AnswerType = {
     text: string;
     state: AnswerState;
@@ -213,6 +194,7 @@ const styles = StyleSheet.create({
     },
 
     answersBox: {
+        marginTop: 24,
         flexDirection: 'row',
         flexWrap: 'wrap',
         gap: 12, // RN 0.71+ mới hỗ trợ gap

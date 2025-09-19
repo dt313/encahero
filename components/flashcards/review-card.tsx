@@ -49,7 +49,7 @@ function ReviewCard({ quiz }: { quiz: Quiz }) {
         setFlip(!flip);
     };
 
-    const handleSubmit = (name: AnswerType) => {
+    const handleSubmit = (name: 'E' | 'M' | 'H') => {
         console.log(name);
     };
 
@@ -98,7 +98,7 @@ function ReviewCard({ quiz }: { quiz: Quiz }) {
                 </View>
             </View>
             <View style={[styles.replyBox, { backgroundColor: backgroundColor }]}>
-                {answers.map((ans) => {
+                {answers.map((ans: AnswerType) => {
                     return (
                         <TouchableOpacity key={ans.title} style={styles.btn} onPress={() => handleSubmit(ans.name)}>
                             <Text

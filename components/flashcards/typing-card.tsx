@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
@@ -38,10 +38,13 @@ function TypingCard({ quiz }: { quiz: Quiz }) {
         const correct = text.trim().toLowerCase() === quiz.en_word.toLowerCase();
         setIsCorrect(correct);
     };
-    let borderColor = '#ccc';
-    if (isCorrect === true) borderColor = commonColor.trueBorderColor;
-    else if (isCorrect === false) borderColor = commonColor.failBorderColor;
-    else if (isShowAnswer) borderColor = '#FF9800';
+
+    const borderColor = useMemo(() => {
+        if (isShowAnswer) return '#FF9800';
+        if (isCorrect === true) return commonColor.trueBorderColor;
+        if (isCorrect === false) return commonColor.failBorderColor;
+        return undefined;
+    }, [isCorrect, isShowAnswer]);
 
     return (
         <View style={[styles.wrapper, { backgroundColor: backgroundColor }]}>
@@ -61,7 +64,7 @@ function TypingCard({ quiz }: { quiz: Quiz }) {
                 </TouchableOpacity> */}
             </View>
             <Input
-                borderColor={borderColor}
+                borderColor={borderColor ?? undefined}
                 placeholder="Type your answer here ..."
                 editable={!isShowAnswer && isCorrect !== true}
                 value={value}
