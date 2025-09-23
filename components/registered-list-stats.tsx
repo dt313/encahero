@@ -1,10 +1,13 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { RootState } from '@/store/reducers';
+import { CollectionProgress } from '@/store/reducers/learning-list-reducer';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { ArrowRight02Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
+import { useSelector } from 'react-redux';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
 
@@ -13,23 +16,42 @@ import ListRegister from './list-register';
 import ModalBottomSheet from './modal-bottom-sheet';
 
 type RegisteredStatsProps = {
-    title: string;
+    id: number | undefined;
+    title: string | undefined;
 };
 
-export default function RegisteredListStats({ title }: RegisteredStatsProps) {
+export default function RegisteredListStats({ id, title }: RegisteredStatsProps) {
     const background = useThemeColor({}, 'background');
     const linkColor = useThemeColor({}, 'quizLinkTextColor');
     const linkBg = useThemeColor({}, 'quizLinkBg');
     const white = useThemeColor({}, 'white');
     const textColor = useThemeColor({}, 'text');
 
+    const [collection, setCollection] = useState<CollectionProgress>();
+    const learningList = useSelector((state: RootState) => state.learningList.collections);
+
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+
+    useEffect(() => {
+        if (id && learningList?.length > 0) {
+            const found = learningList.find((item: CollectionProgress) => item.collection_id === id);
+            if (found) {
+                setCollection(found);
+            }
+        }
+    }, [id, learningList]);
 
     const handleOpenBottomModal = useCallback(() => {
         bottomSheetModalRef.current?.present();
     }, []);
 
-    const handleConfirm = () => {};
+    const handleCloseBottomModal = useCallback(() => {
+        bottomSheetModalRef.current?.close();
+    }, []);
+
+    const handleConfirm = () => {
+        console.log({ id });
+    };
     return (
         <View style={[styles.container, { backgroundColor: background }]}>
             <ThemedText type="title" style={styles.title} numberOfLines={2}>
@@ -44,13 +66,13 @@ export default function RegisteredListStats({ title }: RegisteredStatsProps) {
                     </ThemedText>
                 </View>
                 <View style={[styles.statBox, { backgroundColor: white }]}>
-                    <ThemedText style={styles.statNumber}>{20}</ThemedText>
+                    <ThemedText style={styles.statNumber}>{collection?.mastered_card_count ?? 0}</ThemedText>
                     <ThemedText lighter style={styles.statLabel}>
                         Đã thuộc
                     </ThemedText>
                 </View>
                 <View style={[styles.statBox, { backgroundColor: white }]}>
-                    <ThemedText style={styles.statNumber}>{200}</ThemedText>
+                    <ThemedText style={styles.statNumber}>{collection?.task_count ?? 0}</ThemedText>
                     <ThemedText lighter style={styles.statLabel}>
                         Tổng số từ
                     </ThemedText>
@@ -88,7 +110,8 @@ export default function RegisteredListStats({ title }: RegisteredStatsProps) {
             <ModalBottomSheet bottomSheetModalRef={bottomSheetModalRef}>
                 <ListRegister
                     description="Chọn số lượng task bạn phải hoàn thành trong 1 ngày"
-                    title={'Hello'}
+                    title={title ?? ''}
+                    onClose={handleCloseBottomModal}
                     onConfirm={handleConfirm}
                     isRegistered={true}
                 />

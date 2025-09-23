@@ -41,15 +41,12 @@ function QuizScreen() {
         const fetchQuiz = async () => {
             let collectionId = 1;
             const res = await quizService.getRandomQuizOfCollection(collectionId);
-            console.log({ length: res.length });
             setQuizList(res);
             setCurrentIndex(0);
         };
 
         fetchQuiz();
     }, [id, isFocus, collections]);
-
-    console.log({ id });
 
     useEffect(() => {
         if (!collections) return;
@@ -58,8 +55,6 @@ function QuizScreen() {
         else collection = collections[0];
         setCurrentCollection(collection);
     }, [id, collections]);
-
-    console.log({ currentCollection });
 
     const capitalizeWords = (text: string) => {
         return text.replace(/\b\w/g, (char) => char.toUpperCase());

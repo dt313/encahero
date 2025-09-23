@@ -44,7 +44,7 @@ function CategoryList() {
         isLoading,
         error,
     } = useQuery({
-        queryKey: ['allList'],
+        queryKey: ['allCategories'],
         queryFn: categoryService.getCategories,
     });
 

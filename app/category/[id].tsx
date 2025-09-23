@@ -4,6 +4,7 @@ import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
+import { CollectionProgress } from '@/store/reducers/learning-list-reducer';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { ArrowRight01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
@@ -20,49 +21,11 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 
 import { categoryService } from '@/services';
 
-type ListItem = {
-    name: string;
-    total: number;
-    isRegistered?: boolean;
-};
-
-const list: ListItem[] = [
-    {
-        name: 'Common Words',
-        total: 100,
-        isRegistered: true,
-    },
-    {
-        name: 'Business Vocabulary',
-        total: 80,
-    },
-    {
-        name: 'Travel Phrases',
-        total: 60,
-    },
-    {
-        name: 'Academic Words',
-        total: 120,
-    },
-    {
-        name: 'Idioms & Expressions',
-        total: 90,
-    },
-    {
-        name: 'TOEIC Listening Keywords',
-        total: 70,
-    },
-    {
-        name: 'Daily Conversation',
-        total: 110,
-    },
-];
-
 export default function CategoryDetail() {
     const { id } = useLocalSearchParams();
     const router = useRouter();
     const modalBottomRef = useRef<BottomSheetModal>(null);
-    const [selectedItem, setSelectedItem] = useState<ListItem | undefined>();
+    const [selectedItem, setSelectedItem] = useState<CollectionProgress | undefined>();
     const backgroundColor = useThemeColor({}, 'background');
 
     const {
@@ -84,9 +47,9 @@ export default function CategoryDetail() {
 
     const textColor = useThemeColor({}, 'text');
 
-    const handleOpenBottomModal = useCallback((name: string) => {
+    const handleOpenBottomModal = useCallback((id: number) => {
         modalBottomRef.current?.present();
-        const selected = list.find((item) => item.name === name);
+        const selected = collections.find((item: CollectionProgress) => item.collection_id === id);
         setSelectedItem(selected);
     }, []);
 
@@ -108,7 +71,7 @@ export default function CategoryDetail() {
                 <View style={styles.body}>
                     {collections.map((item: any, index: number) => {
                         return (
-                            <TouchableOpacity key={item.name} onPress={() => handleOpenBottomModal(item.name)}>
+                            <TouchableOpacity key={item.name} onPress={() => handleOpenBottomModal(item.collection_id)}>
                                 <View style={[styles.item, { borderColor: '#7d7d7d77' }]}>
                                     <View style={styles.itemHeader}>
                                         <ThemedText type="defaultSemiBold" style={styles.itemName}>
@@ -128,11 +91,11 @@ export default function CategoryDetail() {
 
             <ModalBottomSheet bottomSheetModalRef={modalBottomRef}>
                 {selectedItem?.isRegistered ? (
-                    <RegisteredListStats title={selectedItem.name} />
+                    <RegisteredListStats id={selectedItem.collection_id} title={selectedItem.collection.name} />
                 ) : (
                     <ListRegister
                         description="Chọn số lượng task bạn phải hoàn thành trong 1 ngày"
-                        title={selectedItem ? selectedItem?.name : ''}
+                        title={selectedItem ? selectedItem.collection.name : ''}
                         onConfirm={() => {}}
                         onClose={closeBottomModalSheet}
                     />

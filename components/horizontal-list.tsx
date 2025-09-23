@@ -1,16 +1,20 @@
-import { ReactNode, useCallback, useRef, useState } from 'react';
+import { ReactNode, useRef, useState } from 'react';
 
 import { FlatList, StyleSheet, Text, View, ViewStyle, useColorScheme } from 'react-native';
 
-import { ItemType } from '@/app/(tabs)/list';
+import { register } from '@/store/action/learning-list-action';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { AddSquareIcon, SettingsIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { Bar } from 'react-native-progress';
+import { useDispatch } from 'react-redux';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
+import useToast from '@/hooks/useToast';
 
 import { getRandomColor } from '@/utils';
+
+import { collectionService } from '@/services';
 
 import { ThemedText } from './ThemedText';
 import Button from './button';
@@ -29,8 +33,6 @@ interface HorizontalListProps {
 type ListItemType = {
     isRandomColor: boolean;
     isRegistered: boolean | undefined;
-    isLearningList: boolean | undefined;
-    onOpenModal: (name: number) => void;
     name: string;
     icon: ReactNode | string;
     cardCount: number;
@@ -41,8 +43,6 @@ type ListItemType = {
 const ListItem = ({
     isRandomColor = false,
     isRegistered = false,
-    isLearningList = false,
-    onOpenModal,
     name,
     icon,
     cardCount = 0,
@@ -55,12 +55,53 @@ const ListItem = ({
     const white = useThemeColor({}, 'white');
 
     const backgroundColor = isRandomColor ? getRandomColor(theme) : white;
+    const { showErrorToast, showSuccessToast } = useToast();
+    const [registered, setRegistered] = useState(isRegistered);
+    const dispatch = useDispatch();
+    const closeBottomModalSheet = () => {
+        if (!bottomSheetModalRef.current) return;
+        bottomSheetModalRef.current?.close();
+    };
+
+    const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+
+    // callbacks
+    const handlePresentModalPress = () => {
+        bottomSheetModalRef.current?.present();
+    };
+
+    const handleConfirm = async (goal: number) => {
+        console.log({ goal });
+        try {
+            const res = await collectionService.registerCollection(id, goal);
+            if (res) {
+                closeBottomModalSheet();
+                showSuccessToast(`Register ${res.name} successfully`);
+                dispatch(
+                    register({
+                        ...res,
+                        collection: {
+                            id: res.id,
+                            name,
+                            card_count: 0,
+                        },
+                        mastered_card_count: 0,
+                        today_learned_count: 0,
+                    }),
+                );
+                setRegistered(true);
+            }
+        } catch (error) {
+            showErrorToast(error);
+        }
+    };
+
     return (
         <View style={[styles.item, { backgroundColor: backgroundColor }]}>
             <View style={styles.itemHeader}>
                 <Text style={styles.itemIcon}>{icon}</Text>
-                <Button style={{ paddingVertical: 0 }} onPress={() => onOpenModal(id)}>
-                    {isRegistered ? (
+                <Button style={{ paddingVertical: 0 }} onPress={handlePresentModalPress}>
+                    {registered ? (
                         <HugeiconsIcon icon={SettingsIcon} size={24} color={textColor} />
                     ) : (
                         <HugeiconsIcon icon={AddSquareIcon} size={28} color={textColor} />
@@ -72,7 +113,7 @@ const ListItem = ({
                 {name}
             </ThemedText>
 
-            {isLearningList ? (
+            {registered ? (
                 <View style={{ flex: 1 }}>
                     <View>
                         <ThemedText
@@ -98,6 +139,20 @@ const ListItem = ({
             ) : (
                 <ThemedText style={[styles.itemNumber, { color: lighterText }]}>{cardCount} cards</ThemedText>
             )}
+
+            <ModalBottomSheet bottomSheetModalRef={bottomSheetModalRef}>
+                {registered ? (
+                    <RegisteredListStats id={id} title={name} />
+                ) : (
+                    <ListRegister
+                        description="Chọn số lượng task bạn phải hoàn thành trong 1 ngày"
+                        title={name}
+                        onConfirm={handleConfirm}
+                        onClose={closeBottomModalSheet}
+                        isRegistered={false}
+                    />
+                )}
+            </ModalBottomSheet>
         </View>
     );
 };
@@ -109,26 +164,6 @@ function HorizontalList({
     list,
     isLearningList,
 }: HorizontalListProps) {
-    const [selectedItem, setSelectedItem] = useState<ItemType | null>(null);
-    // ref
-    const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-
-    // callbacks
-    const handlePresentModalPress = useCallback((itemId: string | number) => {
-        const found = list.find((i: any) => i.id === itemId) || null;
-        setSelectedItem(found);
-        if (found) bottomSheetModalRef.current?.present();
-    }, []);
-
-    const closeBottomModalSheet = () => {
-        if (!bottomSheetModalRef.current) return;
-        bottomSheetModalRef.current?.close();
-    };
-
-    const handleConfirm = (goal: number) => {
-        console.log(goal);
-    };
-
     return (
         <View style={[styles.wrapper, containerStyle]}>
             <ThemedText style={styles.headerName}>{headerName}</ThemedText>
@@ -143,10 +178,8 @@ function HorizontalList({
                                 key={item.id}
                                 isRandomColor={isRandomColor}
                                 isRegistered={true}
-                                onOpenModal={handlePresentModalPress}
                                 icon="1️⃣"
                                 name={item?.collection?.name}
-                                isLearningList={isLearningList}
                                 cardCount={item?.collection?.card_count}
                                 masteredCount={item.mastered_card_count}
                                 id={item.id}
@@ -157,11 +190,9 @@ function HorizontalList({
                             <ListItem
                                 key={item.id}
                                 isRandomColor={isRandomColor}
-                                isRegistered={false}
-                                onOpenModal={handlePresentModalPress}
+                                isRegistered={item.is_registered}
                                 icon="1️⃣"
                                 name={item.name}
-                                isLearningList={false}
                                 cardCount={item.card_count}
                                 id={item.id}
                             />
@@ -171,20 +202,6 @@ function HorizontalList({
                 contentContainerStyle={{ columnGap: 8, paddingVertical: 16 }}
                 showsHorizontalScrollIndicator={false}
             />
-
-            <ModalBottomSheet bottomSheetModalRef={bottomSheetModalRef}>
-                {selectedItem?.isRegistered ? (
-                    <RegisteredListStats title={selectedItem.name} />
-                ) : (
-                    <ListRegister
-                        description="Chọn số lượng task bạn phải hoàn thành trong 1 ngày"
-                        title={selectedItem ? selectedItem?.name : ''}
-                        onConfirm={handleConfirm}
-                        onClose={closeBottomModalSheet}
-                        isRegistered={selectedItem?.isRegistered}
-                    />
-                )}
-            </ModalBottomSheet>
         </View>
     );
 }

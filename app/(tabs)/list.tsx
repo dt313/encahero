@@ -14,14 +14,6 @@ import ListHeader from '@/components/list-header';
 
 import { collectionService } from '@/services';
 
-export type ItemType = {
-    name: string;
-    cards: number;
-    icon: string;
-    isRegistered?: boolean;
-    isLearningList?: boolean;
-};
-
 function List() {
     const collections = useSelector((state: RootState) => state.learningList.collections);
     const isFocused = useIsFocused();

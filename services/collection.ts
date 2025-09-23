@@ -17,3 +17,12 @@ export const getAllCollection = async () => {
         throw error; // lỗi khác (network, timeout, ...)
     }
 };
+
+export const registerCollection = async (id: number, taskNum: number) => {
+    try {
+        const res = await instance.post(`/collections/${id}/registrations`, { taskNum });
+        return res.data;
+    } catch (error: any) {
+        throw error; // lỗi khác (network, timeout, ...)
+    }
+};

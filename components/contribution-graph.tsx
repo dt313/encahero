@@ -53,7 +53,6 @@ function ContributionGraph({ bgColor }: { bgColor: string }) {
 
                         return {
                             onPress: () => {
-                                console.log(value);
                                 if (v) {
                                     setTooltip({ date: v.date, count: v.count || 0 });
                                 }

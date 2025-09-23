@@ -1,6 +1,6 @@
 import ReduxActionType from '@/types/redux-action-type';
 
-import { INIT_LEARNING_LIST } from '../action/learning-list-action';
+import { INIT_LEARNING_LIST, REGISTER_COLLECTION } from '../action/learning-list-action';
 
 export interface CollectionProgress {
     id: number;
@@ -15,6 +15,7 @@ export interface CollectionProgress {
     last_reviewed_at: string | null;
     current_review_count: number;
     today_learned_count: number;
+    mastered_card_count: number;
     started_at: string | null;
     status: string;
     stopped_at: string | null;
@@ -34,6 +35,12 @@ export default function learningListReducer(state = initialState, action: ReduxA
             return {
                 ...state,
                 collections: action.payload,
+            };
+
+        case REGISTER_COLLECTION:
+            return {
+                ...state,
+                collections: [...state.collections, action.payload],
             };
 
         default:
