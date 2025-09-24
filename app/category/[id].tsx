@@ -4,12 +4,13 @@ import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
-import { CollectionProgress } from '@/store/reducers/learning-list-reducer';
+import { register } from '@/store/action/learning-list-action';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { ArrowRight01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useDispatch } from 'react-redux';
 
 import { ThemedText } from '@/components/ThemedText';
 import BackIcon from '@/components/back-icon';
@@ -18,16 +19,19 @@ import ModalBottomSheet from '@/components/modal-bottom-sheet';
 import RegisteredListStats from '@/components/registered-list-stats';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
+import useToast from '@/hooks/useToast';
 
-import { categoryService } from '@/services';
+import { categoryService, collectionService } from '@/services';
 
 export default function CategoryDetail() {
     const { id } = useLocalSearchParams();
     const router = useRouter();
     const modalBottomRef = useRef<BottomSheetModal>(null);
-    const [selectedItem, setSelectedItem] = useState<CollectionProgress | undefined>();
+    const [selectedItem, setSelectedItem] = useState<any>(null);
     const backgroundColor = useThemeColor({}, 'background');
-
+    const queryClient = useQueryClient();
+    const dispatch = useDispatch();
+    const { showErrorToast, showSuccessToast } = useToast();
     const {
         data: collections = [],
         isLoading,
@@ -47,15 +51,49 @@ export default function CategoryDetail() {
 
     const textColor = useThemeColor({}, 'text');
 
-    const handleOpenBottomModal = useCallback((id: number) => {
-        modalBottomRef.current?.present();
-        const selected = collections.find((item: CollectionProgress) => item.collection_id === id);
-        setSelectedItem(selected);
-    }, []);
+    const handleOpenBottomModal = useCallback(
+        (id: number) => {
+            modalBottomRef.current?.present();
+            const selected = collections.find((item: any) => item.id === id);
+            setSelectedItem(selected);
+        },
+        [collections],
+    );
 
     const closeBottomModalSheet = () => {
         if (!modalBottomRef.current) return;
         modalBottomRef.current?.close();
+        setSelectedItem(null);
+    };
+
+    const handleRegister = async (goal: number) => {
+        try {
+            const res = await collectionService.registerCollection(selectedItem.id, goal);
+            if (res) {
+                showSuccessToast(`Register ${res.name} successfully`);
+                dispatch(
+                    register({
+                        ...res.collection,
+                        collection: {
+                            id: res.id,
+                            name: res.name,
+                            card_count: 0,
+                        },
+                        mastered_card_count: 0,
+                        today_learned_count: 0,
+                    }),
+                );
+
+                // ✅ Update lại query cache của React Query
+                queryClient.setQueryData<any[]>(['collectionsOfCategory'], (oldData = []) =>
+                    oldData.map((item) => (item.id === selectedItem.id ? { ...item, is_registered: true } : item)),
+                );
+
+                closeBottomModalSheet();
+            }
+        } catch (error) {
+            showErrorToast(error);
+        }
     };
 
     return (
@@ -71,7 +109,7 @@ export default function CategoryDetail() {
                 <View style={styles.body}>
                     {collections.map((item: any, index: number) => {
                         return (
-                            <TouchableOpacity key={item.name} onPress={() => handleOpenBottomModal(item.collection_id)}>
+                            <TouchableOpacity key={item.name} onPress={() => handleOpenBottomModal(item.id)}>
                                 <View style={[styles.item, { borderColor: '#7d7d7d77' }]}>
                                     <View style={styles.itemHeader}>
                                         <ThemedText type="defaultSemiBold" style={styles.itemName}>
@@ -90,13 +128,13 @@ export default function CategoryDetail() {
             </ScrollView>
 
             <ModalBottomSheet bottomSheetModalRef={modalBottomRef}>
-                {selectedItem?.isRegistered ? (
-                    <RegisteredListStats id={selectedItem.collection_id} title={selectedItem.collection.name} />
+                {selectedItem?.is_registered ? (
+                    <RegisteredListStats id={selectedItem?.id} title={selectedItem?.name} />
                 ) : (
                     <ListRegister
                         description="Chọn số lượng task bạn phải hoàn thành trong 1 ngày"
-                        title={selectedItem ? selectedItem.collection.name : ''}
-                        onConfirm={() => {}}
+                        title={selectedItem?.name ?? ''}
+                        onConfirm={handleRegister}
                         onClose={closeBottomModalSheet}
                     />
                 )}

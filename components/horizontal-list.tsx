@@ -73,13 +73,12 @@ const ListItem = ({
         bottomSheetModalRef.current?.present();
     };
 
-    const handleConfirm = async (goal: number) => {
+    const handRegister = async (goal: number) => {
         try {
             const res = await collectionService.registerCollection(id, goal);
             if (res) {
                 closeBottomModalSheet();
                 showSuccessToast(`Register ${res.name} successfully`);
-                console.log({ res });
                 dispatch(
                     register({
                         ...res.collection,
@@ -150,7 +149,7 @@ const ListItem = ({
                     <ListRegister
                         description="Chọn số lượng task bạn phải hoàn thành trong 1 ngày"
                         title={name}
-                        onConfirm={handleConfirm}
+                        onConfirm={handRegister}
                         onClose={closeBottomModalSheet}
                         isRegistered={false}
                     />
