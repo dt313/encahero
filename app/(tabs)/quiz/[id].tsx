@@ -4,6 +4,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { useLocalSearchParams } from 'expo-router';
 
+import { answerCard, increaseMasteredCount } from '@/store/action/learning-list-action';
 import { RootState } from '@/store/reducers';
 import { CollectionProgress } from '@/store/reducers/learning-list-reducer';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
@@ -12,18 +13,19 @@ import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { Bar } from 'react-native-progress';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { ThemedText } from '@/components/ThemedText';
 import Button from '@/components/button';
 import LearningList from '@/components/learning-list';
 import ModalBottomSheet from '@/components/modal-bottom-sheet';
 import QuizSetting from '@/components/quiz-setting';
-import RandomQuiz, { Quiz } from '@/components/random-quiz';
+import RandomQuiz, { QuestionType, Quiz } from '@/components/random-quiz';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
+import useToast from '@/hooks/useToast';
 
-import { quizService } from '@/services';
+import { collectionService, quizService } from '@/services';
 
 function QuizScreen() {
     const leftRef = useRef<BottomSheetModal>(null);
@@ -36,10 +38,13 @@ function QuizScreen() {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [currentCollection, setCurrentCollection] = useState<CollectionProgress>();
     const isFocus = useIsFocused();
+    const dispatch = useDispatch();
+    const { showErrorToast, showSuccessToast } = useToast();
 
     useEffect(() => {
         const fetchQuiz = async () => {
-            let collectionId = 1;
+            let collectionId = id ? Number(id) : collections?.[0]?.collection_id;
+            if (!collectionId) return;
             const res = await quizService.getRandomQuizOfCollection(collectionId);
             setQuizList(res);
             setCurrentIndex(0);
@@ -60,12 +65,14 @@ function QuizScreen() {
         return text.replace(/\b\w/g, (char) => char.toUpperCase());
     };
 
-    // callbacks
     const handleOpenListMenu = useCallback(() => {
         leftRef.current?.present();
     }, []);
 
-    // callbacks
+    const handleCloseListMenu = useCallback(() => {
+        leftRef.current?.close();
+    }, []);
+
     const handleOpenSettingBox = useCallback(() => {
         rightRef.current?.present();
     }, []);
@@ -74,12 +81,42 @@ function QuizScreen() {
         if (currentIndex < quizList.length - 1) {
             setCurrentIndex(currentIndex + 1);
         } else {
+            // TODO: call api to get more quiz
             setCurrentIndex(0);
         }
     };
 
+    const handleMasteredWord = async () => {
+        try {
+            let collectionId = id ? Number(id) : collections?.[0]?.collection_id;
+            if (!collectionId) return;
+            const res = await collectionService.changeStatusOfCard(collectionId, quizList[currentIndex].id, 'mastered');
+            if (res) {
+                showSuccessToast('Cập nhật thẻ thành công');
+                dispatch(increaseMasteredCount({ id: collectionId }));
+                handleSkip();
+            }
+        } catch (error) {
+            showErrorToast(error);
+        }
+    };
+
+    const handleSubmitAnswer = async (quizType: QuestionType, cardId: number, rating?: 'E' | 'M' | 'H') => {
+        try {
+            let collectionId = id ? Number(id) : collections?.[0]?.collection_id;
+            if (!collectionId) return;
+            const res = await quizService.answer(collectionId, cardId, quizType, rating);
+            if (res) {
+                dispatch(answerCard({ id: collectionId }));
+                handleSkip();
+            }
+        } catch (error) {
+            showErrorToast(error);
+        }
+    };
+
     const learned = currentCollection?.today_learned_count ?? 0;
-    const total = currentCollection?.task_count ?? 1; // tránh chia cho 0
+    const total = currentCollection?.task_count ?? 1;
     const progress = learned / total;
 
     const white = useThemeColor({}, 'white');
@@ -112,17 +149,21 @@ function QuizScreen() {
                 <ThemedText style={[styles.progressNumber]}>{currentCollection?.task_count}</ThemedText>
             </View>
 
-            <View style={styles.flashcards}>{quizList.length > 0 && <RandomQuiz quiz={quizList[currentIndex]} />}</View>
+            <View style={styles.flashcards}>
+                {quizList.length > 0 && <RandomQuiz quiz={quizList[currentIndex]} onSubmit={handleSubmitAnswer} />}
+            </View>
 
             <View style={styles.btnBox}>
-                <Button type="link">🧠 Đã ghi nhớ</Button>
+                <Button type="link" onPress={handleMasteredWord}>
+                    🧠 Đã ghi nhớ
+                </Button>
                 <Button type="link" textStyle={{ color: textColor }} onPress={handleSkip}>
                     Skip →
                 </Button>
             </View>
 
             <ModalBottomSheet bottomSheetModalRef={leftRef}>
-                <LearningList selectedIndex={currentCollection?.collection.id} />
+                <LearningList selectedIndex={currentCollection?.collection_id} close={handleCloseListMenu} />
             </ModalBottomSheet>
 
             <ModalBottomSheet bottomSheetModalRef={rightRef}>
@@ -187,5 +228,4 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
 });
-
 export default QuizScreen;

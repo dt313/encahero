@@ -58,14 +58,14 @@ export const ViToEng = ({
             <ThemedText type="subtitle" style={{ fontSize: 18 }}>
                 Ví dụ:{' '}
             </ThemedText>
-            <ThemedText
+            {/* <ThemedText
                 style={{
                     marginBottom: 12,
                     fontWeight: 400,
                 }}
             >
                 {example}
-            </ThemedText>
+            </ThemedText> */}
 
             {url && (
                 <Image
@@ -81,10 +81,11 @@ export const ViToEng = ({
     );
 };
 
-function MultipleChoice({ quiz, type }: { quiz: Quiz; type: QuizDirection }) {
+function MultipleChoice({ quiz, type, onSubmit }: { quiz: Quiz; type: QuizDirection; onSubmit: () => void }) {
     const backgroundColor = useThemeColor({}, 'background');
     const textColor = useThemeColor({}, 'text');
     const [answers, setAnswers] = useState<AnswerType[]>([]);
+    const [isCorrected, setIsCorrected] = useState<boolean>(false);
     const correctAnswer = type === QuizDirection.V2E ? quiz.en_word : quiz.vn_word;
 
     useEffect(() => {
@@ -104,8 +105,14 @@ function MultipleChoice({ quiz, type }: { quiz: Quiz; type: QuizDirection }) {
     const handleAnswer = (ans: string) => {
         const stateAnswer = answers.map((a) => {
             if (a.text === ans) {
-                if (ans === correctAnswer) a.state = AnswerState.TRUE;
-                else a.state = AnswerState.FALSE;
+                if (ans === correctAnswer) {
+                    a.state = AnswerState.TRUE;
+                    setIsCorrected(true);
+                    setTimeout(() => {
+                        onSubmit();
+                        setIsCorrected(false);
+                    }, 1000);
+                } else a.state = AnswerState.FALSE;
             }
 
             return a;
@@ -155,6 +162,7 @@ function MultipleChoice({ quiz, type }: { quiz: Quiz; type: QuizDirection }) {
                             ]}
                             key={ans.text}
                             onPress={() => handleAnswer(ans.text)}
+                            disabled={isCorrected}
                         >
                             <View
                                 style={[

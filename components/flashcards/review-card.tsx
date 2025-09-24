@@ -39,7 +39,7 @@ const answers: AnswerType[] = [
     },
 ];
 
-function ReviewCard({ quiz }: { quiz: Quiz }) {
+function ReviewCard({ quiz, onSubmit }: { quiz: Quiz; onSubmit: (name: 'E' | 'M' | 'H') => void }) {
     const backgroundColor = useThemeColor({}, 'background');
     const textColor = useThemeColor({}, 'text');
 
@@ -50,7 +50,9 @@ function ReviewCard({ quiz }: { quiz: Quiz }) {
     };
 
     const handleSubmit = (name: 'E' | 'M' | 'H') => {
-        console.log(name);
+        setTimeout(() => {
+            onSubmit(name);
+        }, 1000);
     };
 
     const speak = () => {

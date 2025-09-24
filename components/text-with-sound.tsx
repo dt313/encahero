@@ -33,7 +33,6 @@ function TextWithSound({
     text = 'Hello World',
     textStyle,
     containerStyle,
-
     textType,
 }: {
     text: string;

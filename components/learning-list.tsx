@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import { Pressable, StyleSheet, View } from 'react-native';
 
+import { useRouter } from 'expo-router';
+
 import { RootState } from '@/store/reducers';
 import { FlatList } from 'react-native-gesture-handler';
 import { Bar, Circle } from 'react-native-progress';
@@ -52,7 +54,7 @@ export function DeckCard({ id, name, cardCount, masteredCardCount, todayCount, t
             clearTimeout(timer);
             clearInterval(interval);
         };
-    }, [todayCount, taskCount]);
+    }, [id, taskCount, todayCount]);
 
     return (
         <Pressable
@@ -94,11 +96,11 @@ export function DeckCard({ id, name, cardCount, masteredCardCount, todayCount, t
             <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                 <View style={styles.center}>
                     <ThemedText style={styles.text}>
-                        {Math.round(((masteredCardCount + 2) / cardCount) * 100)}%
+                        {Math.round(((masteredCardCount + 2) / (cardCount || 1)) * 100)}%
                     </ThemedText>
                 </View>
                 <Circle
-                    progress={(masteredCardCount + 2) / cardCount}
+                    progress={(masteredCardCount + 2) / (cardCount || 1)}
                     size={80}
                     color={learningListCardPrimaryColor}
                     indeterminate={indeterminate}
@@ -108,14 +110,25 @@ export function DeckCard({ id, name, cardCount, masteredCardCount, todayCount, t
     );
 }
 
-export default function LearningList({ selectedIndex }: { selectedIndex: number | undefined }) {
+export default function LearningList({
+    selectedIndex,
+    close,
+}: {
+    selectedIndex: number | undefined;
+    close: () => void;
+}) {
     const listRef = useRef<FlatList<Deck>>(null);
     const collections = useSelector((state: RootState) => state.learningList.collections);
     const [selectedId, setSelectedId] = useState<number>(selectedIndex || 0);
-
+    const router = useRouter();
     const onSelect = (id: number, index: number) => {
         setSelectedId(id);
         listRef.current?.scrollToIndex({ index, viewPosition: 0.4 });
+    };
+
+    const handleLearnNow = () => {
+        router.replace(`/quiz/${selectedId}`);
+        close();
     };
 
     return (
@@ -162,6 +175,7 @@ export default function LearningList({ selectedIndex }: { selectedIndex: number 
                 buttonStyle={{
                     marginHorizontal: 20,
                 }}
+                onPress={handleLearnNow}
             >
                 Learn now
             </Button>

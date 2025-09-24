@@ -1,6 +1,12 @@
 import ReduxActionType from '@/types/redux-action-type';
 
-import { INIT_LEARNING_LIST, REGISTER_COLLECTION, UPDATE_TASK_COUNT } from '../action/learning-list-action';
+import {
+    ANSWER_CARD,
+    INCREASE_MASTERED_COUNT,
+    INIT_LEARNING_LIST,
+    REGISTER_COLLECTION,
+    UPDATE_TASK_COUNT,
+} from '../action/learning-list-action';
 
 export interface CollectionProgress {
     id: number;
@@ -49,6 +55,30 @@ export default function learningListReducer(state = initialState, action: ReduxA
                     state.collections.length > 0 &&
                     state.collections.map((item) =>
                         item.id === action.payload.id ? { ...item, task_count: action.payload.task_count } : item,
+                    ),
+            };
+
+        case INCREASE_MASTERED_COUNT:
+            return {
+                ...state,
+                collections:
+                    state.collections.length > 0 &&
+                    state.collections.map((item) =>
+                        item.id === action.payload.id
+                            ? { ...item, mastered_card_count: item.mastered_card_count + 1 }
+                            : item,
+                    ),
+            };
+
+        case ANSWER_CARD:
+            return {
+                ...state,
+                collections:
+                    state.collections.length > 0 &&
+                    state.collections.map((item) =>
+                        item.id === action.payload.id
+                            ? { ...item, today_learned_count: item.today_learned_count + 1 }
+                            : item,
                     ),
             };
 

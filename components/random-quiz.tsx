@@ -12,6 +12,7 @@ export enum QuestionType {
 }
 
 export type Quiz = {
+    id: number;
     en_word: string;
     vn_word: string;
     vn_choice: string[];
@@ -44,16 +45,27 @@ export function randomQuestionType(): QuestionType {
     return types[randomIndex];
 }
 
-function RandomQuiz({ quiz }: { quiz: Quiz }) {
+function RandomQuiz({
+    quiz,
+    onSubmit,
+}: {
+    quiz: Quiz;
+    onSubmit: (quizType: QuestionType, cardId: number, rating?: 'E' | 'M' | 'H') => void;
+}) {
     const questionType = useMemo(() => randomQuestionType(), [quiz]);
+
+    const handleSubmit = (rating?: 'E' | 'M' | 'H') => {
+        onSubmit(questionType, quiz.id, rating); // Assuming collectionId is 1 for demonstration
+    };
+
     switch (questionType) {
         case QuestionType.MULTI_CHOICE:
             const direction: QuizDirection = Math.random() < 0.5 ? QuizDirection.E2V : QuizDirection.V2E;
-            return <MultipleChoice quiz={quiz} type={direction} />;
+            return <MultipleChoice quiz={quiz} type={direction} onSubmit={handleSubmit} />;
         case QuestionType.RATING:
-            return <ReviewCard quiz={quiz} />;
+            return <ReviewCard quiz={quiz} onSubmit={handleSubmit} />;
         case QuestionType.TYPING:
-            return <TypingCard quiz={quiz} />;
+            return <TypingCard quiz={quiz} onSubmit={handleSubmit} />;
         default:
             return <ThemedText>Question Type Error</ThemedText>;
     }

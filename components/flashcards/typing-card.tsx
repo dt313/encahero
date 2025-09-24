@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
@@ -16,11 +16,15 @@ import Input from '../input';
 import { Quiz } from '../random-quiz';
 import { ViToEng } from './multiple-choice';
 
-function TypingCard({ quiz }: { quiz: Quiz }) {
+function TypingCard({ quiz, onSubmit }: { quiz: Quiz; onSubmit: () => void }) {
     const [value, setValue] = useState('');
     const [isShowAnswer, setIsShowAnswer] = useState(false);
     const [isCorrect, setIsCorrect] = useState<null | boolean>(null);
     const backgroundColor = useThemeColor({}, 'background');
+
+    useEffect(() => {
+        speak();
+    }, []);
 
     const speak = () => {
         Speech.stop();
@@ -34,9 +38,17 @@ function TypingCard({ quiz }: { quiz: Quiz }) {
     // const next = () => {};
 
     const handleSubmit = (text: string) => {
-        console.log(text);
         const correct = text.trim().toLowerCase() === quiz.en_word.toLowerCase();
         setIsCorrect(correct);
+
+        if (correct) {
+            setTimeout(() => {
+                onSubmit();
+                setValue('');
+                setIsCorrect(null);
+                setIsShowAnswer(false);
+            }, 1000);
+        }
     };
 
     const borderColor = useMemo(() => {

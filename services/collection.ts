@@ -35,3 +35,12 @@ export const changeTask = async (id: number, taskNum: number) => {
         throw error;
     }
 };
+
+export const changeStatusOfCard = async (collectionId: number, cardId: number, status: string) => {
+    try {
+        const res = await instance.patch(`/collections/${collectionId}/cards/${cardId}/status`, { status });
+        return res.data;
+    } catch (error: any) {
+        throw error;
+    }
+};
