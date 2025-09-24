@@ -2,22 +2,26 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { updateTaskCount } from '@/store/action/learning-list-action';
 import { RootState } from '@/store/reducers';
 import { CollectionProgress } from '@/store/reducers/learning-list-reducer';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { ArrowRight02Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
+import useToast from '@/hooks/useToast';
+
+import { collectionService } from '@/services';
 
 import { ThemedText } from './ThemedText';
 import ListRegister from './list-register';
 import ModalBottomSheet from './modal-bottom-sheet';
 
 type RegisteredStatsProps = {
-    id: number | undefined;
-    title: string | undefined;
+    id: number;
+    title: string;
 };
 
 export default function RegisteredListStats({ id, title }: RegisteredStatsProps) {
@@ -29,7 +33,8 @@ export default function RegisteredListStats({ id, title }: RegisteredStatsProps)
 
     const [collection, setCollection] = useState<CollectionProgress>();
     const learningList = useSelector((state: RootState) => state.learningList.collections);
-
+    const { showSuccessToast } = useToast();
+    const dispatch = useDispatch();
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
     useEffect(() => {
@@ -49,8 +54,13 @@ export default function RegisteredListStats({ id, title }: RegisteredStatsProps)
         bottomSheetModalRef.current?.close();
     }, []);
 
-    const handleConfirm = () => {
-        console.log({ id });
+    const handleConfirm = async (goal: number) => {
+        const res = await collectionService.changeTask(id, goal);
+        if (res) {
+            showSuccessToast('Cập nhật số lượng task thành công');
+            dispatch(updateTaskCount({ id: res.collectionId, task_count: res.task_count }));
+            handleCloseBottomModal();
+        }
     };
     return (
         <View style={[styles.container, { backgroundColor: background }]}>
@@ -114,6 +124,7 @@ export default function RegisteredListStats({ id, title }: RegisteredStatsProps)
                     onClose={handleCloseBottomModal}
                     onConfirm={handleConfirm}
                     isRegistered={true}
+                    goal={collection?.task_count || 0}
                 />
             </ModalBottomSheet>
         </View>

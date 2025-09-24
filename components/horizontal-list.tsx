@@ -3,6 +3,7 @@ import { ReactNode, useRef, useState } from 'react';
 import { FlatList, StyleSheet, Text, View, ViewStyle, useColorScheme } from 'react-native';
 
 import { register } from '@/store/action/learning-list-action';
+import { CollectionProgress } from '@/store/reducers/learning-list-reducer';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { AddSquareIcon, SettingsIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
@@ -27,7 +28,7 @@ interface HorizontalListProps {
     containerStyle: ViewStyle;
     isRandomColor?: boolean;
     isLearningList?: boolean;
-    list: any;
+    list: CollectionProgress[];
 }
 
 type ListItemType = {
@@ -38,6 +39,7 @@ type ListItemType = {
     cardCount: number;
     masteredCount?: number;
     id: number;
+    isShowBar: boolean;
 };
 
 const ListItem = ({
@@ -48,6 +50,7 @@ const ListItem = ({
     cardCount = 0,
     masteredCount,
     id,
+    isShowBar,
 }: ListItemType) => {
     const theme = useColorScheme();
     const lighterText = useThemeColor({}, 'lighterText');
@@ -71,15 +74,15 @@ const ListItem = ({
     };
 
     const handleConfirm = async (goal: number) => {
-        console.log({ goal });
         try {
             const res = await collectionService.registerCollection(id, goal);
             if (res) {
                 closeBottomModalSheet();
                 showSuccessToast(`Register ${res.name} successfully`);
+                console.log({ res });
                 dispatch(
                     register({
-                        ...res,
+                        ...res.collection,
                         collection: {
                             id: res.id,
                             name,
@@ -113,7 +116,7 @@ const ListItem = ({
                 {name}
             </ThemedText>
 
-            {registered ? (
+            {isShowBar ? (
                 <View style={{ flex: 1 }}>
                     <View>
                         <ThemedText
@@ -170,7 +173,7 @@ function HorizontalList({
             <FlatList
                 horizontal
                 data={list}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item: any) => item.id}
                 renderItem={({ item }) => {
                     if (isLearningList) {
                         return (
@@ -183,6 +186,7 @@ function HorizontalList({
                                 cardCount={item?.collection?.card_count}
                                 masteredCount={item.mastered_card_count}
                                 id={item.id}
+                                isShowBar={true}
                             />
                         );
                     } else {
@@ -195,6 +199,7 @@ function HorizontalList({
                                 name={item.name}
                                 cardCount={item.card_count}
                                 id={item.id}
+                                isShowBar={false}
                             />
                         );
                     }

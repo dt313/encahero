@@ -14,6 +14,7 @@ import Button from './button';
 export type ListRegisterType = {
     title: string;
     description?: string;
+    goal?: number;
     onConfirm: (goal: number) => void;
     onClose?: () => void;
     isRegistered?: boolean;
@@ -25,8 +26,9 @@ export default function ListRegister({
     onConfirm,
     onClose = () => {},
     isRegistered = false,
+    goal = 100,
 }: ListRegisterType) {
-    const [goal, setGoal] = useState(100);
+    const [taskCount, setTaskCount] = useState(goal);
 
     const router = useRouter();
 
@@ -55,8 +57,8 @@ export default function ListRegister({
             )}
 
             <Picker
-                selectedValue={goal}
-                onValueChange={(value) => setGoal(value)}
+                selectedValue={taskCount}
+                onValueChange={(value) => setTaskCount(value)}
                 style={{
                     width: '100%',
                     backgroundColor: background, // đổi nền cả picker
@@ -83,7 +85,7 @@ export default function ListRegister({
                     rowGap: 12,
                 }}
             >
-                <Button onPress={() => onConfirm(goal)}>{isRegistered ? 'Change' : 'Register'}</Button>
+                <Button onPress={() => onConfirm(taskCount)}>{isRegistered ? 'Change' : 'Register'}</Button>
                 {!isRegistered && (
                     <Button type="link" onPress={directLinkHandler}>
                         View all cards →
