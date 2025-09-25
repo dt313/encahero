@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -86,7 +86,7 @@ function MultipleChoice({ quiz, type, onSubmit }: { quiz: Quiz; type: QuizDirect
     const textColor = useThemeColor({}, 'text');
     const [answers, setAnswers] = useState<AnswerType[]>([]);
     const [isCorrected, setIsCorrected] = useState<boolean>(false);
-    const correctAnswer = type === QuizDirection.V2E ? quiz.en_word : quiz.vn_word;
+    const correctAnswer = useMemo(() => (type === QuizDirection.V2E ? quiz.en_word : quiz.vn_word), [type, quiz]);
 
     useEffect(() => {
         const choices = type === QuizDirection.V2E ? quiz.en_choice : quiz.vn_choice;
@@ -100,7 +100,7 @@ function MultipleChoice({ quiz, type, onSubmit }: { quiz: Quiz; type: QuizDirect
         }));
 
         setAnswers(initAnswers);
-    }, [quiz]);
+    }, [quiz, type]);
 
     const handleAnswer = (ans: string) => {
         const stateAnswer = answers.map((a) => {

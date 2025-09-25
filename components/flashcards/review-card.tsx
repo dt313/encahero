@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -54,6 +54,15 @@ function ReviewCard({ quiz, onSubmit }: { quiz: Quiz; onSubmit: (name: 'E' | 'M'
             onSubmit(name);
         }, 1000);
     };
+
+    useEffect(() => {
+        Speech.stop();
+        Speech.speak(quiz.en_word);
+
+        return () => {
+            Speech.stop();
+        };
+    }, [quiz]);
 
     const speak = () => {
         Speech.stop();

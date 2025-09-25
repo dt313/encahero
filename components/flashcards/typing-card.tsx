@@ -23,8 +23,14 @@ function TypingCard({ quiz, onSubmit }: { quiz: Quiz; onSubmit: () => void }) {
     const backgroundColor = useThemeColor({}, 'background');
 
     useEffect(() => {
-        speak();
-    }, []);
+        Speech.stop();
+        Speech.speak(quiz.en_word);
+
+        return () => {
+            Speech.stop();
+            reset();
+        };
+    }, [quiz]);
 
     const speak = () => {
         Speech.stop();
@@ -35,7 +41,6 @@ function TypingCard({ quiz, onSubmit }: { quiz: Quiz; onSubmit: () => void }) {
         setValue(quiz.en_word);
         setIsShowAnswer(true);
     };
-    // const next = () => {};
 
     const handleSubmit = (text: string) => {
         const correct = text.trim().toLowerCase() === quiz.en_word.toLowerCase();
@@ -57,6 +62,12 @@ function TypingCard({ quiz, onSubmit }: { quiz: Quiz; onSubmit: () => void }) {
         if (isCorrect === false) return commonColor.failBorderColor;
         return undefined;
     }, [isCorrect, isShowAnswer]);
+
+    const reset = () => {
+        setValue('');
+        setIsCorrect(null);
+        setIsShowAnswer(false);
+    };
 
     return (
         <View style={[styles.wrapper, { backgroundColor: backgroundColor }]}>

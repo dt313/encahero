@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+
 import { TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
 
 import * as Speech from 'expo-speech';
@@ -17,6 +19,13 @@ export const SoundButton = ({
     color?: string;
     size?: number;
 }) => {
+    useEffect(() => {
+        Speech.stop();
+        Speech.speak(text);
+        return () => {
+            Speech.stop();
+        };
+    }, [text]);
     const speak = () => {
         Speech.stop();
         Speech.speak(text);

@@ -1,6 +1,9 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
-import { ThemedText } from './ThemedText';
+import { ActivityIndicator, Text, View } from 'react-native';
+
+import debounce from 'lodash.debounce';
+
 import MultipleChoice from './flashcards/multiple-choice';
 import ReviewCard from './flashcards/review-card';
 import TypingCard from './flashcards/typing-card';
@@ -52,22 +55,47 @@ function RandomQuiz({
     quiz: Quiz;
     onSubmit: (quizType: QuestionType, cardId: number, rating?: 'E' | 'M' | 'H') => void;
 }) {
-    const questionType = useMemo(() => randomQuestionType(), [quiz]);
+    const [questionType, setQuestionType] = useState<QuestionType | null>(null);
+    const isSubmittingRef = useRef(false);
+    useEffect(() => {
+        console.log('call');
+        setQuestionType(randomQuestionType());
+        isSubmittingRef.current = false;
+    }, [quiz]);
 
-    const handleSubmit = (rating?: 'E' | 'M' | 'H') => {
-        onSubmit(questionType, quiz.id, rating); // Assuming collectionId is 1 for demonstration
-    };
+    const debouncedSubmit = useMemo(
+        () =>
+            debounce(
+                (rating?: 'E' | 'M' | 'H') => {
+                    if (questionType) {
+                        onSubmit(questionType, quiz.id, rating);
+                        setQuestionType(null);
+                    }
+                },
+                500,
+                { leading: true, trailing: false },
+            ),
+        [quiz, questionType, onSubmit],
+    );
 
     switch (questionType) {
         case QuestionType.MULTI_CHOICE:
             const direction: QuizDirection = Math.random() < 0.5 ? QuizDirection.E2V : QuizDirection.V2E;
-            return <MultipleChoice quiz={quiz} type={direction} onSubmit={handleSubmit} />;
+            return <MultipleChoice quiz={quiz} type={direction} onSubmit={debouncedSubmit} />;
+
         case QuestionType.RATING:
-            return <ReviewCard quiz={quiz} onSubmit={handleSubmit} />;
+            return <ReviewCard quiz={quiz} onSubmit={debouncedSubmit} />;
+
         case QuestionType.TYPING:
-            return <TypingCard quiz={quiz} onSubmit={handleSubmit} />;
+            return <TypingCard quiz={quiz} onSubmit={debouncedSubmit} />;
         default:
-            return <ThemedText>Question Type Error</ThemedText>;
+            return (
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', height: '50%' }}>
+                    <Text>
+                        <ActivityIndicator style={{ marginTop: 50 }} />;
+                    </Text>
+                </View>
+            );
     }
 }
 

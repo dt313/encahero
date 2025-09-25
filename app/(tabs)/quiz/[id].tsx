@@ -10,7 +10,6 @@ import { CollectionProgress } from '@/store/reducers/learning-list-reducer';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { BookOpen02Icon, Settings01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
-import { useIsFocused } from '@react-navigation/native';
 import { Bar } from 'react-native-progress';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
@@ -37,12 +36,12 @@ function QuizScreen() {
     const [quizList, setQuizList] = useState<Quiz[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [currentCollection, setCurrentCollection] = useState<CollectionProgress>();
-    const isFocus = useIsFocused();
     const dispatch = useDispatch();
     const { showErrorToast, showSuccessToast } = useToast();
 
     useEffect(() => {
         const fetchQuiz = async () => {
+            console.log('call');
             let collectionId = id ? Number(id) : collections?.[0]?.collection_id;
             if (!collectionId) return;
             const res = await quizService.getRandomQuizOfCollection(collectionId);
@@ -51,7 +50,7 @@ function QuizScreen() {
         };
 
         fetchQuiz();
-    }, [id, isFocus, collections]);
+    }, [id]);
 
     useEffect(() => {
         if (!collections) return;
@@ -121,6 +120,8 @@ function QuizScreen() {
 
     const white = useThemeColor({}, 'white');
     const textColor = useThemeColor({}, 'text');
+
+    console.log({ currentIndex });
     return (
         <SafeAreaView style={{ paddingHorizontal: 20, flex: 1 }}>
             <View style={styles.header}>
