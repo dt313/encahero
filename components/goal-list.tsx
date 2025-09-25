@@ -104,7 +104,7 @@ function GoalList({ title, containerStyle }: GoalListType) {
     } = useQuery({
         queryKey: ['goalList'],
         queryFn: collectionService.getMyLearningList,
-        enabled: collections.length === 0, // ✅ chỉ fetch khi chưa có trong Redux
+        enabled: collections.length === 0,
     });
 
     useEffect(() => {
@@ -112,6 +112,11 @@ function GoalList({ title, containerStyle }: GoalListType) {
             dispatch(initLearningList(learningList));
         }
     }, [learningList, collections.length, dispatch]);
+
+    if (learningList.length === 0) {
+        return null;
+    }
+
     return (
         <View style={[containerStyle]}>
             <ThemedText type="subtitle">{title}</ThemedText>
@@ -120,7 +125,7 @@ function GoalList({ title, containerStyle }: GoalListType) {
                     return (
                         <GoalItem
                             key={item.id}
-                            id={item.id}
+                            id={item.collection_id}
                             index={index}
                             name={item.collection.name}
                             taskCount={item.task_count}

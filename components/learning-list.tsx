@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 import { Pressable, StyleSheet, View } from 'react-native';
 
@@ -56,6 +56,12 @@ export function DeckCard({ id, name, cardCount, masteredCardCount, todayCount, t
         };
     }, [id, taskCount, todayCount]);
 
+    const barProgress = useMemo(() => {
+        if (!cardCount) return 0; // tránh chia cho 0
+        return masteredCardCount / cardCount; // giá trị từ 0 đến 1
+    }, [masteredCardCount, cardCount]);
+
+    console.log({ barProgress });
     return (
         <Pressable
             onPress={onPress}
@@ -95,12 +101,10 @@ export function DeckCard({ id, name, cardCount, masteredCardCount, todayCount, t
 
             <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                 <View style={styles.center}>
-                    <ThemedText style={styles.text}>
-                        {Math.round(((masteredCardCount + 2) / (cardCount || 1)) * 100)}%
-                    </ThemedText>
+                    <ThemedText style={styles.text}>{Math.round(barProgress * 100)}%</ThemedText>
                 </View>
                 <Circle
-                    progress={(masteredCardCount + 2) / (cardCount || 1)}
+                    progress={barProgress}
                     size={80}
                     color={learningListCardPrimaryColor}
                     indeterminate={indeterminate}
@@ -131,6 +135,7 @@ export default function LearningList({
         close();
     };
 
+    console.log(collections[0].collection);
     return (
         <View style={styles.container}>
             <ThemedText type="title" style={{ paddingHorizontal: 12 }}>
@@ -157,14 +162,14 @@ export default function LearningList({
                     renderItem={({ item, index }) => {
                         return (
                             <DeckCard
-                                id={item.collection.id}
+                                id={item.collection_id}
                                 name={item.collection.name}
                                 todayCount={item.today_learned_count}
                                 taskCount={item.task_count}
                                 cardCount={item.collection.card_count}
                                 masteredCardCount={item.mastered_card_count}
-                                isActive={item?.collection?.id === selectedId}
-                                onPress={() => onSelect(item.collection.id, index)}
+                                isActive={item?.collection_id === selectedId}
+                                onPress={() => onSelect(item.collection_id, index)}
                             />
                         );
                     }}

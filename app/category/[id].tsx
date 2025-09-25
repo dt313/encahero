@@ -41,6 +41,8 @@ export default function CategoryDetail() {
         queryFn: () => categoryService.getCollectionsOfCategory(Number(id)),
     });
 
+    console.log('collections', collections);
+
     const handleBack = () => {
         try {
             router.back();

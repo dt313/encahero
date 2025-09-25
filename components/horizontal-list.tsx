@@ -98,6 +98,8 @@ const ListItem = ({
         }
     };
 
+    const progress = masteredCount && cardCount ? masteredCount / cardCount : 0;
+
     return (
         <View style={[styles.item, { backgroundColor: backgroundColor }]}>
             <View style={styles.itemHeader}>
@@ -129,14 +131,16 @@ const ListItem = ({
                             <ThemedText lighter>/{cardCount} cards</ThemedText>
                         </ThemedText>
                     </View>
-                    <Bar
-                        color="#4CAF50"
-                        progress={0.4}
-                        width={null}
-                        borderWidth={0}
-                        height={6}
-                        unfilledColor="rgba(198, 198, 198, 0.4)"
-                    />
+                    {progress > 0 && (
+                        <Bar
+                            color="#4CAF50"
+                            progress={progress}
+                            width={null}
+                            borderWidth={0}
+                            height={6}
+                            unfilledColor="rgba(198, 198, 198, 0.4)"
+                        />
+                    )}
                 </View>
             ) : (
                 <ThemedText style={[styles.itemNumber, { color: lighterText }]}>{cardCount} cards</ThemedText>
@@ -177,14 +181,14 @@ function HorizontalList({
                     if (isLearningList) {
                         return (
                             <ListItem
-                                key={item.id}
+                                key={item.collection_id}
                                 isRandomColor={isRandomColor}
                                 isRegistered={true}
                                 icon="1️⃣"
                                 name={item?.collection?.name}
                                 cardCount={item?.collection?.card_count}
                                 masteredCount={item.mastered_card_count}
-                                id={item.id}
+                                id={item.collection_id}
                                 isShowBar={true}
                             />
                         );

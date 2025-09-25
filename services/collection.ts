@@ -9,6 +9,14 @@ export const getMyLearningList = async () => {
     }
 };
 
+export const getStopCollections = async () => {
+    try {
+        const res = await instance.get('/collections/stop');
+        return res.data;
+    } catch (error: any) {
+        throw error; // lỗi khác (network, timeout, ...)
+    }
+};
 export const getAllCollection = async () => {
     try {
         const res = await instance.get('/collections');
@@ -39,6 +47,15 @@ export const changeTask = async (id: number, taskNum: number) => {
 export const changeStatusOfCard = async (collectionId: number, cardId: number, status: string) => {
     try {
         const res = await instance.patch(`/collections/${collectionId}/cards/${cardId}/status`, { status });
+        return res.data;
+    } catch (error: any) {
+        throw error;
+    }
+};
+
+export const changeStatusOfCollection = async (collectionId: number, status: string) => {
+    try {
+        const res = await instance.patch(`/collections/${collectionId}/status`, { status });
         return res.data;
     } catch (error: any) {
         throw error;

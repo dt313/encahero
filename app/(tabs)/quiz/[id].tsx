@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
@@ -39,26 +39,30 @@ function QuizScreen() {
     const dispatch = useDispatch();
     const { showErrorToast, showSuccessToast } = useToast();
 
+    const collectionId = useMemo(() => {
+        if (id) return Number(id);
+        return collections?.[0]?.collection_id;
+    }, [id, collections]);
+
     useEffect(() => {
+        if (!collectionId) return;
+
         const fetchQuiz = async () => {
-            console.log('call');
-            let collectionId = id ? Number(id) : collections?.[0]?.collection_id;
-            if (!collectionId) return;
             const res = await quizService.getRandomQuizOfCollection(collectionId);
             setQuizList(res);
             setCurrentIndex(0);
         };
 
         fetchQuiz();
-    }, [id]);
+    }, [collectionId]);
 
     useEffect(() => {
-        if (!collections) return;
-        let collection = null;
-        if (id) collection = collections.find((c: CollectionProgress) => c.collection.id === Number(id));
-        else collection = collections[0];
+        if (!collectionId || !collections) return;
+        const collection = collections.find((c: CollectionProgress) => c.collection_id === collectionId);
         setCurrentCollection(collection);
-    }, [id, collections]);
+    }, [collectionId, collections]);
+
+    console.log({ collectionId, currentCollection });
 
     const capitalizeWords = (text: string) => {
         return text.replace(/\b\w/g, (char) => char.toUpperCase());
@@ -121,7 +125,7 @@ function QuizScreen() {
     const white = useThemeColor({}, 'white');
     const textColor = useThemeColor({}, 'text');
 
-    console.log({ currentIndex });
+    console.log('currentCollection', { id, collections });
     return (
         <SafeAreaView style={{ paddingHorizontal: 20, flex: 1 }}>
             <View style={styles.header}>
@@ -140,7 +144,7 @@ function QuizScreen() {
                 <ThemedText style={styles.progressNumber}>{currentCollection?.today_learned_count}</ThemedText>
                 <Bar
                     style={{ flex: 1, marginHorizontal: 12, borderRadius: 30 }}
-                    color="#4CAF50"
+                    color={progress > 1 ? '#2196f3' : '#4caf50'}
                     height={12}
                     progress={progress}
                     width={null}

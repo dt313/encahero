@@ -1,13 +1,14 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { updateTaskCount } from '@/store/action/learning-list-action';
+import { stopCollection, updateTaskCount } from '@/store/action/learning-list-action';
 import { RootState } from '@/store/reducers';
 import { CollectionProgress } from '@/store/reducers/learning-list-reducer';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { ArrowRight02Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
+import { useQueryClient } from '@tanstack/react-query';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
@@ -31,20 +32,16 @@ export default function RegisteredListStats({ id, title }: RegisteredStatsProps)
     const white = useThemeColor({}, 'white');
     const textColor = useThemeColor({}, 'text');
 
-    const [collection, setCollection] = useState<CollectionProgress>();
     const learningList = useSelector((state: RootState) => state.learningList.collections);
-    const { showSuccessToast } = useToast();
+    const { showSuccessToast, showErrorToast } = useToast();
     const dispatch = useDispatch();
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+    const queryClient = useQueryClient();
 
-    useEffect(() => {
-        if (id && learningList?.length > 0) {
-            const found = learningList.find((item: CollectionProgress) => item.collection_id === id);
-            if (found) {
-                setCollection(found);
-            }
-        }
-    }, [id, learningList]);
+    const collection = useMemo(() => {
+        if (!learningList || learningList.length === 0) return undefined;
+        return learningList.find((item: CollectionProgress) => item.collection_id === id);
+    }, [learningList, id]);
 
     const handleOpenBottomModal = useCallback(() => {
         bottomSheetModalRef.current?.present();
@@ -62,6 +59,24 @@ export default function RegisteredListStats({ id, title }: RegisteredStatsProps)
             handleCloseBottomModal();
         }
     };
+
+    const handleStopLearning = async () => {
+        if (!collection) return;
+        try {
+            const res = await collectionService.changeStatusOfCollection(collection.collection_id, 'stopped');
+            if (res) {
+                dispatch(stopCollection({ id: collection.collection_id }));
+                queryClient.invalidateQueries({ queryKey: ['stopList'] });
+                showSuccessToast('Bạn đã dừng học list này');
+            }
+        } catch {
+            showErrorToast('Có lỗi xảy ra, vui lòng thử lại sau');
+        }
+    };
+
+    if (!collection) {
+        return <ThemedText>Collection không tồn tại hoặc chưa load xong</ThemedText>;
+    }
     return (
         <View style={[styles.container, { backgroundColor: background }]}>
             <ThemedText type="title" style={styles.title} numberOfLines={2}>
@@ -82,7 +97,7 @@ export default function RegisteredListStats({ id, title }: RegisteredStatsProps)
                     </ThemedText>
                 </View>
                 <View style={[styles.statBox, { backgroundColor: white }]}>
-                    <ThemedText style={styles.statNumber}>{collection?.task_count ?? 0}</ThemedText>
+                    <ThemedText style={styles.statNumber}>{collection?.collection?.card_count ?? 0}</ThemedText>
                     <ThemedText lighter style={styles.statLabel}>
                         Tổng số từ
                     </ThemedText>
@@ -111,7 +126,7 @@ export default function RegisteredListStats({ id, title }: RegisteredStatsProps)
                     <HugeiconsIcon icon={ArrowRight02Icon} size={24} color={textColor} />
                 </Pressable>
                 {/* Stop Learning Button */}
-                <Pressable style={styles.stopButton}>
+                <Pressable style={styles.stopButton} onPress={handleStopLearning}>
                     <Text style={styles.stopButtonText}>🛑 Stop Learning This List</Text>
                 </Pressable>
             </View>

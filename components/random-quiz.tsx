@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { ActivityIndicator, Text, View } from 'react-native';
 
-import debounce from 'lodash.debounce';
+import { debounce } from 'lodash';
 
 import MultipleChoice from './flashcards/multiple-choice';
 import ReviewCard from './flashcards/review-card';

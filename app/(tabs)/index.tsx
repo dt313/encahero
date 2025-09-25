@@ -11,6 +11,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import Charts from '@/components/charts';
 import GoalList from '@/components/goal-list';
+import StopList from '@/components/stop-list';
 
 const HEADER_HEIGHT = 60;
 
@@ -39,6 +40,7 @@ function Home() {
                 <Charts />
 
                 <GoalList containerStyle={{ marginTop: 16 }} title="Today's Goal" />
+                <StopList containerStyle={{ marginTop: 16 }} title="Stop List" />
             </SafeAreaView>
         </ScrollView>
     );

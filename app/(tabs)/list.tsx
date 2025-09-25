@@ -3,7 +3,6 @@ import React from 'react';
 import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 
 import { RootState } from '@/store/reducers';
-import { useIsFocused } from '@react-navigation/native';
 import { useQuery } from '@tanstack/react-query';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
@@ -16,7 +15,6 @@ import { collectionService } from '@/services';
 
 function List() {
     const collections = useSelector((state: RootState) => state.learningList.collections);
-    const isFocused = useIsFocused();
     const {
         data: allList = [],
         isLoading: isLoadingAll,
@@ -24,7 +22,6 @@ function List() {
     } = useQuery({
         queryKey: ['allList'],
         queryFn: collectionService.getAllCollection,
-        enabled: isFocused,
     });
 
     return (
