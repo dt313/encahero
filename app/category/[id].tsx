@@ -129,7 +129,11 @@ export default function CategoryDetail() {
 
             <ModalBottomSheet bottomSheetModalRef={modalBottomRef}>
                 {selectedItem?.is_registered ? (
-                    <RegisteredListStats id={selectedItem?.id} title={selectedItem?.name} />
+                    <RegisteredListStats
+                        id={selectedItem?.id}
+                        title={selectedItem?.name}
+                        onClose={closeBottomModalSheet}
+                    />
                 ) : (
                     <ListRegister
                         description="Chọn số lượng task bạn phải hoàn thành trong 1 ngày"

@@ -17,6 +17,16 @@ export const getStopCollections = async () => {
         throw error; // lỗi khác (network, timeout, ...)
     }
 };
+
+export const getCollectionById = async (id: number) => {
+    try {
+        const res = await instance.get(`/collections/${id}`);
+        return res.data;
+    } catch (error: any) {
+        throw error; // lỗi khác (network, timeout, ...)
+    }
+};
+
 export const getAllCollection = async () => {
     try {
         const res = await instance.get('/collections');

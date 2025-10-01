@@ -2,11 +2,11 @@ import ReduxActionType from '@/types/redux-action-type';
 
 import {
     ANSWER_CARD,
+    CHANGE_STATUS,
     CONTINUE_COLLECTION,
     INCREASE_MASTERED_COUNT,
     INIT_LEARNING_LIST,
     REGISTER_COLLECTION,
-    STOP_COLLECTION,
     UPDATE_TASK_COUNT,
 } from '../action/learning-list-action';
 
@@ -84,12 +84,14 @@ export default function learningListReducer(state = initialState, action: ReduxA
                     ),
             };
 
-        case STOP_COLLECTION:
+        case CHANGE_STATUS:
             return {
                 ...state,
-                collections:
-                    state.collections.length > 0 &&
-                    state.collections.filter((item) => item.collection_id !== action.payload.id),
+                collections: state.collections.map((item) =>
+                    item.collection_id === action.payload.id
+                        ? { ...item, status: action.payload.status, stopped_at: new Date().toISOString() }
+                        : item,
+                ),
             };
 
         case CONTINUE_COLLECTION:

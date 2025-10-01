@@ -7,7 +7,7 @@ export const REGISTER_COLLECTION = 'REGISTER_COLLECTION';
 export const UPDATE_TASK_COUNT = 'UPDATE_TASK_COUNT';
 export const INCREASE_MASTERED_COUNT = 'INCREASE_MASTERED_COUNT';
 export const ANSWER_CARD = 'ANSWER_CARD';
-export const STOP_COLLECTION = 'STOP_COLLECTION';
+export const CHANGE_STATUS = 'CHANGE_STATUS';
 export const CONTINUE_COLLECTION = 'CONTINUE_COLLECTION';
 export const initLearningList = (payload: CollectionProgress[]): ReduxActionType => {
     return {
@@ -44,9 +44,9 @@ export const answerCard = (payload: { id: number }): ReduxActionType => {
     };
 };
 
-export const stopCollection = (payload: { id: number }): ReduxActionType => {
+export const changeStatus = (payload: { id: number; status: string }): ReduxActionType => {
     return {
-        type: STOP_COLLECTION,
+        type: CHANGE_STATUS,
         payload,
     };
 };

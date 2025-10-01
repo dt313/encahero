@@ -148,7 +148,7 @@ const ListItem = ({
 
             <ModalBottomSheet bottomSheetModalRef={bottomSheetModalRef}>
                 {registered ? (
-                    <RegisteredListStats id={id} title={name} />
+                    <RegisteredListStats id={id} title={name} onClose={closeBottomModalSheet} />
                 ) : (
                     <ListRegister
                         description="Chọn số lượng task bạn phải hoàn thành trong 1 ngày"

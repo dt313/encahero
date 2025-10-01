@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 
 import { RootState } from '@/store/reducers';
+import { CollectionProgress } from '@/store/reducers/learning-list-reducer';
 import { useQuery } from '@tanstack/react-query';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
@@ -15,6 +16,13 @@ import { collectionService } from '@/services';
 
 function List() {
     const collections = useSelector((state: RootState) => state.learningList.collections);
+
+    const [progressList, setProgressList] = useState<CollectionProgress[]>([]);
+
+    useEffect(() => {
+        setProgressList(collections.filter((item: CollectionProgress) => item.status === 'in_progress'));
+    }, [collections]);
+
     const {
         data: allList = [],
         isLoading: isLoadingAll,
@@ -38,7 +46,7 @@ function List() {
                         <HorizontalList
                             headerName="Learning List"
                             containerStyle={{ marginTop: 24 }}
-                            list={collections}
+                            list={progressList}
                             isLearningList={true}
                         />
                         <CategoryList />

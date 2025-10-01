@@ -2,13 +2,12 @@ import React, { useCallback, useMemo, useRef } from 'react';
 
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { updateTaskCount } from '@/store/action/learning-list-action';
+import { changeStatus, updateTaskCount } from '@/store/action/learning-list-action';
 import { RootState } from '@/store/reducers';
 import { CollectionProgress } from '@/store/reducers/learning-list-reducer';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { ArrowRight02Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
-import { useQueryClient } from '@tanstack/react-query';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
@@ -23,9 +22,10 @@ import ModalBottomSheet from './modal-bottom-sheet';
 type RegisteredStatsProps = {
     id: number;
     title: string;
+    onClose: () => void;
 };
 
-export default function RegisteredListStats({ id, title }: RegisteredStatsProps) {
+export default function RegisteredListStats({ id, title, onClose }: RegisteredStatsProps) {
     const background = useThemeColor({}, 'background');
     const linkColor = useThemeColor({}, 'quizLinkTextColor');
     const linkBg = useThemeColor({}, 'quizLinkBg');
@@ -36,7 +36,6 @@ export default function RegisteredListStats({ id, title }: RegisteredStatsProps)
     const { showSuccessToast, showErrorToast } = useToast();
     const dispatch = useDispatch();
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-    const queryClient = useQueryClient();
 
     const collection = useMemo(() => {
         if (!learningList || learningList.length === 0) return undefined;
@@ -65,10 +64,9 @@ export default function RegisteredListStats({ id, title }: RegisteredStatsProps)
         try {
             const res = await collectionService.changeStatusOfCollection(collection.collection_id, 'stopped');
             if (res) {
-                // dispatch(stopCollection({ id: collection.collection_id }));
-                queryClient.invalidateQueries({ queryKey: ['stopList'] });
-                queryClient.invalidateQueries({ queryKey: ['goalList'] });
+                dispatch(changeStatus({ id: collection.collection_id, status: 'stopped' }));
                 showSuccessToast('Bạn đã dừng học list này');
+                onClose();
             }
         } catch {
             showErrorToast('Có lỗi xảy ra, vui lòng thử lại sau');
@@ -78,6 +76,7 @@ export default function RegisteredListStats({ id, title }: RegisteredStatsProps)
     if (!collection) {
         return <ThemedText>Collection không tồn tại hoặc chưa load xong</ThemedText>;
     }
+
     return (
         <View style={[styles.container, { backgroundColor: background }]}>
             <ThemedText type="title" style={styles.title} numberOfLines={2}>
@@ -127,9 +126,23 @@ export default function RegisteredListStats({ id, title }: RegisteredStatsProps)
                     <HugeiconsIcon icon={ArrowRight02Icon} size={24} color={textColor} />
                 </Pressable>
                 {/* Stop Learning Button */}
-                <Pressable style={styles.stopButton} onPress={handleStopLearning}>
-                    <Text style={styles.stopButtonText}>🛑 Stop Learning This List</Text>
-                </Pressable>
+                {collection.status === 'stopped' ? (
+                    <ThemedText
+                        style={{
+                            textAlign: 'center',
+                            fontStyle: 'italic',
+                            fontSize: 16,
+                            color: '#333',
+                            marginVertical: 8,
+                        }}
+                    >
+                        Bạn đã dừng bài này
+                    </ThemedText>
+                ) : (
+                    <Pressable style={styles.stopButton} onPress={handleStopLearning}>
+                        <Text style={styles.stopButtonText}>🛑 Stop Learning This List</Text>
+                    </Pressable>
+                )}
             </View>
 
             {/* Modal Bottom Sheet */}

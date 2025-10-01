@@ -1,20 +1,17 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { StyleSheet, View, ViewStyle } from 'react-native';
 
 import { useRouter } from 'expo-router';
 
-import { initLearningList } from '@/store/action/learning-list-action';
 import { RootState } from '@/store/reducers';
+import { CollectionProgress } from '@/store/reducers/learning-list-reducer';
 import { ArrowRight01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
-import { useQuery } from '@tanstack/react-query';
 import * as Progress from 'react-native-progress';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
-
-import { collectionService } from '@/services';
 
 import { ThemedText } from './ThemedText';
 import Button from './button';
@@ -94,33 +91,18 @@ const GoalItem = ({ index, id, name, todayCount, taskCount }: GoalItemType) => {
 };
 
 function GoalList({ title, containerStyle }: GoalListType) {
-    const dispatch = useDispatch();
     const collections = useSelector((state: RootState) => state.learningList.collections);
-
-    const {
-        data: learningList = [],
-        isLoading,
-        error,
-    } = useQuery({
-        queryKey: ['goalList'],
-        queryFn: collectionService.getMyLearningList,
-    });
+    const [progressList, setProgressList] = useState<CollectionProgress[]>([]);
 
     useEffect(() => {
-        if (learningList.length) {
-            dispatch(initLearningList(learningList));
-        }
-    }, [learningList, collections.length, dispatch]);
-
-    if (learningList.length === 0) {
-        return null;
-    }
+        setProgressList(collections.filter((item: CollectionProgress) => item.status === 'in_progress'));
+    }, [collections]);
 
     return (
         <View style={[containerStyle]}>
             <ThemedText type="subtitle">{title}</ThemedText>
             <View style={styles.body}>
-                {collections.map((item: any, index: number) => {
+                {progressList.map((item: any, index: number) => {
                     return (
                         <GoalItem
                             key={item.id}

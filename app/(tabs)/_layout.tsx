@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { Platform } from 'react-native';
 
 import { Tabs } from 'expo-router';
 
+import { initLearningList } from '@/store/action/learning-list-action';
 import { BookOpen01Icon, Home01Icon, Quiz02Icon, Settings02Icon, Sword03Icon } from '@hugeicons/core-free-icons';
+import { useQuery } from '@tanstack/react-query';
+import { useDispatch } from 'react-redux';
 
 import { Colors } from '@/constants/Colors';
 
@@ -13,8 +16,21 @@ import TabBarBackground from '@/components/ui/TabBarBackground';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 
+import { collectionService } from '@/services';
+
 export default function TabLayout() {
     const colorScheme = useColorScheme();
+    const dispatch = useDispatch();
+    const { data: myCollections } = useQuery({
+        queryKey: ['my-collections'],
+        queryFn: collectionService.getMyLearningList,
+    });
+
+    useEffect(() => {
+        if (myCollections?.length) {
+            dispatch(initLearningList(myCollections));
+        }
+    }, [myCollections, dispatch]);
 
     return (
         <Tabs

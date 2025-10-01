@@ -1,6 +1,10 @@
+import { useEffect, useState } from 'react';
+
 import { StyleSheet, View, ViewStyle } from 'react-native';
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { changeStatus } from '@/store/action/learning-list-action';
+import { CollectionProgress } from '@/store/reducers/learning-list-reducer';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { collectionService } from '@/services';
 
@@ -21,20 +25,13 @@ type StopItemType = {
 };
 
 const StopItem = ({ id, name, masteredCount, cardCount }: StopItemType) => {
-    const queryClient = useQueryClient();
-
-    const { mutate: continueCollection } = useMutation({
-        mutationFn: (id: number) => collectionService.changeStatusOfCollection(id, 'in_progress'),
-        onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: ['stopList'],
-            });
-            queryClient.invalidateQueries({
-                queryKey: ['goalList'],
-            });
-        },
-    });
-
+    const dispatch = useDispatch();
+    const continueCollection = async (id: number) => {
+        const res = await collectionService.changeStatusOfCollection(id, 'in_progress');
+        if (res) {
+            dispatch(changeStatus({ id: id, status: 'in_progress' }));
+        }
+    };
     return (
         <View style={[styles.item]}>
             <ThemedText type="defaultSemiBold" style={styles.itemName} numberOfLines={1}>
@@ -57,17 +54,13 @@ const StopItem = ({ id, name, masteredCount, cardCount }: StopItemType) => {
 };
 
 function StopList({ title, containerStyle }: StopListType) {
-    const {
-        data: learningList = [],
-        isLoading,
-        error,
-    } = useQuery({
-        queryKey: ['stopList'],
-        queryFn: collectionService.getStopCollections,
-        refetchOnWindowFocus: true,
-    });
+    const [stopList, setStopList] = useState<CollectionProgress[]>([]);
+    const collections = useSelector((state: any) => state.learningList.collections);
+    useEffect(() => {
+        setStopList(collections.filter((item: CollectionProgress) => item.status === 'stopped'));
+    }, [collections]);
 
-    if (learningList.length === 0) {
+    if (stopList.length === 0) {
         return null;
     }
 
@@ -75,12 +68,12 @@ function StopList({ title, containerStyle }: StopListType) {
         <View style={[containerStyle]}>
             <ThemedText type="subtitle">{title}</ThemedText>
             <View style={styles.body}>
-                {learningList.map((item: any, index: number) => {
+                {stopList.map((item: any, index: number) => {
                     return (
                         <StopItem
                             key={item.id}
-                            id={item.id}
-                            name={item.name}
+                            id={item.collection_id}
+                            name={item.collection.name}
                             masteredCount={item.mastered_card_count ?? 0}
                             cardCount={item.card_count ?? 100}
                         />
