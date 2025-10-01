@@ -62,8 +62,6 @@ function QuizScreen() {
         setCurrentCollection(collection);
     }, [collectionId, collections]);
 
-    console.log({ collectionId, currentCollection });
-
     const capitalizeWords = (text: string) => {
         return text.replace(/\b\w/g, (char) => char.toUpperCase());
     };
@@ -125,7 +123,6 @@ function QuizScreen() {
     const white = useThemeColor({}, 'white');
     const textColor = useThemeColor({}, 'text');
 
-    console.log('currentCollection', { id, collections });
     return (
         <SafeAreaView style={{ paddingHorizontal: 20, flex: 1 }}>
             <View style={styles.header}>

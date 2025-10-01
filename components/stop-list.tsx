@@ -29,6 +29,9 @@ const StopItem = ({ id, name, masteredCount, cardCount }: StopItemType) => {
             queryClient.invalidateQueries({
                 queryKey: ['stopList'],
             });
+            queryClient.invalidateQueries({
+                queryKey: ['goalList'],
+            });
         },
     });
 

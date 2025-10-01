@@ -61,7 +61,6 @@ export function DeckCard({ id, name, cardCount, masteredCardCount, todayCount, t
         return masteredCardCount / cardCount; // giá trị từ 0 đến 1
     }, [masteredCardCount, cardCount]);
 
-    console.log({ barProgress });
     return (
         <Pressable
             onPress={onPress}
@@ -135,7 +134,6 @@ export default function LearningList({
         close();
     };
 
-    console.log(collections[0].collection);
     return (
         <View style={styles.container}>
             <ThemedText type="title" style={{ paddingHorizontal: 12 }}>

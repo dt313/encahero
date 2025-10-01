@@ -19,6 +19,7 @@ function Home() {
     const displayName = useMemo(async () => {
         return await getNameOfUser();
     }, []);
+
     return (
         <ScrollView>
             <SafeAreaView

@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useRef } from 'react';
 
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { stopCollection, updateTaskCount } from '@/store/action/learning-list-action';
+import { updateTaskCount } from '@/store/action/learning-list-action';
 import { RootState } from '@/store/reducers';
 import { CollectionProgress } from '@/store/reducers/learning-list-reducer';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
@@ -65,8 +65,9 @@ export default function RegisteredListStats({ id, title }: RegisteredStatsProps)
         try {
             const res = await collectionService.changeStatusOfCollection(collection.collection_id, 'stopped');
             if (res) {
-                dispatch(stopCollection({ id: collection.collection_id }));
+                // dispatch(stopCollection({ id: collection.collection_id }));
                 queryClient.invalidateQueries({ queryKey: ['stopList'] });
+                queryClient.invalidateQueries({ queryKey: ['goalList'] });
                 showSuccessToast('Bạn đã dừng học list này');
             }
         } catch {

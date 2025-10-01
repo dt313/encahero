@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { ActivityIndicator, Text, View } from 'react-native';
 
+import { useQueryClient } from '@tanstack/react-query';
 import { debounce } from 'lodash';
 
 import MultipleChoice from './flashcards/multiple-choice';
@@ -56,9 +57,9 @@ function RandomQuiz({
     onSubmit: (quizType: QuestionType, cardId: number, rating?: 'E' | 'M' | 'H') => void;
 }) {
     const [questionType, setQuestionType] = useState<QuestionType | null>(null);
+    const queryClient = useQueryClient();
     const isSubmittingRef = useRef(false);
     useEffect(() => {
-        console.log('call');
         setQuestionType(randomQuestionType());
         isSubmittingRef.current = false;
     }, [quiz]);
@@ -70,6 +71,14 @@ function RandomQuiz({
                     if (questionType) {
                         onSubmit(questionType, quiz.id, rating);
                         setQuestionType(null);
+                        queryClient.setQueryData(['userStatsDailyAndWeekly'], (old: any) => {
+                            if (!old) return old;
+                            return {
+                                ...old,
+                                today: (old.today ?? 0) + 1,
+                                week: (old.week ?? 0) + 1,
+                            };
+                        });
                     }
                 },
                 500,

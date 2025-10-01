@@ -104,11 +104,10 @@ function GoalList({ title, containerStyle }: GoalListType) {
     } = useQuery({
         queryKey: ['goalList'],
         queryFn: collectionService.getMyLearningList,
-        enabled: collections.length === 0,
     });
 
     useEffect(() => {
-        if (learningList.length && collections.length === 0) {
+        if (learningList.length) {
             dispatch(initLearningList(learningList));
         }
     }, [learningList, collections.length, dispatch]);
