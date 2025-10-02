@@ -4,6 +4,7 @@ import { Redirect } from 'expo-router';
 
 import { AppDispatch } from '@/store';
 import { initializeAuth } from '@/store/action/auth-action';
+import { initializeSoundSetting } from '@/store/action/sound-action';
 import { RootState } from '@/store/reducers';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -17,6 +18,7 @@ function IndexScreen() {
     useEffect(() => {
         const init = () => {
             dispatch(initializeAuth()).finally(() => setReady(true));
+            dispatch(initializeSoundSetting());
         };
         init();
     }, [dispatch]);

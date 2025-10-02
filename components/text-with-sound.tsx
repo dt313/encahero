@@ -4,7 +4,9 @@ import { TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
 
 import * as Speech from 'expo-speech';
 
+import { RootState } from '@/store/reducers';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useSelector } from 'react-redux';
 
 import { commonColor } from '@/constants/Colors';
 
@@ -19,13 +21,16 @@ export const SoundButton = ({
     color?: string;
     size?: number;
 }) => {
+    const isAutoSound = useSelector((state: RootState) => state.sound.autoSound);
     useEffect(() => {
+        if (!isAutoSound) return;
         Speech.stop();
         Speech.speak(text);
         return () => {
             Speech.stop();
         };
-    }, [text]);
+    }, [text, isAutoSound]);
+
     const speak = () => {
         Speech.stop();
         Speech.speak(text);

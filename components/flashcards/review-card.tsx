@@ -4,9 +4,11 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import * as Speech from 'expo-speech';
 
+import { RootState } from '@/store/reducers';
 import { ArrowReloadHorizontalIcon, VolumeHighIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import FlipCard from 'react-native-flip-card';
+import { useSelector } from 'react-redux';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
 
@@ -44,6 +46,7 @@ function ReviewCard({ quiz, onSubmit }: { quiz: Quiz; onSubmit: (name: 'E' | 'M'
     const textColor = useThemeColor({}, 'text');
 
     const [flip, setFlip] = useState(false);
+    const isAutoSound = useSelector((state: RootState) => state.sound.autoSound);
 
     const handleFlip = () => {
         setFlip(!flip);
@@ -56,13 +59,14 @@ function ReviewCard({ quiz, onSubmit }: { quiz: Quiz; onSubmit: (name: 'E' | 'M'
     };
 
     useEffect(() => {
+        if (!isAutoSound) return;
         Speech.stop();
         Speech.speak(quiz.en_word);
 
         return () => {
             Speech.stop();
         };
-    }, [quiz]);
+    }, [quiz, isAutoSound]);
 
     const speak = () => {
         Speech.stop();

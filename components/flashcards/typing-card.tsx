@@ -4,8 +4,10 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import * as Speech from 'expo-speech';
 
+import { RootState } from '@/store/reducers';
 import { Idea01Icon, VolumeHighIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
+import { useSelector } from 'react-redux';
 
 import { commonColor } from '@/constants/Colors';
 
@@ -21,8 +23,10 @@ function TypingCard({ quiz, onSubmit }: { quiz: Quiz; onSubmit: () => void }) {
     const [isShowAnswer, setIsShowAnswer] = useState(false);
     const [isCorrect, setIsCorrect] = useState<null | boolean>(null);
     const backgroundColor = useThemeColor({}, 'background');
+    const isAutoSound = useSelector((state: RootState) => state.sound.autoSound);
 
     useEffect(() => {
+        if (!isAutoSound) return;
         Speech.stop();
         Speech.speak(quiz.en_word);
 
@@ -30,7 +34,7 @@ function TypingCard({ quiz, onSubmit }: { quiz: Quiz; onSubmit: () => void }) {
             Speech.stop();
             reset();
         };
-    }, [quiz]);
+    }, [quiz, isAutoSound]);
 
     const speak = () => {
         Speech.stop();

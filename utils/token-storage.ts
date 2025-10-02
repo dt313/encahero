@@ -73,3 +73,11 @@ export async function clearAllTokens() {
     await clearAccessToken();
     await clearRefreshToken();
 }
+
+export async function getAutoSound() {
+    return await AsyncStorage.getItem('autoSound');
+}
+
+export async function setAutoSound(value: boolean) {
+    await AsyncStorage.setItem('autoSound', value ? 'true' : 'false');
+}

@@ -5,9 +5,11 @@ import { Pressable, StyleSheet, Switch, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 
 import { changeStatus } from '@/store/action/learning-list-action';
+import { toggleAutoPlay } from '@/store/action/sound-action';
+import { RootState } from '@/store/reducers';
 import { ArrowRight02Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
 import useToast from '@/hooks/useToast';
@@ -18,9 +20,13 @@ import { ThemedText } from './ThemedText';
 import Button from './button';
 
 function QuizSetting({ collectionId, onClose }: { collectionId: number | undefined; onClose: () => void }) {
-    const [reviewMode, setReviewMode] = useState(false);
-    const [autoPlay, setAutoPlay] = useState(true);
+    const isAutoSound = useSelector((state: RootState) => state.sound.autoSound);
     const router = useRouter();
+
+    const [reviewMode, setReviewMode] = useState(false);
+    const [autoPlay, setAutoPlay] = useState(isAutoSound);
+
+    console.log({ isAutoSound });
 
     const linkColor = useThemeColor({}, 'quizLinkTextColor');
     const linkBg = useThemeColor({}, 'quizLinkBg');
@@ -44,6 +50,12 @@ function QuizSetting({ collectionId, onClose }: { collectionId: number | undefin
         }
     };
 
+    const toggleAutoPlaySound = (value: boolean) => {
+        setAutoPlay(value);
+        // Dispatch action to update global state if needed
+        dispatch(toggleAutoPlay());
+    };
+
     return (
         <View style={styles.container}>
             <ThemedText type="title" style={styles.header}>
@@ -55,7 +67,6 @@ function QuizSetting({ collectionId, onClose }: { collectionId: number | undefin
                 <ThemedText style={styles.optionText}>Review Mode</ThemedText>
                 <Switch
                     value={reviewMode}
-                    onValueChange={setReviewMode}
                     // thumbColor={reviewMode ? '#4caf50' : '#f4f4f4'}
                 />
             </View>
@@ -63,7 +74,7 @@ function QuizSetting({ collectionId, onClose }: { collectionId: number | undefin
             {/* Auto Play Sound */}
             <View style={[styles.optionRow, { backgroundColor: white }]}>
                 <ThemedText style={styles.optionText}>Auto Play Sound</ThemedText>
-                <Switch value={autoPlay} onValueChange={setAutoPlay} />
+                <Switch value={autoPlay} onValueChange={toggleAutoPlaySound} />
             </View>
 
             {/* Links */}
