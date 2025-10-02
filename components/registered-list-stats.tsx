@@ -2,6 +2,8 @@ import React, { useCallback, useMemo, useRef } from 'react';
 
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { useRouter } from 'expo-router';
+
 import { changeStatus, updateTaskCount } from '@/store/action/learning-list-action';
 import { RootState } from '@/store/reducers';
 import { CollectionProgress } from '@/store/reducers/learning-list-reducer';
@@ -32,10 +34,12 @@ export default function RegisteredListStats({ id, title, onClose }: RegisteredSt
     const white = useThemeColor({}, 'white');
     const textColor = useThemeColor({}, 'text');
 
+    const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+    const dispatch = useDispatch();
+    const router = useRouter();
+
     const learningList = useSelector((state: RootState) => state.learningList.collections);
     const { showSuccessToast, showErrorToast } = useToast();
-    const dispatch = useDispatch();
-    const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
     const collection = useMemo(() => {
         if (!learningList || learningList.length === 0) return undefined;
@@ -73,6 +77,16 @@ export default function RegisteredListStats({ id, title, onClose }: RegisteredSt
         }
     };
 
+    const handleRedirectToAllCards = () => {
+        router.push(`/cards/${id}?type=all`);
+        onClose();
+    };
+
+    const handleRedirectToKnownCards = () => {
+        router.push(`/cards/${id}?type=mastered`);
+        onClose();
+    };
+
     if (!collection) {
         return <ThemedText>Collection không tồn tại hoặc chưa load xong</ThemedText>;
     }
@@ -105,18 +119,12 @@ export default function RegisteredListStats({ id, title, onClose }: RegisteredSt
             </View>
 
             <View style={styles.buttonContainer}>
-                <Pressable
-                    style={[styles.link, { backgroundColor: linkBg }]}
-                    onPress={() => console.log('Go to Known Words')}
-                >
+                <Pressable style={[styles.link, { backgroundColor: linkBg }]} onPress={handleRedirectToKnownCards}>
                     <Text style={[styles.linkText, { color: linkColor }]}>📖 Known Words</Text>
                     <HugeiconsIcon icon={ArrowRight02Icon} size={24} color={textColor} />
                 </Pressable>
 
-                <Pressable
-                    style={[styles.link, { backgroundColor: linkBg }]}
-                    onPress={() => console.log('Go to All Words')}
-                >
+                <Pressable style={[styles.link, { backgroundColor: linkBg }]} onPress={handleRedirectToAllCards}>
                     <Text style={[styles.linkText, { color: linkColor }]}>📚 View All Words</Text>
                     <HugeiconsIcon icon={ArrowRight02Icon} size={24} color={textColor} />
                 </Pressable>

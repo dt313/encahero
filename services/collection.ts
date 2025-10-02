@@ -36,6 +36,15 @@ export const getAllCollection = async () => {
     }
 };
 
+export const getCardsFromCollection = async (id: number | string) => {
+    try {
+        const res = await instance.get(`/collections/${id}/cards`);
+        return res.data;
+    } catch (error: any) {
+        throw error; // lỗi khác (network, timeout, ...)
+    }
+};
+
 export const registerCollection = async (id: number, taskNum: number) => {
     try {
         const res = await instance.post(`/collections/${id}/registrations`, { taskNum });
