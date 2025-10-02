@@ -75,7 +75,7 @@ function StopList({ title, containerStyle }: StopListType) {
                             id={item.collection_id}
                             name={item.collection.name}
                             masteredCount={item.mastered_card_count ?? 0}
-                            cardCount={item.card_count ?? 100}
+                            cardCount={item.collection.card_count ?? 0}
                         />
                     );
                 })}
