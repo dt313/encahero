@@ -24,11 +24,13 @@ function QuizSetting({
     onClose,
     onToggle,
     reviewMode,
+    isShowReviewMode,
 }: {
     collectionId: number | undefined;
     onClose: () => void;
     onToggle: () => void;
     reviewMode: boolean;
+    isShowReviewMode?: boolean;
 }) {
     const isAutoSound = useSelector((state: RootState) => state.sound.autoSound);
     const router = useRouter();
@@ -79,14 +81,16 @@ function QuizSetting({
             </ThemedText>
 
             {/* Review Mode */}
-            <View style={[styles.optionRow, { backgroundColor: white }]}>
-                <ThemedText style={styles.optionText}>Review Mode</ThemedText>
-                <Switch
-                    value={reviewMode}
-                    onValueChange={onToggle}
-                    // thumbColor={reviewMode ? '#4caf50' : '#f4f4f4'}
-                />
-            </View>
+            {isShowReviewMode && (
+                <View style={[styles.optionRow, { backgroundColor: white }]}>
+                    <ThemedText style={styles.optionText}>Review Mode</ThemedText>
+                    <Switch
+                        value={reviewMode}
+                        onValueChange={onToggle}
+                        // thumbColor={reviewMode ? '#4caf50' : '#f4f4f4'}
+                    />
+                </View>
+            )}
 
             {/* Auto Play Sound */}
             <View style={[styles.optionRow, { backgroundColor: white }]}>

@@ -38,7 +38,7 @@ const CompletedListItem = ({ id, name, masteredCount, cardCount }: CompletedItem
             <Button
                 buttonStyle={{ marginTop: 24, backgroundColor: '#fff', paddingVertical: 4 }}
                 textStyle={{ color: '#333' }}
-                onPress={() => router.replace(`/quiz/${id}?mode="review"`)}
+                onPress={() => router.replace(`/quiz/${id}?mode=recap`)}
             >
                 Review
             </Button>
@@ -47,23 +47,21 @@ const CompletedListItem = ({ id, name, masteredCount, cardCount }: CompletedItem
 };
 
 function CompletedList({ title, containerStyle }: CompletedListType) {
-    const [stopList, setStopList] = useState<CollectionProgress[]>([]);
+    const [completedList, setCompletedList] = useState<CollectionProgress[]>([]);
     const collections = useSelector((state: any) => state.learningList.collections);
     useEffect(() => {
-        setStopList(collections.filter((item: CollectionProgress) => item.status === 'completed'));
+        setCompletedList(collections.filter((item: CollectionProgress) => item.status === 'completed'));
     }, [collections]);
 
-    if (stopList.length === 0) {
+    if (completedList.length === 0) {
         return null;
     }
-
-    console.log(stopList);
 
     return (
         <View style={[containerStyle]}>
             <ThemedText type="subtitle">{title}</ThemedText>
             <View style={styles.body}>
-                {stopList.map((item: any, index: number) => {
+                {completedList.map((item: any, index: number) => {
                     return (
                         <CompletedListItem
                             key={item.id}

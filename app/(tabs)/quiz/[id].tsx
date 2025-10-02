@@ -25,13 +25,14 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 import useToast from '@/hooks/useToast';
 
 import { collectionService, quizService } from '@/services';
+import type { QuizMode } from '@/services/quiz';
 
 function QuizScreen() {
     const leftRef = useRef<BottomSheetModal>(null);
     const rightRef = useRef<BottomSheetModal>(null);
     const dispatch = useDispatch();
     const router = useRouter();
-    const { id } = useLocalSearchParams();
+    const { id, mode } = useLocalSearchParams();
     const collections = useSelector((state: RootState) => state.learningList.collections);
     const { showErrorToast, showSuccessToast } = useToast();
 
@@ -46,16 +47,26 @@ function QuizScreen() {
 
     const collectionId = useMemo(() => {
         if (id) return Number(id);
-        const learningList = collections?.filter((c: CollectionProgress) => c.status === 'in_progress');
+        const learningList = collections?.filter((c: CollectionProgress) => {
+            return c.status === 'in_progress';
+        });
         return learningList?.[0]?.collection_id;
-    }, [id, collections]);
+    }, [id, collections, mode]);
 
     useEffect(() => {
         if (!collectionId) return;
 
         const fetchQuiz = async () => {
-            const mode = isReviewMode ? 'mixed' : 'old';
-            const res = await quizService.getRandomQuizOfCollection(collectionId, mode);
+            let quizMode: QuizMode;
+
+            if (typeof mode === 'string') {
+                // ép kiểu sang QuizMode (nếu chắc chắn mode hợp lệ)
+                quizMode = mode as QuizMode;
+            } else {
+                quizMode = isReviewMode ? 'mixed' : 'old';
+            }
+
+            const res = await quizService.getRandomQuizOfCollection(collectionId, quizMode);
             setQuizList(res);
             setCurrentIndex(0);
         };
@@ -193,9 +204,11 @@ function QuizScreen() {
 
             {quizList.length > 0 && (
                 <View style={styles.btnBox}>
-                    <Button type="link" onPress={handleMasteredWord}>
-                        🧠 Đã ghi nhớ
-                    </Button>
+                    {!(mode === 'recap') && (
+                        <Button type="link" onPress={handleMasteredWord}>
+                            🧠 Đã ghi nhớ
+                        </Button>
+                    )}
                     <Button type="link" textStyle={{ color: textColor }} onPress={handleSkip}>
                         Skip →
                     </Button>
@@ -212,6 +225,7 @@ function QuizScreen() {
                     onClose={handleCloseSettingBox}
                     onToggle={toggleReviewMode}
                     reviewMode={isReviewMode}
+                    isShowReviewMode={!(mode === 'recap')}
                 />
             </ModalBottomSheet>
         </SafeAreaView>

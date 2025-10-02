@@ -2,7 +2,7 @@ import instance from '@/config/axios';
 
 import { QuestionType } from '@/components/random-quiz';
 
-type QuizMode = 'old' | 'new' | 'mixed';
+export type QuizMode = 'old' | 'new' | 'mixed' | 'recap';
 
 export const getRandomQuizOfCollection = async (id: number, mode: QuizMode = 'old') => {
     try {
