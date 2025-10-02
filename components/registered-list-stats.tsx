@@ -129,12 +129,18 @@ export default function RegisteredListStats({ id, title, onClose }: RegisteredSt
                     <HugeiconsIcon icon={ArrowRight02Icon} size={24} color={textColor} />
                 </Pressable>
 
-                <Pressable style={[styles.link, { backgroundColor: linkBg }]} onPress={handleOpenBottomModal}>
-                    <Text style={[styles.linkText, { color: linkColor }]}>🔄 Chỉnh số lượng Task</Text>
-                    <HugeiconsIcon icon={ArrowRight02Icon} size={24} color={textColor} />
-                </Pressable>
+                {collection?.status === 'in_progress' && (
+                    <Pressable style={[styles.link, { backgroundColor: linkBg }]} onPress={handleOpenBottomModal}>
+                        <Text style={[styles.linkText, { color: linkColor }]}>🔄 Chỉnh số lượng Task</Text>
+                        <HugeiconsIcon icon={ArrowRight02Icon} size={24} color={textColor} />
+                    </Pressable>
+                )}
                 {/* Stop Learning Button */}
-                {collection.status === 'stopped' ? (
+                {collection.status === 'in_progress' ? (
+                    <Pressable style={styles.stopButton} onPress={handleStopLearning}>
+                        <Text style={styles.stopButtonText}>🛑 Stop Learning This List</Text>
+                    </Pressable>
+                ) : (
                     <ThemedText
                         style={{
                             textAlign: 'center',
@@ -144,12 +150,8 @@ export default function RegisteredListStats({ id, title, onClose }: RegisteredSt
                             marginVertical: 8,
                         }}
                     >
-                        Bạn đã dừng bài này
+                        {collection.status === 'stop' ? 'Bạn đã dừng bài này' : 'Bạn đã hoàn thành bài này'}
                     </ThemedText>
-                ) : (
-                    <Pressable style={styles.stopButton} onPress={handleStopLearning}>
-                        <Text style={styles.stopButtonText}>🛑 Stop Learning This List</Text>
-                    </Pressable>
                 )}
             </View>
 

@@ -10,6 +10,7 @@ import avatar from '@/assets/images/peeps-avatar-alpha.png';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import Charts from '@/components/charts';
+import CompletedList from '@/components/completed-list';
 import GoalList from '@/components/goal-list';
 import StopList from '@/components/stop-list';
 
@@ -42,6 +43,7 @@ function Home() {
 
                 <GoalList containerStyle={{ marginTop: 16 }} title="Today's Goal" />
                 <StopList containerStyle={{ marginTop: 16 }} title="Stop List" />
+                <CompletedList containerStyle={{ marginTop: 16 }} title="Completed List" />
             </SafeAreaView>
         </ScrollView>
     );
