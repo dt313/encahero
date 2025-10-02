@@ -19,14 +19,21 @@ import { collectionService } from '@/services';
 import { ThemedText } from './ThemedText';
 import Button from './button';
 
-function QuizSetting({ collectionId, onClose }: { collectionId: number | undefined; onClose: () => void }) {
+function QuizSetting({
+    collectionId,
+    onClose,
+    onToggle,
+    reviewMode,
+}: {
+    collectionId: number | undefined;
+    onClose: () => void;
+    onToggle: () => void;
+    reviewMode: boolean;
+}) {
     const isAutoSound = useSelector((state: RootState) => state.sound.autoSound);
     const router = useRouter();
 
-    const [reviewMode, setReviewMode] = useState(false);
     const [autoPlay, setAutoPlay] = useState(isAutoSound);
-
-    console.log({ isAutoSound });
 
     const linkColor = useThemeColor({}, 'quizLinkTextColor');
     const linkBg = useThemeColor({}, 'quizLinkBg');
@@ -52,8 +59,17 @@ function QuizSetting({ collectionId, onClose }: { collectionId: number | undefin
 
     const toggleAutoPlaySound = (value: boolean) => {
         setAutoPlay(value);
-        // Dispatch action to update global state if needed
         dispatch(toggleAutoPlay());
+    };
+
+    const redirectToAllWords = () => {
+        router.push(`/cards/${collectionId}`);
+        onClose();
+    };
+
+    const redirectToKnownWords = () => {
+        router.push(`/cards/${collectionId}?type=mastered`);
+        onClose();
     };
 
     return (
@@ -67,6 +83,7 @@ function QuizSetting({ collectionId, onClose }: { collectionId: number | undefin
                 <ThemedText style={styles.optionText}>Review Mode</ThemedText>
                 <Switch
                     value={reviewMode}
+                    onValueChange={onToggle}
                     // thumbColor={reviewMode ? '#4caf50' : '#f4f4f4'}
                 />
             </View>
@@ -78,18 +95,12 @@ function QuizSetting({ collectionId, onClose }: { collectionId: number | undefin
             </View>
 
             {/* Links */}
-            <Pressable
-                style={[styles.link, { backgroundColor: linkBg }]}
-                onPress={() => console.log('Go to Known Words')}
-            >
+            <Pressable style={[styles.link, { backgroundColor: linkBg }]} onPress={redirectToKnownWords}>
                 <Text style={[styles.linkText, { color: linkColor }]}>📖 Known Words</Text>
                 <HugeiconsIcon icon={ArrowRight02Icon} size={24} color={textColor} />
             </Pressable>
 
-            <Pressable
-                style={[styles.link, { backgroundColor: linkBg }]}
-                onPress={() => console.log('Go to All Words')}
-            >
+            <Pressable style={[styles.link, { backgroundColor: linkBg }]} onPress={redirectToAllWords}>
                 <Text style={[styles.linkText, { color: linkColor }]}>📚 View All Words</Text>
                 <HugeiconsIcon icon={ArrowRight02Icon} size={24} color={textColor} />
             </Pressable>

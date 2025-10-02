@@ -2,9 +2,11 @@ import instance from '@/config/axios';
 
 import { QuestionType } from '@/components/random-quiz';
 
-export const getRandomQuizOfCollection = async (id: number) => {
+type QuizMode = 'old' | 'new' | 'mixed';
+
+export const getRandomQuizOfCollection = async (id: number, mode: QuizMode = 'old') => {
     try {
-        const res = await instance.get(`/quiz/${id}`);
+        const res = await instance.get(`/quiz/${id}?mode=${mode}`);
         return res.data;
     } catch (error: any) {
         throw error;

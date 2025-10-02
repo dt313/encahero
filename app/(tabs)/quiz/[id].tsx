@@ -29,15 +29,20 @@ import { collectionService, quizService } from '@/services';
 function QuizScreen() {
     const leftRef = useRef<BottomSheetModal>(null);
     const rightRef = useRef<BottomSheetModal>(null);
+    const dispatch = useDispatch();
     const router = useRouter();
     const { id } = useLocalSearchParams();
     const collections = useSelector((state: RootState) => state.learningList.collections);
+    const { showErrorToast, showSuccessToast } = useToast();
 
     const [quizList, setQuizList] = useState<Quiz[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [currentCollection, setCurrentCollection] = useState<CollectionProgress>();
-    const dispatch = useDispatch();
-    const { showErrorToast, showSuccessToast } = useToast();
+    const [isReviewMode, setIsReviewMode] = useState(false);
+
+    const toggleReviewMode = () => {
+        setIsReviewMode(!isReviewMode);
+    };
 
     const collectionId = useMemo(() => {
         if (id) return Number(id);
@@ -49,13 +54,14 @@ function QuizScreen() {
         if (!collectionId) return;
 
         const fetchQuiz = async () => {
-            const res = await quizService.getRandomQuizOfCollection(collectionId);
+            const mode = isReviewMode ? 'mixed' : 'old';
+            const res = await quizService.getRandomQuizOfCollection(collectionId, mode);
             setQuizList(res);
             setCurrentIndex(0);
         };
 
         fetchQuiz();
-    }, [collectionId]);
+    }, [collectionId, isReviewMode]);
 
     useEffect(() => {
         if (!collectionId || !collections) return;
@@ -63,9 +69,9 @@ function QuizScreen() {
         setCurrentCollection(collection);
     }, [collectionId, collections]);
 
-    const capitalizeWords = (text: string) => {
-        return text.replace(/\b\w/g, (char) => char.toUpperCase());
-    };
+    // const capitalizeWords = (text: string) => {
+    //     return text.replace(/\b\w/g, (char) => char.toUpperCase());
+    // };
 
     const handleOpenListMenu = useCallback(() => {
         leftRef.current?.present();
@@ -98,7 +104,6 @@ function QuizScreen() {
             if (!collectionId) return;
             const res = await collectionService.changeStatusOfCard(collectionId, quizList[currentIndex].id, 'mastered');
             if (res) {
-                showSuccessToast('Cập nhật thẻ thành công');
                 dispatch(increaseMasteredCount({ id: collectionId }));
                 handleSkip();
             }
@@ -135,13 +140,13 @@ function QuizScreen() {
         );
 
     return (
-        <SafeAreaView style={{ paddingHorizontal: 20, flex: 1 }}>
+        <SafeAreaView style={[isReviewMode && { backgroundColor: '#D9E9CF' }, { paddingHorizontal: 20, flex: 1 }]}>
             <View style={styles.header}>
                 <TouchableOpacity style={[styles.btnWrap, { backgroundColor: white }]} onPress={handleOpenListMenu}>
                     <HugeiconsIcon icon={BookOpen02Icon} size={24} color={textColor} />
                 </TouchableOpacity>
                 <ThemedText type="subtitle" style={styles.headerName} numberOfLines={1} ellipsizeMode="tail">
-                    {capitalizeWords(currentCollection ? currentCollection?.collection?.name : 'Name')}
+                    {currentCollection ? currentCollection?.collection?.name : 'Name'}
                 </ThemedText>
                 <TouchableOpacity style={[styles.btnWrap, { backgroundColor: white }]} onPress={handleOpenSettingBox}>
                     <HugeiconsIcon icon={Settings01Icon} size={24} color={textColor} />
@@ -195,7 +200,12 @@ function QuizScreen() {
             </ModalBottomSheet>
 
             <ModalBottomSheet bottomSheetModalRef={rightRef}>
-                <QuizSetting collectionId={currentCollection?.collection_id} onClose={handleCloseSettingBox} />
+                <QuizSetting
+                    collectionId={currentCollection?.collection_id}
+                    onClose={handleCloseSettingBox}
+                    onToggle={toggleReviewMode}
+                    reviewMode={isReviewMode}
+                />
             </ModalBottomSheet>
         </SafeAreaView>
     );
@@ -214,6 +224,7 @@ const styles = StyleSheet.create({
         flex: 1,
         textAlign: 'center',
         marginHorizontal: 24,
+        textTransform: 'capitalize',
     },
 
     btnWrap: {
