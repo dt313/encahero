@@ -1,29 +1,47 @@
 import React, { useState } from 'react';
 
-import { Alert, Pressable, StyleSheet, Switch, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Switch, Text, View } from 'react-native';
 
+import { useRouter } from 'expo-router';
+
+import { changeStatus } from '@/store/action/learning-list-action';
 import { ArrowRight02Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
+import { useDispatch } from 'react-redux';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
+import useToast from '@/hooks/useToast';
+
+import { collectionService } from '@/services';
 
 import { ThemedText } from './ThemedText';
 import Button from './button';
 
-function QuizSetting() {
+function QuizSetting({ collectionId, onClose }: { collectionId: number | undefined; onClose: () => void }) {
     const [reviewMode, setReviewMode] = useState(false);
     const [autoPlay, setAutoPlay] = useState(true);
+    const router = useRouter();
 
     const linkColor = useThemeColor({}, 'quizLinkTextColor');
     const linkBg = useThemeColor({}, 'quizLinkBg');
     const white = useThemeColor({}, 'white');
     const textColor = useThemeColor({}, 'text');
 
-    const handleStopLearning = () => {
-        Alert.alert('Stop Learning', 'Are you sure you want to stop learning this list?', [
-            { text: 'Cancel', style: 'cancel' },
-            { text: 'Yes', onPress: () => console.log('Stopped learning') },
-        ]);
+    const dispatch = useDispatch();
+    const { showSuccessToast, showErrorToast } = useToast();
+    const handleStopLearning = async () => {
+        if (!collectionId) return;
+        try {
+            const res = await collectionService.changeStatusOfCollection(collectionId, 'stopped');
+            if (res) {
+                dispatch(changeStatus({ id: collectionId, status: 'stopped' }));
+                showSuccessToast('Bạn đã dừng học list này');
+                onClose();
+                router.replace('/');
+            }
+        } catch {
+            showErrorToast('Có lỗi xảy ra, vui lòng thử lại sau');
+        }
     };
 
     return (

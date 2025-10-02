@@ -5,6 +5,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
 
 import { RootState } from '@/store/reducers';
+import { CollectionProgress } from '@/store/reducers/learning-list-reducer';
 import { FlatList } from 'react-native-gesture-handler';
 import { Bar, Circle } from 'react-native-progress';
 import { useSelector } from 'react-redux';
@@ -123,7 +124,13 @@ export default function LearningList({
     const listRef = useRef<FlatList<Deck>>(null);
     const collections = useSelector((state: RootState) => state.learningList.collections);
     const [selectedId, setSelectedId] = useState<number>(selectedIndex || 0);
+    const [progressList, setProgressList] = useState<CollectionProgress[]>([]);
     const router = useRouter();
+
+    useEffect(() => {
+        setProgressList(collections.filter((item: CollectionProgress) => item.status === 'in_progress'));
+    }, [collections]);
+
     const onSelect = (id: number, index: number) => {
         setSelectedId(id);
         listRef.current?.scrollToIndex({ index, viewPosition: 0.4 });
@@ -142,7 +149,7 @@ export default function LearningList({
             <View style={{ flex: 1, width: '100%' }}>
                 <FlatList
                     ref={listRef}
-                    data={collections}
+                    data={progressList}
                     keyExtractor={(item: any) => item.id}
                     horizontal
                     showsHorizontalScrollIndicator={false}

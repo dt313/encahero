@@ -41,7 +41,8 @@ function QuizScreen() {
 
     const collectionId = useMemo(() => {
         if (id) return Number(id);
-        return collections?.[0]?.collection_id;
+        const learningList = collections?.filter((c: CollectionProgress) => c.status === 'in_progress');
+        return learningList?.[0]?.collection_id;
     }, [id, collections]);
 
     useEffect(() => {
@@ -76,6 +77,10 @@ function QuizScreen() {
 
     const handleOpenSettingBox = useCallback(() => {
         rightRef.current?.present();
+    }, []);
+
+    const handleCloseSettingBox = useCallback(() => {
+        rightRef.current?.close();
     }, []);
 
     const handleSkip = () => {
@@ -122,7 +127,12 @@ function QuizScreen() {
 
     const white = useThemeColor({}, 'white');
     const textColor = useThemeColor({}, 'text');
-
+    if (!collectionId)
+        return (
+            <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ThemedText type="subtitle">No collection found</ThemedText>
+            </SafeAreaView>
+        );
     return (
         <SafeAreaView style={{ paddingHorizontal: 20, flex: 1 }}>
             <View style={styles.header}>
@@ -169,7 +179,7 @@ function QuizScreen() {
             </ModalBottomSheet>
 
             <ModalBottomSheet bottomSheetModalRef={rightRef}>
-                <QuizSetting />
+                <QuizSetting collectionId={currentCollection?.collection_id} onClose={handleCloseSettingBox} />
             </ModalBottomSheet>
         </SafeAreaView>
     );
