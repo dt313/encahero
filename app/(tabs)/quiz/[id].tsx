@@ -4,7 +4,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
-import { answerCard, increaseMasteredCount } from '@/store/action/learning-list-action';
+import { answerCard, changeStatus, increaseMasteredCount } from '@/store/action/learning-list-action';
 import { RootState } from '@/store/reducers';
 import { CollectionProgress } from '@/store/reducers/learning-list-reducer';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
@@ -104,6 +104,13 @@ function QuizScreen() {
             if (!collectionId) return;
             const res = await collectionService.changeStatusOfCard(collectionId, quizList[currentIndex].id, 'mastered');
             if (res) {
+                if (res?.collectionCompleted) {
+                    showSuccessToast('Congratulations! You have completed this collection.');
+                    dispatch(changeStatus({ id: collectionId, status: 'completed' }));
+                    dispatch(increaseMasteredCount({ id: collectionId }));
+                    router.replace('/');
+                    return;
+                }
                 dispatch(increaseMasteredCount({ id: collectionId }));
                 handleSkip();
             }

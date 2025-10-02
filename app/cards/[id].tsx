@@ -4,9 +4,13 @@ import { Image, Modal, SectionList, StyleSheet, Text, TextInput, TouchableOpacit
 
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
+import { changeStatus } from '@/store/action/learning-list-action';
+import { RootState } from '@/store/reducers';
+import { CollectionProgress } from '@/store/reducers/learning-list-reducer';
 import { Cancel01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { ThemedText } from '@/components/ThemedText';
 import BackIcon from '@/components/back-icon';
@@ -17,13 +21,6 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 import useToast from '@/hooks/useToast';
 
 import { collectionService } from '@/services';
-
-// bạn đã có BackIcon trong project
-
-type WordItem = {
-    title: string;
-    data: string[];
-};
 
 function CardList() {
     const router = useRouter();
@@ -38,6 +35,14 @@ function CardList() {
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedWord, setSelectedWord] = useState<any>(null);
     const { showErrorToast, showSuccessToast } = useToast();
+    const collections = useSelector((state: RootState) => state.learningList.collections);
+    const [collection, setCollection] = useState<CollectionProgress | null>(null);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        const col = collections?.find((c: CollectionProgress) => c.collection_id === Number(id));
+        if (col) setCollection(col);
+    }, [collections, id]);
 
     // TODO:  use debounce here
     const filteredData = cards
@@ -108,6 +113,10 @@ function CardList() {
             );
 
             if (res) {
+                if (collection?.status === 'completed' && res.collectionCompleted === false) {
+                    // update collection status to in_progress
+                    dispatch(changeStatus({ id: collection.collection_id, status: 'in_progress' }));
+                }
                 // update local state
                 const updatedCards = cards.map((section) => ({
                     ...section,
