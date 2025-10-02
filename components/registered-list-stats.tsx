@@ -162,6 +162,7 @@ export default function RegisteredListStats({ id, title, onClose }: RegisteredSt
                     onConfirm={handleConfirm}
                     isRegistered={true}
                     goal={collection?.task_count || 0}
+                    id={id}
                 />
             </ModalBottomSheet>
         </View>

@@ -156,6 +156,7 @@ const ListItem = ({
                         onConfirm={handRegister}
                         onClose={closeBottomModalSheet}
                         isRegistered={false}
+                        id={id}
                     />
                 )}
             </ModalBottomSheet>

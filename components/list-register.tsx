@@ -18,6 +18,7 @@ export type ListRegisterType = {
     onConfirm: (goal: number) => void;
     onClose?: () => void;
     isRegistered?: boolean;
+    id: number;
 };
 
 export default function ListRegister({
@@ -27,6 +28,7 @@ export default function ListRegister({
     onClose = () => {},
     isRegistered = false,
     goal = 100,
+    id,
 }: ListRegisterType) {
     const [taskCount, setTaskCount] = useState(goal);
 
@@ -37,7 +39,7 @@ export default function ListRegister({
     const lighterText = useThemeColor({}, 'lighterText');
 
     const directLinkHandler = () => {
-        router.push('/category/1/collection/1');
+        router.push(`/cards/${id}`);
         onClose();
     };
     return (

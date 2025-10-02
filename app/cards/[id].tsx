@@ -128,8 +128,12 @@ function CardList() {
 
     if (!id)
         return (
-            <SafeAreaView style={[styles.container, { backgroundColor }]}>
-                <ThemedText style={{ padding: 16 }}>Collection ID is required</ThemedText>
+            <SafeAreaView
+                style={[styles.container, { backgroundColor, justifyContent: 'center', alignItems: 'center' }]}
+            >
+                <ThemedText style={{ padding: 16 }} type="subtitle">
+                    Collection ID is required
+                </ThemedText>
             </SafeAreaView>
         );
 
@@ -163,18 +167,22 @@ function CardList() {
             </View>
 
             {/* Body */}
-            <SectionList
-                sections={filteredData || []}
-                keyExtractor={(item, index) => item + index}
-                renderItem={({ item }) => (
-                    <TouchableOpacity style={styles.item} onPress={() => handlePressWord(item)}>
-                        <ThemedText style={styles.word}>{item.en_word}</ThemedText>
-                    </TouchableOpacity>
-                )}
-                renderSectionHeader={({ section: { title } }) => (
-                    <ThemedText style={styles.sectionHeader}>{title}</ThemedText>
-                )}
-            />
+            {filteredData.length > 0 ? (
+                <SectionList
+                    sections={filteredData || []}
+                    keyExtractor={(item, index) => item + index}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity style={styles.item} onPress={() => handlePressWord(item)}>
+                            <ThemedText style={styles.word}>{item.en_word}</ThemedText>
+                        </TouchableOpacity>
+                    )}
+                    renderSectionHeader={({ section: { title } }) => (
+                        <ThemedText style={styles.sectionHeader}>{title}</ThemedText>
+                    )}
+                />
+            ) : (
+                <ThemedText style={{ padding: 16, textAlign: 'center' }}>No words found</ThemedText>
+            )}
 
             <Modal
                 visible={modalVisible}

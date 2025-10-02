@@ -140,6 +140,7 @@ export default function CategoryDetail() {
                         title={selectedItem?.name ?? ''}
                         onConfirm={handleRegister}
                         onClose={closeBottomModalSheet}
+                        id={selectedItem?.id}
                     />
                 )}
             </ModalBottomSheet>

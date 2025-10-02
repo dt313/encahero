@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 
 import { answerCard, increaseMasteredCount } from '@/store/action/learning-list-action';
 import { RootState } from '@/store/reducers';
@@ -29,7 +29,7 @@ import { collectionService, quizService } from '@/services';
 function QuizScreen() {
     const leftRef = useRef<BottomSheetModal>(null);
     const rightRef = useRef<BottomSheetModal>(null);
-
+    const router = useRouter();
     const { id } = useLocalSearchParams();
     const collections = useSelector((state: RootState) => state.learningList.collections);
 
@@ -130,9 +130,10 @@ function QuizScreen() {
     if (!collectionId)
         return (
             <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <ThemedText type="subtitle">No collection found</ThemedText>
+                <ThemedText type="subtitle">Have no quiz in this collection</ThemedText>
             </SafeAreaView>
         );
+
     return (
         <SafeAreaView style={{ paddingHorizontal: 20, flex: 1 }}>
             <View style={styles.header}>
@@ -147,32 +148,47 @@ function QuizScreen() {
                 </TouchableOpacity>
             </View>
 
-            <View style={styles.progress}>
-                <ThemedText style={styles.progressNumber}>{currentCollection?.today_learned_count}</ThemedText>
-                <Bar
-                    style={{ flex: 1, marginHorizontal: 12, borderRadius: 30 }}
-                    color={progress > 1 ? '#2196f3' : '#4caf50'}
-                    height={12}
-                    progress={progress}
-                    width={null}
-                    borderWidth={0}
-                    unfilledColor="rgba(198, 198, 198, 0.4)"
-                />
-                <ThemedText style={[styles.progressNumber]}>{currentCollection?.task_count}</ThemedText>
-            </View>
+            {quizList.length > 0 && (
+                <View style={styles.progress}>
+                    <ThemedText style={styles.progressNumber}>{currentCollection?.today_learned_count}</ThemedText>
+                    <Bar
+                        style={{ flex: 1, marginHorizontal: 12, borderRadius: 30 }}
+                        color={progress > 1 ? '#2196f3' : '#4caf50'}
+                        height={12}
+                        progress={progress}
+                        width={null}
+                        borderWidth={0}
+                        unfilledColor="rgba(198, 198, 198, 0.4)"
+                    />
+                    <ThemedText style={[styles.progressNumber]}>{currentCollection?.task_count}</ThemedText>
+                </View>
+            )}
 
-            <View style={styles.flashcards}>
-                {quizList.length > 0 && <RandomQuiz quiz={quizList[currentIndex]} onSubmit={handleSubmitAnswer} />}
-            </View>
+            {quizList.length > 0 ? (
+                <View style={styles.flashcards}>
+                    {quizList.length > 0 && <RandomQuiz quiz={quizList[currentIndex]} onSubmit={handleSubmitAnswer} />}
+                </View>
+            ) : (
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <ThemedText type="subtitle" style={{ padding: 16 }}>
+                        Have no quiz in this collection
+                    </ThemedText>
+                    <Button type="link" onPress={() => router.replace('/')}>
+                        Go to home
+                    </Button>
+                </View>
+            )}
 
-            <View style={styles.btnBox}>
-                <Button type="link" onPress={handleMasteredWord}>
-                    🧠 Đã ghi nhớ
-                </Button>
-                <Button type="link" textStyle={{ color: textColor }} onPress={handleSkip}>
-                    Skip →
-                </Button>
-            </View>
+            {quizList.length > 0 && (
+                <View style={styles.btnBox}>
+                    <Button type="link" onPress={handleMasteredWord}>
+                        🧠 Đã ghi nhớ
+                    </Button>
+                    <Button type="link" textStyle={{ color: textColor }} onPress={handleSkip}>
+                        Skip →
+                    </Button>
+                </View>
+            )}
 
             <ModalBottomSheet bottomSheetModalRef={leftRef}>
                 <LearningList selectedIndex={currentCollection?.collection_id} close={handleCloseListMenu} />
