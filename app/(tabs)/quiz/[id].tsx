@@ -53,24 +53,25 @@ function QuizScreen() {
         return learningList?.[0]?.collection_id;
     }, [id, collections, mode]);
 
-    useEffect(() => {
+    // Tách fetchQuiz ra ngoài để có thể gọi lại
+    const fetchQuiz = useCallback(async () => {
         if (!collectionId) return;
+        let quizMode: QuizMode;
 
-        const fetchQuiz = async () => {
-            let quizMode: QuizMode;
-
-            if (typeof mode === 'string') {
-                // ép kiểu sang QuizMode (nếu chắc chắn mode hợp lệ)
-                quizMode = mode as QuizMode;
-            } else {
-                quizMode = isReviewMode ? 'mixed' : 'old';
-            }
-
-            const res = await quizService.getRandomQuizOfCollection(collectionId, quizMode);
+        if (typeof mode === 'string') {
+            quizMode = mode as QuizMode;
+        } else {
+            quizMode = isReviewMode ? 'mixed' : 'old';
+        }
+        console.log('call api');
+        const res = await quizService.getRandomQuizOfCollection(collectionId, quizMode);
+        if (res?.length > 0) {
             setQuizList(res);
             setCurrentIndex(0);
-        };
+        }
+    }, [collectionId, mode, isReviewMode]);
 
+    useEffect(() => {
         fetchQuiz();
     }, [collectionId, isReviewMode]);
 
@@ -105,7 +106,7 @@ function QuizScreen() {
             setCurrentIndex(currentIndex + 1);
         } else {
             // TODO: call api to get more quiz
-            setCurrentIndex(0);
+            fetchQuiz();
         }
     };
 
