@@ -1,6 +1,6 @@
 import ReduxActionType from '@/types/redux-action-type';
 
-import { LOGIN, LOGOUT } from '../action/auth-action';
+import { LOGIN, LOGOUT, UPDATE_USER } from '../action/auth-action';
 
 const initialState = {
     isLoggedIn: false,
@@ -21,6 +21,12 @@ export default function authReducer(state = initialState, action: ReduxActionTyp
                 ...state,
                 isLoggedIn: false,
                 user: {},
+            };
+
+        case UPDATE_USER:
+            return {
+                ...state,
+                user: action.payload,
             };
 
         default:

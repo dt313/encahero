@@ -1,13 +1,16 @@
 import React, { useEffect } from 'react';
 
-import { Platform } from 'react-native';
+import { AppState, Platform } from 'react-native';
 
 import { Tabs } from 'expo-router';
 
+import { updateUser } from '@/store/action/auth-action';
 import { initLearningList } from '@/store/action/learning-list-action';
+import { RootState } from '@/store/reducers';
 import { BookOpen01Icon, Home01Icon, Quiz02Icon, Settings02Icon, Sword03Icon } from '@hugeicons/core-free-icons';
 import { useQuery } from '@tanstack/react-query';
-import { useDispatch } from 'react-redux';
+import * as RNLocalize from 'react-native-localize';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { Colors } from '@/constants/Colors';
 
@@ -15,22 +18,58 @@ import TabIconButton from '@/components/tab-icon-button';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
+import useToast from '@/hooks/useToast';
 
-import { collectionService } from '@/services';
+import { storage } from '@/utils';
+
+import { collectionService, userService } from '@/services';
 
 export default function TabLayout() {
     const colorScheme = useColorScheme();
     const dispatch = useDispatch();
+    const { showErrorToast } = useToast();
     const { data: myCollections } = useQuery({
         queryKey: ['my-collections'],
         queryFn: collectionService.getMyLearningList,
     });
+
+    const me = useSelector((state: RootState) => state.auth.user);
 
     useEffect(() => {
         if (myCollections?.length) {
             dispatch(initLearningList(myCollections));
         }
     }, [myCollections, dispatch]);
+
+    useEffect(() => {
+        const checkTimeZone = async () => {
+            const currentTimeZone = RNLocalize.getTimeZone();
+            if (!me?.timeZone || me.timeZone !== currentTimeZone) {
+                try {
+                    const res = await userService.updateTimeZone(currentTimeZone);
+
+                    if (res.data) {
+                        await storage.setUser(res.data);
+                        dispatch(updateUser(res.data));
+                    }
+                } catch (error) {
+                    showErrorToast(error);
+                }
+            }
+        };
+
+        // Lần đầu mount
+        checkTimeZone();
+
+        // Mỗi lần app từ background -> foreground
+        const subscription = AppState.addEventListener('change', (nextAppState) => {
+            if (nextAppState === 'active') {
+                checkTimeZone();
+            }
+        });
+
+        return () => subscription.remove();
+    }, [me?.timeZone]);
 
     return (
         <Tabs

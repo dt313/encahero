@@ -12,6 +12,7 @@ import { addToast } from './toast-action';
 export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
 export const SET_LOADING = 'SET_LOADING';
+export const UPDATE_USER = 'UPDATE_USER';
 
 export const login = (payload: any): ReduxActionType => {
     return {
@@ -23,6 +24,13 @@ export const login = (payload: any): ReduxActionType => {
 export const logout = (): ReduxActionType => {
     return {
         type: LOGOUT,
+    };
+};
+
+export const updateUser = (payload: any): ReduxActionType => {
+    return {
+        type: UPDATE_USER,
+        payload,
     };
 };
 

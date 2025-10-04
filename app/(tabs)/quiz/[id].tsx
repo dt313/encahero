@@ -63,7 +63,6 @@ function QuizScreen() {
         } else {
             quizMode = isReviewMode ? 'mixed' : 'old';
         }
-        console.log('call api');
         const res = await quizService.getRandomQuizOfCollection(collectionId, quizMode);
         if (res?.length > 0) {
             setQuizList(res);
@@ -81,6 +80,7 @@ function QuizScreen() {
         setCurrentCollection(collection);
     }, [collectionId, collections]);
 
+    console.log({ length: quizList.length, currentIndex });
     // const capitalizeWords = (text: string) => {
     //     return text.replace(/\b\w/g, (char) => char.toUpperCase());
     // };

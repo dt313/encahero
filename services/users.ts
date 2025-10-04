@@ -7,3 +7,11 @@ export const getUsers = async () => {
         throw error;
     }
 };
+
+export const updateTimeZone = async (timeZone: string) => {
+    try {
+        return await instance.post('/users/time-zone', { timeZone });
+    } catch (error) {
+        throw error;
+    }
+};
