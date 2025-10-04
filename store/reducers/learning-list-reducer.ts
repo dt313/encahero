@@ -66,7 +66,7 @@ export default function learningListReducer(state = initialState, action: ReduxA
                 collections:
                     state.collections.length > 0 &&
                     state.collections.map((item) =>
-                        item.id === action.payload.id
+                        item.collection_id === action.payload.id
                             ? { ...item, mastered_card_count: item.mastered_card_count + 1 }
                             : item,
                     ),
@@ -77,11 +77,11 @@ export default function learningListReducer(state = initialState, action: ReduxA
                 ...state,
                 collections:
                     state.collections.length > 0 &&
-                    state.collections.map((item) =>
-                        item.id === action.payload.id
-                            ? { ...item, today_learned_count: item.today_learned_count + 1 }
-                            : item,
-                    ),
+                    state.collections.map((item) => {
+                        if (item.collection_id === action.payload.id) {
+                            return { ...item, today_learned_count: item.today_learned_count + 1 };
+                        } else return item;
+                    }),
             };
 
         case CHANGE_STATUS:

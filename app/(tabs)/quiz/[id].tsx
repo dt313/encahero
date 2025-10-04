@@ -80,11 +80,6 @@ function QuizScreen() {
         setCurrentCollection(collection);
     }, [collectionId, collections]);
 
-    console.log({ length: quizList.length, currentIndex });
-    // const capitalizeWords = (text: string) => {
-    //     return text.replace(/\b\w/g, (char) => char.toUpperCase());
-    // };
-
     const handleOpenListMenu = useCallback(() => {
         leftRef.current?.present();
     }, []);
@@ -136,6 +131,7 @@ function QuizScreen() {
             let collectionId = id ? Number(id) : collections?.[0]?.collection_id;
             if (!collectionId) return;
             const res = await quizService.answer(collectionId, cardId, quizType, rating);
+
             if (res) {
                 dispatch(answerCard({ id: collectionId }));
                 handleSkip();
