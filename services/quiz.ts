@@ -18,11 +18,13 @@ export const answer = async (
     cardId: number,
     questionType: QuestionType,
     rating?: 'E' | 'M' | 'H',
+    isNew: boolean = false,
 ) => {
     try {
         const res = await instance.post(`quiz/${collectionId}/answer/${cardId}`, {
             questionType,
             ratingValue: rating,
+            isNew,
         });
 
         return res.data;

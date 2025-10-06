@@ -24,6 +24,9 @@ export interface CollectionProgress {
     current_review_count: number;
     today_learned_count: number;
     mastered_card_count: number;
+    learned_card_count: number;
+    today_new_count: number;
+    daily_new_limit: number;
     started_at: string | null;
     status: string;
     stopped_at: string | null;

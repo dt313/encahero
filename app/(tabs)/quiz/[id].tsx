@@ -32,14 +32,15 @@ function QuizScreen() {
     const rightRef = useRef<BottomSheetModal>(null);
     const dispatch = useDispatch();
     const router = useRouter();
-    const { id, mode } = useLocalSearchParams();
     const collections = useSelector((state: RootState) => state.learningList.collections);
+    const { id, mode } = useLocalSearchParams();
     const { showErrorToast, showSuccessToast } = useToast();
 
     const [quizList, setQuizList] = useState<Quiz[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [currentCollection, setCurrentCollection] = useState<CollectionProgress>();
     const [isReviewMode, setIsReviewMode] = useState(false);
+    const [quizMode, setQuizMode] = useState<QuizMode>((mode as QuizMode) || 'old');
 
     const toggleReviewMode = () => {
         setIsReviewMode(!isReviewMode);
@@ -51,28 +52,36 @@ function QuizScreen() {
             return c.status === 'in_progress';
         });
         return learningList?.[0]?.collection_id;
-    }, [id, collections, mode]);
+    }, [id, collections]);
 
-    // Tách fetchQuiz ra ngoài để có thể gọi lại
+    useEffect(() => {
+        if (
+            (currentCollection && currentCollection?.learned_card_count === 0) ||
+            (currentCollection &&
+                currentCollection?.today_learned_count >= currentCollection?.task_count &&
+                currentCollection.today_new_count <= currentCollection.daily_new_limit)
+        ) {
+            setQuizMode('new');
+        } else if (typeof mode === 'string') {
+            setQuizMode(mode as QuizMode);
+        } else {
+            setQuizMode(isReviewMode ? 'mixed' : 'old');
+        }
+    }, [mode, isReviewMode, currentCollection]);
+
     const fetchQuiz = useCallback(async () => {
         if (!collectionId) return;
-        let quizMode: QuizMode;
 
-        if (typeof mode === 'string') {
-            quizMode = mode as QuizMode;
-        } else {
-            quizMode = isReviewMode ? 'mixed' : 'old';
-        }
         const res = await quizService.getRandomQuizOfCollection(collectionId, quizMode);
         if (res?.length > 0) {
             setQuizList(res);
             setCurrentIndex(0);
         }
-    }, [collectionId, mode, isReviewMode]);
+    }, [collectionId, quizMode]);
 
     useEffect(() => {
         fetchQuiz();
-    }, [collectionId, isReviewMode]);
+    }, [collectionId, isReviewMode, fetchQuiz]);
 
     useEffect(() => {
         if (!collectionId || !collections) return;
@@ -100,7 +109,6 @@ function QuizScreen() {
         if (currentIndex < quizList.length - 1) {
             setCurrentIndex(currentIndex + 1);
         } else {
-            // TODO: call api to get more quiz
             fetchQuiz();
         }
     };
@@ -130,7 +138,7 @@ function QuizScreen() {
         try {
             let collectionId = id ? Number(id) : collections?.[0]?.collection_id;
             if (!collectionId) return;
-            const res = await quizService.answer(collectionId, cardId, quizType, rating);
+            const res = await quizService.answer(collectionId, cardId, quizType, rating, quizMode === 'new');
 
             if (res) {
                 dispatch(answerCard({ id: collectionId }));
@@ -147,6 +155,7 @@ function QuizScreen() {
 
     const white = useThemeColor({}, 'white');
     const textColor = useThemeColor({}, 'text');
+
     if (!collectionId)
         return (
             <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -285,4 +294,5 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
 });
+
 export default QuizScreen;
