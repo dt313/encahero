@@ -21,7 +21,6 @@ export interface CollectionProgress {
     };
     task_count: number;
     last_reviewed_at: string | null;
-    current_review_count: number;
     today_learned_count: number;
     mastered_card_count: number;
     learned_card_count: number;
@@ -82,7 +81,14 @@ export default function learningListReducer(state = initialState, action: ReduxA
                     state.collections.length > 0 &&
                     state.collections.map((item) => {
                         if (item.collection_id === action.payload.id) {
-                            return { ...item, today_learned_count: item.today_learned_count + 1 };
+                            if (action.payload.isNew) {
+                                return {
+                                    ...item,
+                                    today_learned_count: item.today_learned_count + 1,
+                                    today_new_count: item.today_new_count + 1,
+                                    learned_card_count: item.today_learned_count + 1,
+                                };
+                            } else return { ...item, today_learned_count: item.today_learned_count + 1 };
                         } else return item;
                     }),
             };

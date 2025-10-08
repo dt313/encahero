@@ -37,7 +37,7 @@ export const increaseMasteredCount = (payload: { id: number }): ReduxActionType 
     };
 };
 
-export const answerCard = (payload: { id: number }): ReduxActionType => {
+export const answerCard = (payload: { id: number; isNew: boolean }): ReduxActionType => {
     return {
         type: ANSWER_CARD,
         payload,

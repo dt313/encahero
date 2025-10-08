@@ -78,7 +78,7 @@ function TypingCard({ quiz, onSubmit }: { quiz: Quiz; onSubmit: () => void }) {
             <ViToEng meaning={quiz.meaning} example={quiz.ex[0]} url={quiz?.image_url} />
             <View style={styles.tools}>
                 <View style={styles.toolItem}>
-                    <ThemedText style={styles.type}>New</ThemedText>
+                    <ThemedText style={styles.type}>Ôn tập</ThemedText>
                 </View>
                 <TouchableOpacity style={styles.toolItem} onPress={speak}>
                     <HugeiconsIcon icon={VolumeHighIcon} size={28} color={commonColor.volumeColor} />
@@ -132,8 +132,9 @@ const styles = StyleSheet.create({
         paddingVertical: 4,
         paddingHorizontal: 12,
         borderRadius: 12,
-        borderColor: '#c154c9ff',
-        color: '#c154c9ff',
+        borderColor: '#bdc5d1',
+        color: '#333',
+        backgroundColor: '#e7eaf388',
     },
 
     replyBox: {

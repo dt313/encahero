@@ -40,7 +40,7 @@ function QuizScreen() {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [currentCollection, setCurrentCollection] = useState<CollectionProgress>();
     const [isReviewMode, setIsReviewMode] = useState(false);
-    const [quizMode, setQuizMode] = useState<QuizMode>((mode as QuizMode) || 'old');
+    const [showCongratsModal, setShowCongratsModal] = useState(false);
 
     const toggleReviewMode = () => {
         setIsReviewMode(!isReviewMode);
@@ -54,34 +54,39 @@ function QuizScreen() {
         return learningList?.[0]?.collection_id;
     }, [id, collections]);
 
-    useEffect(() => {
+    const quizMode = useMemo<QuizMode | null>(() => {
+        if (!currentCollection) return null;
         if (
-            (currentCollection && currentCollection?.learned_card_count === 0) ||
-            (currentCollection &&
-                currentCollection?.today_learned_count >= currentCollection?.task_count &&
-                currentCollection.today_new_count <= currentCollection.daily_new_limit)
+            (currentCollection?.learned_card_count === 0 ||
+                currentCollection?.learned_card_count < currentCollection.daily_new_limit) &&
+            currentCollection.learned_card_count < currentCollection.collection.card_count
+        )
+            return 'new';
+        if (
+            currentCollection?.today_new_count < currentCollection?.daily_new_limit &&
+            currentCollection.collection.card_count > currentCollection.learned_card_count &&
+            (currentCollection?.today_learned_count >= currentCollection?.task_count ||
+                (currentCollection.learned_card_count === currentCollection.mastered_card_count &&
+                    currentCollection.mastered_card_count < currentCollection.collection.card_count))
         ) {
-            setQuizMode('new');
-        } else if (typeof mode === 'string') {
-            setQuizMode(mode as QuizMode);
-        } else {
-            setQuizMode(isReviewMode ? 'mixed' : 'old');
-        }
+            return 'new';
+        } else if (typeof mode === 'string') return mode as QuizMode;
+        return isReviewMode ? 'mixed' : 'old';
     }, [mode, isReviewMode, currentCollection]);
 
     const fetchQuiz = useCallback(async () => {
-        if (!collectionId) return;
+        if (!collectionId || !quizMode) return;
 
         const res = await quizService.getRandomQuizOfCollection(collectionId, quizMode);
         if (res?.length > 0) {
             setQuizList(res);
             setCurrentIndex(0);
         }
-    }, [collectionId, quizMode]);
+    }, [collectionId, isReviewMode, quizMode]);
 
     useEffect(() => {
         fetchQuiz();
-    }, [collectionId, isReviewMode, fetchQuiz]);
+    }, [collectionId, quizMode]);
 
     useEffect(() => {
         if (!collectionId || !collections) return;
@@ -123,7 +128,8 @@ function QuizScreen() {
                     showSuccessToast('Congratulations! You have completed this collection.');
                     dispatch(changeStatus({ id: collectionId, status: 'completed' }));
                     dispatch(increaseMasteredCount({ id: collectionId }));
-                    router.replace('/');
+                    // router.replace('/');
+                    setShowCongratsModal(true);
                     return;
                 }
                 dispatch(increaseMasteredCount({ id: collectionId }));
@@ -141,7 +147,7 @@ function QuizScreen() {
             const res = await quizService.answer(collectionId, cardId, quizType, rating, quizMode === 'new');
 
             if (res) {
-                dispatch(answerCard({ id: collectionId }));
+                dispatch(answerCard({ id: collectionId, isNew: quizMode === 'new' }));
                 handleSkip();
             }
         } catch (error) {
@@ -195,7 +201,13 @@ function QuizScreen() {
 
             {quizList.length > 0 ? (
                 <View style={styles.flashcards}>
-                    {quizList.length > 0 && <RandomQuiz quiz={quizList[currentIndex]} onSubmit={handleSubmitAnswer} />}
+                    {quizList.length > 0 && (
+                        <RandomQuiz
+                            quiz={quizList[currentIndex]}
+                            onSubmit={handleSubmitAnswer}
+                            isNew={quizMode === 'new'}
+                        />
+                    )}
                 </View>
             ) : (
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -234,6 +246,27 @@ function QuizScreen() {
                     isShowReviewMode={!(mode === 'recap')}
                 />
             </ModalBottomSheet>
+
+            {showCongratsModal && (
+                <View style={styles.modalOverlay}>
+                    <View style={styles.modalBox}>
+                        <ThemedText type="title" style={{ textAlign: 'center', marginBottom: 12 }}>
+                            🎉 Congratulations! 🎉
+                        </ThemedText>
+                        <ThemedText type="default" style={{ textAlign: 'center', marginBottom: 20 }}>
+                            You have completed this collection.
+                        </ThemedText>
+                        <Button
+                            onPress={() => {
+                                setShowCongratsModal(false);
+                                router.replace('/');
+                            }}
+                        >
+                            Go Home
+                        </Button>
+                    </View>
+                </View>
+            )}
         </SafeAreaView>
     );
 }
@@ -292,6 +325,30 @@ const styles = StyleSheet.create({
         marginHorizontal: 12,
         flexDirection: 'row',
         justifyContent: 'space-between',
+    },
+
+    modalOverlay: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 999,
+    },
+    modalBox: {
+        backgroundColor: 'white',
+        borderRadius: 16,
+        padding: 24,
+        width: '80%',
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+        elevation: 6,
     },
 });
 

@@ -136,7 +136,7 @@ function MultipleChoice({ quiz, type, onSubmit }: { quiz: Quiz; type: QuizDirect
         <View style={[styles.wrapper, { backgroundColor: backgroundColor }]}>
             <View style={[styles.questionBox]}>
                 <View style={styles.wordType}>
-                    <ThemedText style={styles.type}>New</ThemedText>
+                    <ThemedText style={styles.type}>Ôn tập</ThemedText>
                 </View>
 
                 {type === QuizDirection.E2V ? (
@@ -250,7 +250,9 @@ const styles = StyleSheet.create({
         paddingVertical: 4,
         paddingHorizontal: 12,
         borderRadius: 12,
-        borderColor: '#4f4f4fff',
+        borderColor: '#bdc5d1',
+        color: '#333',
+        backgroundColor: '#e7eaf388',
     },
 });
 

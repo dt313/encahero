@@ -51,18 +51,24 @@ export function randomQuestionType(): QuestionType {
 
 function RandomQuiz({
     quiz,
+    isNew,
     onSubmit,
 }: {
     quiz: Quiz;
     onSubmit: (quizType: QuestionType, cardId: number, rating?: 'E' | 'M' | 'H') => void;
+    isNew: boolean;
 }) {
     const [questionType, setQuestionType] = useState<QuestionType | null>(null);
     const queryClient = useQueryClient();
     const isSubmittingRef = useRef(false);
     useEffect(() => {
-        setQuestionType(randomQuestionType());
+        if (isNew) {
+            setQuestionType(QuestionType.RATING);
+        } else {
+            setQuestionType(randomQuestionType());
+        }
         isSubmittingRef.current = false;
-    }, [quiz]);
+    }, [quiz, isNew]);
 
     const debouncedSubmit = useMemo(
         () =>
@@ -93,7 +99,7 @@ function RandomQuiz({
             return <MultipleChoice quiz={quiz} type={direction} onSubmit={debouncedSubmit} />;
 
         case QuestionType.RATING:
-            return <ReviewCard quiz={quiz} onSubmit={debouncedSubmit} />;
+            return <ReviewCard quiz={quiz} onSubmit={debouncedSubmit} isNew={isNew} />;
 
         case QuestionType.TYPING:
             return <TypingCard quiz={quiz} onSubmit={debouncedSubmit} />;

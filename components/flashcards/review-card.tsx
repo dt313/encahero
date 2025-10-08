@@ -41,7 +41,15 @@ const answers: AnswerType[] = [
     },
 ];
 
-function ReviewCard({ quiz, onSubmit }: { quiz: Quiz; onSubmit: (name: 'E' | 'M' | 'H') => void }) {
+function ReviewCard({
+    quiz,
+    onSubmit,
+    isNew,
+}: {
+    quiz: Quiz;
+    onSubmit: (name: 'E' | 'M' | 'H') => void;
+    isNew: boolean;
+}) {
     const backgroundColor = useThemeColor({}, 'background');
     const textColor = useThemeColor({}, 'text');
 
@@ -102,7 +110,9 @@ function ReviewCard({ quiz, onSubmit }: { quiz: Quiz; onSubmit: (name: 'E' | 'M'
 
                 <View style={styles.tools}>
                     <View style={styles.toolItem}>
-                        <ThemedText style={styles.type}>New</ThemedText>
+                        <ThemedText style={[styles.type, isNew ? styles.newType : styles.reviewType]}>
+                            {isNew ? 'Từ mới' : 'Ôn tập'}
+                        </ThemedText>
                     </View>
                     <TouchableOpacity style={styles.toolItem} onPress={speak}>
                         <HugeiconsIcon icon={VolumeHighIcon} size={28} color={textColor} />
@@ -158,8 +168,7 @@ const styles = StyleSheet.create({
         paddingVertical: 4,
         paddingHorizontal: 12,
         borderRadius: 12,
-        borderColor: '#c154c9ff',
-        color: '#c154c9ff',
+        fontWeight: 500,
     },
 
     flip: {
@@ -214,6 +223,16 @@ const styles = StyleSheet.create({
     E: { color: '#4CAF50', fontWeight: '600' }, // xanh lá
     M: { color: '#FFC107', fontWeight: '600' }, // vàng cam
     H: { color: '#F44336', fontWeight: '600' }, // đỏ
+
+    newType: {
+        borderColor: 'blue',
+        color: 'blue',
+    },
+    reviewType: {
+        borderColor: '#bdc5d1',
+        color: '#333',
+        backgroundColor: '#e7eaf388',
+    },
 });
 
 export default ReviewCard;

@@ -70,17 +70,20 @@ export default function CategoryDetail() {
         try {
             const res = await collectionService.registerCollection(selectedItem.id, goal);
             if (res) {
-                showSuccessToast(`Register ${res.name} successfully`);
+                showSuccessToast(`Register ${res.collection.name} successfully`);
                 dispatch(
                     register({
-                        ...res.collection,
+                        ...res,
+                        collection_id: res.id,
                         collection: {
                             id: res.id,
-                            name: res.name,
-                            card_count: 0,
+                            name: res.collection.name,
+                            card_count: res.collection.card_count,
                         },
                         mastered_card_count: 0,
                         today_learned_count: 0,
+                        learned_card_count: 0,
+                        is_registered: true,
                     }),
                 );
 

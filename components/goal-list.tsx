@@ -36,6 +36,7 @@ const GoalItem = ({ index, id, name, todayCount, taskCount }: GoalItemType) => {
 
     const progress = taskCount > 0 ? todayCount / taskCount : 0;
     const router = useRouter();
+
     return (
         <View style={[styles.item, { backgroundColor: index % 2 === 0 ? bgColor : goalBg }]}>
             <View style={styles.header}>
