@@ -62,18 +62,6 @@ export default function learningListReducer(state = initialState, action: ReduxA
                     ),
             };
 
-        case INCREASE_MASTERED_COUNT:
-            return {
-                ...state,
-                collections:
-                    state.collections.length > 0 &&
-                    state.collections.map((item) =>
-                        item.collection_id === action.payload.id
-                            ? { ...item, mastered_card_count: item.mastered_card_count + 1 }
-                            : item,
-                    ),
-            };
-
         case ANSWER_CARD:
             return {
                 ...state,
@@ -89,6 +77,31 @@ export default function learningListReducer(state = initialState, action: ReduxA
                                     learned_card_count: item.today_learned_count + 1,
                                 };
                             } else return { ...item, today_learned_count: item.today_learned_count + 1 };
+                        } else return item;
+                    }),
+            };
+
+        case INCREASE_MASTERED_COUNT:
+            return {
+                ...state,
+                collections:
+                    state.collections.length > 0 &&
+                    state.collections.map((item) => {
+                        if (item.collection_id === action.payload.id) {
+                            if (action.payload.isNew) {
+                                return {
+                                    ...item,
+                                    today_learned_count: item.today_learned_count + 1,
+                                    today_new_count: item.today_new_count + 1,
+                                    learned_card_count: item.today_learned_count + 1,
+                                    mastered_card_count: item.mastered_card_count + 1,
+                                };
+                            } else
+                                return {
+                                    ...item,
+                                    today_learned_count: item.today_learned_count + 1,
+                                    mastered_card_count: item.mastered_card_count + 1,
+                                };
                         } else return item;
                     }),
             };

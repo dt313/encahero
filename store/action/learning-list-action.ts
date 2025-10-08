@@ -7,6 +7,7 @@ export const REGISTER_COLLECTION = 'REGISTER_COLLECTION';
 export const UPDATE_TASK_COUNT = 'UPDATE_TASK_COUNT';
 export const INCREASE_MASTERED_COUNT = 'INCREASE_MASTERED_COUNT';
 export const ANSWER_CARD = 'ANSWER_CARD';
+export const MASTER_CARD = 'MASTER_CARD';
 export const CHANGE_STATUS = 'CHANGE_STATUS';
 export const CONTINUE_COLLECTION = 'CONTINUE_COLLECTION';
 export const initLearningList = (payload: CollectionProgress[]): ReduxActionType => {
@@ -30,7 +31,7 @@ export const updateTaskCount = (payload: { id: number; task_count: number }): Re
     };
 };
 
-export const increaseMasteredCount = (payload: { id: number }): ReduxActionType => {
+export const increaseMasteredCount = (payload: { id: number; isNew: boolean }): ReduxActionType => {
     return {
         type: INCREASE_MASTERED_COUNT,
         payload,

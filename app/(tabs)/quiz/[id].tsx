@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { ThemedText } from '@/components/ThemedText';
 import Button from '@/components/button';
+import CongratsModal from '@/components/congratulation-modal';
 import LearningList from '@/components/learning-list';
 import ModalBottomSheet from '@/components/modal-bottom-sheet';
 import QuizSetting from '@/components/quiz-setting';
@@ -40,7 +41,7 @@ function QuizScreen() {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [currentCollection, setCurrentCollection] = useState<CollectionProgress>();
     const [isReviewMode, setIsReviewMode] = useState(false);
-    const [showCongratsModal, setShowCongratsModal] = useState(false);
+    const [showCongratsModal, setShowCongratsModal] = useState(true);
 
     const toggleReviewMode = () => {
         setIsReviewMode(!isReviewMode);
@@ -127,12 +128,12 @@ function QuizScreen() {
                 if (res?.collectionCompleted) {
                     showSuccessToast('Congratulations! You have completed this collection.');
                     dispatch(changeStatus({ id: collectionId, status: 'completed' }));
-                    dispatch(increaseMasteredCount({ id: collectionId }));
+                    dispatch(increaseMasteredCount({ id: collectionId, isNew: quizMode === 'new' }));
                     // router.replace('/');
                     setShowCongratsModal(true);
                     return;
                 }
-                dispatch(increaseMasteredCount({ id: collectionId }));
+                dispatch(increaseMasteredCount({ id: collectionId, isNew: quizMode === 'new' }));
                 handleSkip();
             }
         } catch (error) {
@@ -247,26 +248,7 @@ function QuizScreen() {
                 />
             </ModalBottomSheet>
 
-            {showCongratsModal && (
-                <View style={styles.modalOverlay}>
-                    <View style={styles.modalBox}>
-                        <ThemedText type="title" style={{ textAlign: 'center', marginBottom: 12 }}>
-                            🎉 Congratulations! 🎉
-                        </ThemedText>
-                        <ThemedText type="default" style={{ textAlign: 'center', marginBottom: 20 }}>
-                            You have completed this collection.
-                        </ThemedText>
-                        <Button
-                            onPress={() => {
-                                setShowCongratsModal(false);
-                                router.replace('/');
-                            }}
-                        >
-                            Go Home
-                        </Button>
-                    </View>
-                </View>
-            )}
+            <CongratsModal visible={showCongratsModal} onClose={() => setShowCongratsModal(false)} />
         </SafeAreaView>
     );
 }
