@@ -1,6 +1,6 @@
-import React, { useCallback, useMemo, useRef } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { useRouter } from 'expo-router';
 
@@ -37,7 +37,7 @@ export default function RegisteredListStats({ id, title, onClose }: RegisteredSt
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
     const dispatch = useDispatch();
     const router = useRouter();
-
+    const [confirmVisible, setConfirmVisible] = useState(false); // ✅ modal xác nhận
     const learningList = useSelector((state: RootState) => state.learningList.collections);
     const { showSuccessToast, showErrorToast } = useToast();
 
@@ -69,8 +69,9 @@ export default function RegisteredListStats({ id, title, onClose }: RegisteredSt
             const res = await collectionService.changeStatusOfCollection(collection.collection_id, 'stopped');
             if (res) {
                 dispatch(changeStatus({ id: collection.collection_id, status: 'stopped' }));
+                setConfirmVisible(false);
                 showSuccessToast('Bạn đã dừng học list này');
-                onClose();
+                // onClose();
             }
         } catch {
             showErrorToast('Có lỗi xảy ra, vui lòng thử lại sau');
@@ -137,7 +138,7 @@ export default function RegisteredListStats({ id, title, onClose }: RegisteredSt
                 )}
                 {/* Stop Learning Button */}
                 {collection.status === 'in_progress' ? (
-                    <Pressable style={styles.stopButton} onPress={handleStopLearning}>
+                    <Pressable style={styles.stopButton} onPress={() => setConfirmVisible(true)}>
                         <Text style={styles.stopButtonText}>🛑 Stop Learning This List</Text>
                     </Pressable>
                 ) : (
@@ -150,10 +151,41 @@ export default function RegisteredListStats({ id, title, onClose }: RegisteredSt
                             marginVertical: 8,
                         }}
                     >
-                        {collection.status === 'stop' ? 'Bạn đã dừng bài này' : 'Bạn đã hoàn thành bài này'}
+                        {collection.status === 'stopped' ? 'Bạn đã dừng bài này' : 'Bạn đã hoàn thành bài này'}
                     </ThemedText>
                 )}
             </View>
+
+            {/* Stop Confirm Modal */}
+
+            <Modal
+                visible={confirmVisible}
+                transparent
+                animationType="fade"
+                onRequestClose={() => setConfirmVisible(false)}
+            >
+                <View style={styles.modalOverlay}>
+                    <View style={styles.modalContent}>
+                        <Text style={styles.modalTitle}>Xác nhận dừng học</Text>
+                        <Text style={styles.modalMessage}>Bạn có chắc muốn dừng học list này không?</Text>
+
+                        <View style={styles.modalActions}>
+                            <Pressable
+                                style={[styles.modalButton, { backgroundColor: '#f87171' }]}
+                                onPress={handleStopLearning}
+                            >
+                                <Text style={styles.modalButtonText}>Dừng học</Text>
+                            </Pressable>
+                            <Pressable
+                                style={[styles.modalButton, { backgroundColor: '#e5e7eb' }]}
+                                onPress={() => setConfirmVisible(false)}
+                            >
+                                <Text style={[styles.modalButtonText, { color: '#111' }]}>Hủy</Text>
+                            </Pressable>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
 
             {/* Modal Bottom Sheet */}
             <ModalBottomSheet bottomSheetModalRef={bottomSheetModalRef}>
@@ -239,5 +271,45 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '600',
         color: '#dc2626',
+    },
+
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    modalContent: {
+        backgroundColor: 'white',
+        borderRadius: 16,
+        padding: 20,
+        width: '80%',
+        alignItems: 'center',
+    },
+    modalTitle: {
+        fontSize: 18,
+        fontWeight: '700',
+        marginBottom: 8,
+    },
+    modalMessage: {
+        fontSize: 16,
+        textAlign: 'center',
+        color: '#555',
+        marginBottom: 20,
+    },
+    modalActions: {
+        flexDirection: 'row',
+        columnGap: 12,
+    },
+    modalButton: {
+        flex: 1,
+        paddingVertical: 10,
+        borderRadius: 8,
+        alignItems: 'center',
+    },
+    modalButtonText: {
+        color: 'white',
+        fontWeight: '600',
+        fontSize: 16,
     },
 });

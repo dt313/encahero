@@ -41,7 +41,7 @@ function QuizScreen() {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [currentCollection, setCurrentCollection] = useState<CollectionProgress>();
     const [isReviewMode, setIsReviewMode] = useState(false);
-    const [showCongratsModal, setShowCongratsModal] = useState(true);
+    const [showCongratsModal, setShowCongratsModal] = useState(false);
 
     const toggleReviewMode = () => {
         setIsReviewMode(!isReviewMode);
