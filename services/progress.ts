@@ -5,6 +5,15 @@ export const getStatsDailyAndWeekly = async () => {
         const res = await instance.get('/progress/stats/daily-and-weekly');
         return res.data;
     } catch (error: any) {
-        throw error; // lỗi khác (network, timeout, ...)
+        throw error;
+    }
+};
+
+export const getContribution = async () => {
+    try {
+        const res = await instance.get('/progress/contribution');
+        return res.data;
+    } catch (error: any) {
+        throw error;
     }
 };
