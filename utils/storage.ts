@@ -74,10 +74,21 @@ export async function clearAllTokens() {
     await clearRefreshToken();
 }
 
+// SOUND
+
 export async function getAutoSound() {
     return await AsyncStorage.getItem('autoSound');
 }
 
 export async function setAutoSound(value: boolean) {
     await AsyncStorage.setItem('autoSound', value ? 'true' : 'false');
+}
+
+// THEME
+export async function getTheme() {
+    return await AsyncStorage.getItem('theme');
+}
+
+export async function setTheme(value: 'dark' | 'light') {
+    await AsyncStorage.setItem('theme', value);
 }

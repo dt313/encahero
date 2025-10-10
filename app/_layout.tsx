@@ -2,8 +2,8 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 
+import { ThemeProviderCustom } from '@/context/custom-theme-provider';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 
@@ -11,14 +11,11 @@ import QueryProvider from '@/components/query-client-provider';
 import StoreProvider from '@/components/store-provider';
 import ToastContainer from '@/components/toast-container';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
-
 if (__DEV__) {
     require('../ReactotronConfig'); // hoặc đường dẫn chính xác tới ReactotronConfig.js
 }
 
 export default function RootLayout() {
-    const colorScheme = useColorScheme();
     const [loaded] = useFonts({
         SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     });
@@ -29,7 +26,7 @@ export default function RootLayout() {
 
     return (
         <QueryProvider>
-            <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+            <ThemeProviderCustom>
                 <StoreProvider>
                     <GestureHandlerRootView>
                         <ToastContainer />
@@ -55,7 +52,7 @@ export default function RootLayout() {
                         <StatusBar style="auto" />
                     </GestureHandlerRootView>
                 </StoreProvider>
-            </ThemeProvider>
+            </ThemeProviderCustom>
         </QueryProvider>
     );
 }

@@ -4,6 +4,7 @@ import { Alert, Image, ScrollView, StyleSheet, Switch, TouchableOpacity, View } 
 
 import { useRouter } from 'expo-router';
 
+import { useThemeSwitcher } from '@/context/custom-theme-provider';
 import { AppDispatch } from '@/store';
 import { logoutAsync } from '@/store/action/auth-action';
 import {
@@ -29,7 +30,7 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 import { userService } from '@/services';
 
 export default function SettingsScreen() {
-    const [darkMode, setDarkMode] = useState(false);
+    const { mode, toggleTheme } = useThemeSwitcher();
     const [pushNotif, setPushNotif] = useState(true);
 
     const textColor = useThemeColor({}, 'text');
@@ -113,8 +114,8 @@ export default function SettingsScreen() {
                     <SwitchItem
                         icon={<HugeiconsIcon icon={Moon02Icon} size={24} color={textColor} />}
                         label="Dark Theme"
-                        value={darkMode}
-                        onValueChange={setDarkMode}
+                        value={mode === 'dark'}
+                        onValueChange={toggleTheme}
                     />
                     <SwitchItem
                         icon={<HugeiconsIcon icon={Notification01Icon} size={24} color={textColor} />}

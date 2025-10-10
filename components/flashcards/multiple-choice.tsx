@@ -36,47 +36,66 @@ const EngToVi = ({ text }: { text: string }) => {
 export const ViToEng = ({
     meaning = '',
     example = '',
+    type = '',
     url = "'",
 }: {
     meaning: string;
     example: string;
     url?: string;
+    type: string;
 }) => {
     return (
         <View>
-            <ThemedText type="subtitle" style={{ fontSize: 18 }}>
-                Định nghĩa:{' '}
-            </ThemedText>
-            <ThemedText
-                style={{
-                    marginBottom: 12,
-                    fontWeight: 400,
-                }}
-            >
-                {meaning}
-            </ThemedText>
-            <ThemedText type="subtitle" style={{ fontSize: 18 }}>
-                Ví dụ:{' '}
-            </ThemedText>
-            {/* <ThemedText
-                style={{
-                    marginBottom: 12,
-                    fontWeight: 400,
-                }}
-            >
-                {example}
-            </ThemedText> */}
+            <View>
+                <ThemedText type="subtitle" style={{ fontSize: 18 }}>
+                    Định nghĩa:{' '}
+                </ThemedText>
 
-            {url && (
-                <Image
-                    source={{ uri: url }}
+                <ThemedText
                     style={{
-                        maxHeight: 100,
-                        maxWidth: 200,
-                        resizeMode: 'contain',
+                        fontWeight: 400,
                     }}
-                />
-            )}
+                >
+                    {meaning}
+                </ThemedText>
+                {type && (
+                    <ThemedText
+                        type="subtitle"
+                        style={{
+                            fontSize: 16,
+                            marginVertical: 12,
+                        }}
+                    >
+                        {type}
+                    </ThemedText>
+                )}
+                {example && (
+                    <View>
+                        <ThemedText type="subtitle" style={{ fontSize: 18 }}>
+                            Ví dụ:
+                        </ThemedText>
+                        <ThemedText
+                            style={{
+                                marginBottom: 12,
+                                fontWeight: 400,
+                            }}
+                        >
+                            {example}
+                        </ThemedText>
+                    </View>
+                )}
+            </View>
+
+            <Image
+                source={{
+                    uri: 'https://www.shutterstock.com/shutterstock/photos/795957880/display_1500/stock-photo-female-hands-holding-young-green-plant-on-black-isolated-background-nature-growth-and-care-795957880.jpg',
+                }}
+                style={{
+                    width: 'auto',
+                    height: 100,
+                }}
+                resizeMode="contain"
+            />
         </View>
     );
 };
@@ -142,7 +161,7 @@ function MultipleChoice({ quiz, type, onSubmit }: { quiz: Quiz; type: QuizDirect
                 {type === QuizDirection.E2V ? (
                     <EngToVi text={quiz.en_word} />
                 ) : (
-                    <ViToEng meaning={quiz.meaning} example={quiz.ex[0]} url={quiz?.image_url} />
+                    <ViToEng meaning={quiz.meaning} example={quiz.ex[0]} url={quiz?.image_url} type={quiz.type} />
                 )}
             </View>
             <View style={[styles.answersBox, { backgroundColor: backgroundColor }]}>

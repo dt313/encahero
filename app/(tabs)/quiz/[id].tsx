@@ -35,7 +35,7 @@ function QuizScreen() {
     const router = useRouter();
     const collections = useSelector((state: RootState) => state.learningList.collections);
     const { id, mode } = useLocalSearchParams();
-    const { showErrorToast, showSuccessToast } = useToast();
+    const { showErrorToast } = useToast();
 
     const [quizList, setQuizList] = useState<Quiz[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -126,7 +126,6 @@ function QuizScreen() {
             const res = await collectionService.changeStatusOfCard(collectionId, quizList[currentIndex].id, 'mastered');
             if (res) {
                 if (res?.collectionCompleted) {
-                    showSuccessToast('Congratulations! You have completed this collection.');
                     dispatch(changeStatus({ id: collectionId, status: 'completed' }));
                     dispatch(increaseMasteredCount({ id: collectionId, isNew: quizMode === 'new' }));
                     // router.replace('/');
@@ -222,7 +221,12 @@ function QuizScreen() {
             )}
 
             {quizList.length > 0 && (
-                <View style={styles.btnBox}>
+                <View
+                    style={[
+                        styles.btnBox,
+                        currentCollection?.status === 'completed' && { flexDirection: 'row-reverse' },
+                    ]}
+                >
                     {!(mode === 'recap') && (
                         <Button type="link" onPress={handleMasteredWord}>
                             🧠 Đã ghi nhớ
@@ -244,7 +248,7 @@ function QuizScreen() {
                     onClose={handleCloseSettingBox}
                     onToggle={toggleReviewMode}
                     reviewMode={isReviewMode}
-                    isShowReviewMode={!(mode === 'recap')}
+                    isShowReviewMode={!(mode === 'recap' && currentCollection?.status === 'completed')}
                 />
             </ModalBottomSheet>
 
