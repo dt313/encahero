@@ -1,37 +1,45 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
+import { RootState } from '@/store/reducers';
 import { useQuery } from '@tanstack/react-query';
+import dayjs from 'dayjs';
+import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
 import { ContributionGraph as Graph } from 'react-native-chart-kit';
 import { ContributionChartValue } from 'react-native-chart-kit/dist/contribution-graph/ContributionGraph';
+import { useSelector } from 'react-redux';
+
+import { generateGraphData } from '@/utils';
+import { getEndOfYearUTC } from '@/utils/get-end-of-year';
 
 import { progressService } from '@/services';
 
-const commitsData = [
-    { date: '2025-09-02', count: 30 },
-    { date: '2025-09-03', count: 30 },
-    { date: '2025-09-04', count: 30 },
-    { date: '2025-09-05', count: 40 },
-    { date: '2025-09-06', count: 30 },
-    { date: '2025-09-30', count: 30 },
-    { date: '2025-09-31', count: 30 },
-    { date: '2025-08-01', count: 30 },
-    { date: '2025-08-02', count: 30 },
-    { date: '2025-07-05', count: 30 },
-    { date: '2025-07-28', count: 30 },
-    { date: '2025-06-28', count: 200 },
-];
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
 function ContributionGraph({ bgColor }: { bgColor: string }) {
-    const [tooltip, setTooltip] = useState<{ date: Date | null; count: number | string } | null>(null);
-
-    const endDate = new Date(new Date().getFullYear(), 11, 31);
-
+    const [tooltip, setTooltip] = useState<{ date: string | null; count: number | string } | null>(null);
+    const user = useSelector((state: RootState) => state.auth.user);
+    const userTimeZone = user?.time_zone ?? 'UTC';
     const { data: contribution } = useQuery({
         queryKey: ['contribution'],
         queryFn: () => progressService.getContribution(),
     });
 
+    const endDate = useMemo(() => getEndOfYearUTC(userTimeZone), [userTimeZone]);
+
+    const normalizedContribution = useMemo(
+        () => generateGraphData(contribution ?? [], endDate),
+        [contribution, endDate],
+    );
+
+    const handleDayPress = ({ count, date }: { count?: number; date: string | Date }) => {
+        const formattedDate = typeof date === 'string' ? date.split('T')[0] : dayjs(date).utc().format('YYYY-MM-DD');
+
+        setTooltip({ count: count || 0, date: formattedDate });
+    };
     return (
         <View style={styles.container}>
             <ScrollView
@@ -42,7 +50,7 @@ function ContributionGraph({ bgColor }: { bgColor: string }) {
                 centerContent
             >
                 <Graph
-                    values={contribution ? [...contribution, ...commitsData] : []}
+                    values={normalizedContribution ?? []}
                     endDate={endDate}
                     numDays={365}
                     width={1200}
@@ -50,9 +58,7 @@ function ContributionGraph({ bgColor }: { bgColor: string }) {
                     horizontal
                     squareSize={20}
                     gutterSize={2}
-                    onDayPress={({ count, date }) => {
-                        setTooltip({ date: date, count: count || 0 });
-                    }}
+                    onDayPress={handleDayPress}
                     chartConfig={{
                         backgroundColor: '#fff',
                         backgroundGradientFrom: '#fff',

@@ -25,10 +25,11 @@ import RegisteredListStats from './registered-list-stats';
 
 interface HorizontalListProps {
     headerName?: string;
-    containerStyle: ViewStyle;
+    containerStyle?: ViewStyle;
     isRandomColor?: boolean;
     isLearningList?: boolean;
     list: CollectionProgress[];
+    isVertical?: boolean;
 }
 
 type ListItemType = {
@@ -40,6 +41,7 @@ type ListItemType = {
     masteredCount?: number;
     id: number;
     isShowBar: boolean;
+    containerStyle?: ViewStyle;
 };
 
 const ListItem = ({
@@ -51,6 +53,7 @@ const ListItem = ({
     masteredCount,
     id,
     isShowBar,
+    containerStyle,
 }: ListItemType) => {
     const theme = useColorScheme();
     const lighterText = useThemeColor({}, 'lighterText');
@@ -104,7 +107,7 @@ const ListItem = ({
     const progress = masteredCount && cardCount ? masteredCount / cardCount : 0;
 
     return (
-        <View style={[styles.item, { backgroundColor: backgroundColor }]}>
+        <View style={[styles.item, { backgroundColor: backgroundColor }, containerStyle]}>
             <View style={styles.itemHeader}>
                 <Text style={styles.itemIcon}>{icon}</Text>
                 <Button style={{ paddingVertical: 0 }} onPress={handlePresentModalPress}>
@@ -173,12 +176,13 @@ function HorizontalList({
     isRandomColor = false,
     list,
     isLearningList,
+    isVertical = false,
 }: HorizontalListProps) {
     return (
         <View style={[styles.wrapper, containerStyle]}>
             <ThemedText style={styles.headerName}>{headerName}</ThemedText>
             <FlatList
-                horizontal
+                horizontal={!isVertical}
                 data={list}
                 keyExtractor={(item: any) => item.id}
                 renderItem={({ item }) => {
@@ -207,11 +211,16 @@ function HorizontalList({
                                 cardCount={item.card_count}
                                 id={item.id}
                                 isShowBar={false}
+                                containerStyle={isVertical ? { maxWidth: '100%' } : undefined}
                             />
                         );
                     }
                 }}
-                contentContainerStyle={{ columnGap: 8, paddingVertical: 16 }}
+                contentContainerStyle={{
+                    columnGap: 8,
+                    paddingVertical: 16,
+                    rowGap: isVertical ? 12 : undefined,
+                }}
                 showsHorizontalScrollIndicator={false}
             />
         </View>

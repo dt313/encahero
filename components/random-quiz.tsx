@@ -85,6 +85,23 @@ function RandomQuiz({
                                 week: (old.week ?? 0) + 1,
                             };
                         });
+
+                        queryClient.setQueryData(['contribution'], (old: any[] | undefined) => {
+                            if (!old) return old;
+
+                            const today = new Date().toISOString().split('T')[0];
+                            let found = false;
+
+                            const newData = old.map((item) => {
+                                if (item.date === today) {
+                                    found = true;
+                                    return { ...item, count: (item.count || 0) + 1 };
+                                }
+                                return item;
+                            });
+
+                            if (!found) newData.push({ date: today, count: 1 });
+                        });
                     }
                 },
                 500,

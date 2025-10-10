@@ -18,7 +18,7 @@ function List() {
     const collections = useSelector((state: RootState) => state.learningList.collections);
 
     const [progressList, setProgressList] = useState<CollectionProgress[]>([]);
-
+    const [searchText, setSearchText] = useState('');
     useEffect(() => {
         setProgressList(collections.filter((item: CollectionProgress) => item.status === 'in_progress'));
     }, [collections]);
@@ -32,25 +32,36 @@ function List() {
         queryFn: collectionService.getAllCollection,
     });
 
+    const filteredAll = allList.filter((item: any) => item.name.toLowerCase().includes(searchText.toLowerCase()));
+
     return (
         <SafeAreaView style={[styles.wrapper]}>
-            <ListHeader />
+            <ListHeader onSearchChange={setSearchText} />
             <View>
                 <ScrollView contentContainerStyle={{ paddingBottom: Platform.OS === 'ios' ? 140 : 80 }}>
-                    <View
-                        style={{
-                            paddingHorizontal: 20,
-                        }}
-                    >
-                        <HorizontalList isRandomColor containerStyle={{ marginTop: 24 }} list={allList} />
+                    {searchText ? (
                         <HorizontalList
-                            headerName="Learning List"
-                            containerStyle={{ marginTop: 24 }}
-                            list={progressList}
-                            isLearningList={true}
+                            headerName="Search Result"
+                            containerStyle={{ margin: 24 }}
+                            list={filteredAll}
+                            isVertical
                         />
-                        <CategoryList />
-                    </View>
+                    ) : (
+                        <View
+                            style={{
+                                paddingHorizontal: 20,
+                            }}
+                        >
+                            <HorizontalList isRandomColor containerStyle={{ marginTop: 24 }} list={allList} />
+                            <HorizontalList
+                                headerName="Learning List"
+                                containerStyle={{ marginTop: 24 }}
+                                list={progressList}
+                                isLearningList={true}
+                            />
+                            <CategoryList />
+                        </View>
+                    )}
                 </ScrollView>
             </View>
         </SafeAreaView>

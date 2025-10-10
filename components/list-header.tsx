@@ -9,8 +9,9 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 
 import { ThemedText } from './ThemedText';
 
-function ListHeader() {
+function ListHeader({ onSearchChange }: { onSearchChange: (text: string) => void }) {
     const [isSearching, setIsSearching] = useState(false);
+    const [searchText, setSearchText] = useState('');
     const white = useThemeColor({}, 'white');
     const textColor = useThemeColor({}, 'text');
     const lighterText = useThemeColor({}, 'lighterText');
@@ -41,7 +42,11 @@ function ListHeader() {
                 {isSearching && (
                     <TouchableOpacity
                         style={[styles.searchIcon, { backgroundColor: white }]}
-                        onPress={() => setIsSearching(false)}
+                        onPress={() => {
+                            setIsSearching(false);
+                            setSearchText('');
+                            onSearchChange('');
+                        }}
                     >
                         <HugeiconsIcon icon={Cancel01FreeIcons} color={textColor} />
                     </TouchableOpacity>
@@ -52,6 +57,11 @@ function ListHeader() {
                         style={[styles.searchInput, { backgroundColor: white, color: textColor }]}
                         placeholder="Search..."
                         placeholderTextColor={lighterText}
+                        value={searchText}
+                        onChangeText={(text) => {
+                            setSearchText(text);
+                            onSearchChange(text);
+                        }}
                     />
                 )}
             </Animated.View>

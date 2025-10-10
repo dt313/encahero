@@ -82,6 +82,8 @@ function QuizScreen() {
         if (res?.length > 0) {
             setQuizList(res);
             setCurrentIndex(0);
+        } else {
+            setQuizList([]);
         }
     }, [collectionId, isReviewMode, quizMode]);
 
