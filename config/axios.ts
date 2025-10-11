@@ -14,6 +14,9 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
     async function (config) {
+        if (config.data instanceof FormData) {
+            config.headers['Content-Type'] = 'multipart/form-data';
+        }
         const token = await storage.getAccessToken();
 
         if (token && config.headers) {

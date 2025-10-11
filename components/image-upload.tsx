@@ -11,7 +11,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { ThemedText } from '@/components/ThemedText';
 
 const LIMIT_IMAGES = 3;
-export default function ImageUpload() {
+export default function ImageUpload({ onChangeImages }: { onChangeImages?: (imgs: string[]) => void }) {
     const [images, setImages] = useState<string[]>([]);
     const [isShowUpload, setIsShowUpload] = useState<boolean>(false);
 
@@ -26,12 +26,13 @@ export default function ImageUpload() {
 
         if (!result.canceled) {
             const uris = result.assets.map((asset) => asset.uri);
-            setImages((pre) => [...pre, ...uris]);
-            // // Gọi callback để parent nhận giá trị
-            // if (onImageSelected) {
-            //     onImageSelected(uri);
-            // }
+            updateImages([...images, ...uris]);
         }
+    };
+
+    const updateImages = (newImages: string[]) => {
+        setImages(newImages);
+        onChangeImages?.(newImages); // <-- gọi ngược lên
     };
 
     useEffect(() => {
@@ -44,7 +45,7 @@ export default function ImageUpload() {
 
     const handleRemoveImage = (uri: string) => {
         const newImages = images.filter((i) => i !== uri);
-        setImages(newImages);
+        updateImages(newImages);
     };
 
     return (

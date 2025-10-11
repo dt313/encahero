@@ -10,15 +10,35 @@ import ImageUpload from '@/components/image-upload';
 
 import { useThemeColor, useThemeColors } from '@/hooks/useThemeColor';
 
+import { feedbackService } from '@/services';
+
 export default function FeedbackScreen() {
     const colors = useThemeColors();
     const inputBorderColor = useThemeColor({}, 'inputBorderColor');
 
     const [feedback, setFeedback] = useState('');
+    const [images, setImages] = useState<string[]>([]);
 
-    const handleSend = () => {
-        Alert.alert('Success', 'Your feedback has been sent!');
-        setFeedback('');
+    const handleSend = async () => {
+        const formData = new FormData();
+
+        images.forEach((uri, index) => {
+            formData.append('images', {
+                uri,
+                name: `image_${index}.jpg`,
+                type: 'image/jpeg',
+            } as any);
+        });
+
+        try {
+            const res = await feedbackService.createFeedBack(formData);
+            if (res) {
+                Alert.alert('Success', 'Your feedback has been sent!');
+            }
+        } catch (err) {
+            console.error(err);
+            Alert.alert('Error', 'Something went wrong');
+        }
     };
 
     return (
@@ -38,7 +58,7 @@ export default function FeedbackScreen() {
                     numberOfLines={6}
                 />
 
-                <ImageUpload />
+                <ImageUpload onChangeImages={setImages} />
 
                 <View style={styles.actionRow}>
                     <TouchableOpacity style={[styles.button, { backgroundColor: colors.primary }]} onPress={handleSend}>
