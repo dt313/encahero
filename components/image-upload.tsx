@@ -11,8 +11,13 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { ThemedText } from '@/components/ThemedText';
 
 const LIMIT_IMAGES = 3;
-export default function ImageUpload({ onChangeImages }: { onChangeImages?: (imgs: string[]) => void }) {
-    const [images, setImages] = useState<string[]>([]);
+export default function ImageUpload({
+    images,
+    onChangeImages,
+}: {
+    images: string[];
+    onChangeImages?: (imgs: string[]) => void;
+}) {
     const [isShowUpload, setIsShowUpload] = useState<boolean>(false);
 
     const pickImage = async () => {
@@ -31,7 +36,6 @@ export default function ImageUpload({ onChangeImages }: { onChangeImages?: (imgs
     };
 
     const updateImages = (newImages: string[]) => {
-        setImages(newImages);
         onChangeImages?.(newImages); // <-- gọi ngược lên
     };
 

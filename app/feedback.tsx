@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Alert, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -9,6 +9,7 @@ import HeaderWithBack from '@/components/header-with-back';
 import ImageUpload from '@/components/image-upload';
 
 import { useThemeColor, useThemeColors } from '@/hooks/useThemeColor';
+import useToast from '@/hooks/useToast';
 
 import { feedbackService } from '@/services';
 
@@ -18,10 +19,11 @@ export default function FeedbackScreen() {
 
     const [feedback, setFeedback] = useState('');
     const [images, setImages] = useState<string[]>([]);
+    const { showErrorToast, showSuccessToast } = useToast();
 
     const handleSend = async () => {
         const formData = new FormData();
-
+        formData.append('text', feedback);
         images.forEach((uri, index) => {
             formData.append('images', {
                 uri,
@@ -33,11 +35,12 @@ export default function FeedbackScreen() {
         try {
             const res = await feedbackService.createFeedBack(formData);
             if (res) {
-                Alert.alert('Success', 'Your feedback has been sent!');
+                setFeedback('');
+                setImages([]);
+                showSuccessToast('Sent feedback successfully');
             }
         } catch (err) {
-            console.error(err);
-            Alert.alert('Error', 'Something went wrong');
+            showErrorToast(err);
         }
     };
 
@@ -58,7 +61,7 @@ export default function FeedbackScreen() {
                     numberOfLines={6}
                 />
 
-                <ImageUpload onChangeImages={setImages} />
+                <ImageUpload images={images} onChangeImages={setImages} />
 
                 <View style={styles.actionRow}>
                     <TouchableOpacity style={[styles.button, { backgroundColor: colors.primary }]} onPress={handleSend}>
