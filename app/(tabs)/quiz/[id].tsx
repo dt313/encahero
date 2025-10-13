@@ -21,6 +21,7 @@ import LearningList from '@/components/learning-list';
 import ModalBottomSheet from '@/components/modal-bottom-sheet';
 import QuizSetting from '@/components/quiz-setting';
 import RandomQuiz, { QuestionType, Quiz } from '@/components/random-quiz';
+import ScreenWrapper from '@/components/screen-wrapper';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
 import useToast from '@/hooks/useToast';
@@ -163,6 +164,7 @@ function QuizScreen() {
 
     const white = useThemeColor({}, 'white');
     const textColor = useThemeColor({}, 'text');
+    const reviewBg = useThemeColor({}, 'reviewBg');
 
     if (!collectionId)
         return (
@@ -172,90 +174,95 @@ function QuizScreen() {
         );
 
     return (
-        <SafeAreaView style={[isReviewMode && { backgroundColor: '#D9E9CF' }, { paddingHorizontal: 20, flex: 1 }]}>
-            <View style={styles.header}>
-                <TouchableOpacity style={[styles.btnWrap, { backgroundColor: white }]} onPress={handleOpenListMenu}>
-                    <HugeiconsIcon icon={BookOpen02Icon} size={24} color={textColor} />
-                </TouchableOpacity>
-                <ThemedText type="subtitle" style={styles.headerName} numberOfLines={1} ellipsizeMode="tail">
-                    {currentCollection ? currentCollection?.collection?.name : 'Name'}
-                </ThemedText>
-                <TouchableOpacity style={[styles.btnWrap, { backgroundColor: white }]} onPress={handleOpenSettingBox}>
-                    <HugeiconsIcon icon={Settings01Icon} size={24} color={textColor} />
-                </TouchableOpacity>
-            </View>
-
-            {quizList.length > 0 && (
-                <View style={styles.progress}>
-                    <ThemedText style={styles.progressNumber}>{currentCollection?.today_learned_count}</ThemedText>
-                    <Bar
-                        style={{ flex: 1, marginHorizontal: 12, borderRadius: 30 }}
-                        color={progress > 1 ? '#2196f3' : '#4caf50'}
-                        height={12}
-                        progress={progress}
-                        width={null}
-                        borderWidth={0}
-                        unfilledColor="rgba(198, 198, 198, 0.4)"
-                    />
-                    <ThemedText style={[styles.progressNumber]}>{currentCollection?.task_count}</ThemedText>
-                </View>
-            )}
-
-            {quizList.length > 0 ? (
-                <View style={styles.flashcards}>
-                    {quizList.length > 0 && (
-                        <RandomQuiz
-                            quiz={quizList[currentIndex]}
-                            onSubmit={handleSubmitAnswer}
-                            isNew={quizMode === 'new'}
-                        />
-                    )}
-                </View>
-            ) : (
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <ThemedText type="subtitle" style={{ padding: 16 }}>
-                        Have no quiz in this collection
+        <ScreenWrapper>
+            <SafeAreaView style={[isReviewMode && { backgroundColor: reviewBg }, { paddingHorizontal: 20, flex: 1 }]}>
+                <View style={styles.header}>
+                    <TouchableOpacity style={[styles.btnWrap, { backgroundColor: white }]} onPress={handleOpenListMenu}>
+                        <HugeiconsIcon icon={BookOpen02Icon} size={24} color={textColor} />
+                    </TouchableOpacity>
+                    <ThemedText type="subtitle" style={styles.headerName} numberOfLines={1} ellipsizeMode="tail">
+                        {currentCollection ? currentCollection?.collection?.name : 'Name'}
                     </ThemedText>
-                    <Button type="link" onPress={() => router.replace('/')}>
-                        Go to home
-                    </Button>
+                    <TouchableOpacity
+                        style={[styles.btnWrap, { backgroundColor: white }]}
+                        onPress={handleOpenSettingBox}
+                    >
+                        <HugeiconsIcon icon={Settings01Icon} size={24} color={textColor} />
+                    </TouchableOpacity>
                 </View>
-            )}
 
-            {quizList.length > 0 && (
-                <View
-                    style={[
-                        styles.btnBox,
-                        currentCollection?.status === 'completed' && { flexDirection: 'row-reverse' },
-                    ]}
-                >
-                    {!(mode === 'recap') && (
-                        <Button type="link" onPress={handleMasteredWord}>
-                            🧠 Đã ghi nhớ
+                {quizList.length > 0 && (
+                    <View style={styles.progress}>
+                        <ThemedText style={styles.progressNumber}>{currentCollection?.today_learned_count}</ThemedText>
+                        <Bar
+                            style={{ flex: 1, marginHorizontal: 12, borderRadius: 30 }}
+                            color={progress > 1 ? '#2196f3' : '#4caf50'}
+                            height={12}
+                            progress={progress}
+                            width={null}
+                            borderWidth={0}
+                            unfilledColor="rgba(198, 198, 198, 0.4)"
+                        />
+                        <ThemedText style={[styles.progressNumber]}>{currentCollection?.task_count}</ThemedText>
+                    </View>
+                )}
+
+                {quizList.length > 0 ? (
+                    <View style={styles.flashcards}>
+                        {quizList.length > 0 && (
+                            <RandomQuiz
+                                quiz={quizList[currentIndex]}
+                                onSubmit={handleSubmitAnswer}
+                                isNew={quizMode === 'new'}
+                            />
+                        )}
+                    </View>
+                ) : (
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                        <ThemedText type="subtitle" style={{ padding: 16 }}>
+                            Have no quiz in this collection
+                        </ThemedText>
+                        <Button type="link" onPress={() => router.replace('/')}>
+                            Go to home
                         </Button>
-                    )}
-                    <Button type="link" textStyle={{ color: textColor }} onPress={handleSkip}>
-                        Skip →
-                    </Button>
-                </View>
-            )}
+                    </View>
+                )}
 
-            <ModalBottomSheet bottomSheetModalRef={leftRef}>
-                <LearningList selectedIndex={currentCollection?.collection_id} close={handleCloseListMenu} />
-            </ModalBottomSheet>
+                {quizList.length > 0 && (
+                    <View
+                        style={[
+                            styles.btnBox,
+                            currentCollection?.status === 'completed' && { flexDirection: 'row-reverse' },
+                        ]}
+                    >
+                        {!(mode === 'recap') && (
+                            <Button type="link" onPress={handleMasteredWord}>
+                                🧠 Đã ghi nhớ
+                            </Button>
+                        )}
+                        <Button type="link" textStyle={{ color: textColor }} onPress={handleSkip}>
+                            Skip →
+                        </Button>
+                    </View>
+                )}
 
-            <ModalBottomSheet bottomSheetModalRef={rightRef}>
-                <QuizSetting
-                    collectionId={currentCollection?.collection_id}
-                    onClose={handleCloseSettingBox}
-                    onToggle={toggleReviewMode}
-                    reviewMode={isReviewMode}
-                    isShowReviewMode={!(mode === 'recap' && currentCollection?.status === 'completed')}
-                />
-            </ModalBottomSheet>
+                <ModalBottomSheet bottomSheetModalRef={leftRef}>
+                    <LearningList selectedIndex={currentCollection?.collection_id} close={handleCloseListMenu} />
+                </ModalBottomSheet>
 
-            <CongratsModal visible={showCongratsModal} onClose={() => setShowCongratsModal(false)} />
-        </SafeAreaView>
+                <ModalBottomSheet bottomSheetModalRef={rightRef}>
+                    <QuizSetting
+                        collectionId={currentCollection?.collection_id}
+                        onClose={handleCloseSettingBox}
+                        onToggle={toggleReviewMode}
+                        reviewMode={isReviewMode}
+                        isShowReviewMode={!(mode === 'recap' && currentCollection?.status === 'completed')}
+                    />
+                </ModalBottomSheet>
+
+                <CongratsModal visible={showCongratsModal} onClose={() => setShowCongratsModal(false)} />
+            </SafeAreaView>
+        </ScreenWrapper>
     );
 }
 

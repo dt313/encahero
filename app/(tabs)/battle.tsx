@@ -2,12 +2,12 @@ import { useState } from 'react';
 
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { SafeAreaView } from 'react-native-safe-area-context';
-
 import { ThemedText } from '@/components/ThemedText';
 import BattleHistory from '@/components/battle-history';
 import BattleUserList from '@/components/battle-user-list';
 import Leaderboard from '@/components/leader-board';
+import SafeArea from '@/components/safe-area';
+import ScreenWrapper from '@/components/screen-wrapper';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
 
@@ -29,22 +29,27 @@ function Battle() {
     };
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
-            <View style={[styles.tabs, { borderBottomColor: headerBottomColor }]}>
-                {['leaderboard', 'users', 'history'].map((tab) => (
-                    <TouchableOpacity key={tab} onPress={() => setActiveTab(tab)} style={styles.tabButton}>
-                        <ThemedText
-                            style={[styles.tabText, activeTab === tab && [styles.activeTabText, { color: textColor }]]}
-                        >
-                            {tab === 'leaderboard' ? 'Leaderboard' : tab === 'users' ? 'Người chơi' : 'Lịch sử'}
-                        </ThemedText>
-                        {activeTab === tab && <View style={styles.tabIndicator} />}
-                    </TouchableOpacity>
-                ))}
-            </View>
+        <ScreenWrapper>
+            <SafeArea style={{ flex: 1 }}>
+                <View style={[styles.tabs, { borderBottomColor: headerBottomColor }]}>
+                    {['leaderboard', 'users', 'history'].map((tab) => (
+                        <TouchableOpacity key={tab} onPress={() => setActiveTab(tab)} style={styles.tabButton}>
+                            <ThemedText
+                                style={[
+                                    styles.tabText,
+                                    activeTab === tab && [styles.activeTabText, { color: textColor }],
+                                ]}
+                            >
+                                {tab === 'leaderboard' ? 'Leaderboard' : tab === 'users' ? 'Người chơi' : 'Lịch sử'}
+                            </ThemedText>
+                            {activeTab === tab && <View style={styles.tabIndicator} />}
+                        </TouchableOpacity>
+                    ))}
+                </View>
 
-            <View style={styles.body}>{renderContent()}</View>
-        </SafeAreaView>
+                <View style={styles.body}>{renderContent()}</View>
+            </SafeArea>
+        </ScreenWrapper>
     );
 }
 

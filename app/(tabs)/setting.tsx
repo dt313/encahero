@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 
-import { Alert, Image, ScrollView, StyleSheet, Switch, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, Platform, ScrollView, StyleSheet, Switch, TouchableOpacity, View } from 'react-native';
 
 import { useRouter } from 'expo-router';
 
@@ -19,11 +19,12 @@ import {
     SecurityLockIcon,
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch } from 'react-redux';
 
 import { ThemedText } from '@/components/ThemedText';
 import Button from '@/components/button';
+import SafeArea from '@/components/safe-area';
+import ScreenWrapper from '@/components/screen-wrapper';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
 
@@ -33,8 +34,6 @@ export default function SettingsScreen() {
     const { mode, toggleTheme } = useThemeSwitcher();
     const [pushNotif, setPushNotif] = useState(true);
 
-    const textColor = useThemeColor({}, 'text');
-    const backgroundColor = useThemeColor({}, 'background');
     const router = useRouter();
     const dispatch = useDispatch<AppDispatch>();
 
@@ -77,94 +76,99 @@ export default function SettingsScreen() {
         }
     }, []);
 
+    const textColor = useThemeColor({}, 'text');
+    const settingBoxBg = useThemeColor({}, 'settingBoxBg');
+    const shadowColor = useThemeColor({}, 'shadowColor');
     return (
-        <SafeAreaView style={styles.container}>
-            <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
-                {/* Avatar + Info */}
-                <View style={styles.profileSection}>
-                    <View style={{ padding: 4, borderWidth: 1.5, borderColor: '#d1d1d1ff', borderRadius: 100 }}>
-                        <Image source={{ uri: 'https://i.pravatar.cc/150?img=3' }} style={styles.avatar} />
+        <ScreenWrapper>
+            <SafeArea style={styles.container}>
+                <ScrollView contentContainerStyle={{ paddingBottom: Platform.OS === 'ios' ? 120 : 24 }}>
+                    {/* Avatar + Info */}
+                    <View style={styles.profileSection}>
+                        <View style={{ padding: 4, borderWidth: 1.5, borderColor: '#d1d1d1ff', borderRadius: 100 }}>
+                            <Image source={{ uri: 'https://i.pravatar.cc/150?img=3' }} style={styles.avatar} />
+                        </View>
+                        <ThemedText type="subtitle" style={{ marginVertical: 4 }}>
+                            KhelWolf
+                        </ThemedText>
+                        <ThemedText lighter>mikaelo.navarro@gmail.com</ThemedText>
                     </View>
-                    <ThemedText type="subtitle" style={{ marginVertical: 4 }}>
-                        KhelWolf
-                    </ThemedText>
-                    <ThemedText lighter>mikaelo.navarro@gmail.com</ThemedText>
-                </View>
 
-                {/* Setting list */}
-                <View style={[styles.card, { backgroundColor: backgroundColor }]}>
-                    <SettingItem
-                        onPress={handlePress}
-                        icon={<HugeiconsIcon icon={Key01Icon} size={24} color={textColor} />}
-                        label="Password & Security"
-                        isLink
-                        nonBorder
-                    />
+                    {/* Setting list */}
+                    <View style={[styles.card, { backgroundColor: settingBoxBg, shadowColor }]}>
+                        <SettingItem
+                            onPress={handlePress}
+                            icon={<HugeiconsIcon icon={Key01Icon} size={24} color={textColor} />}
+                            label="Password & Security"
+                            isLink
+                            nonBorder
+                        />
 
-                    <SettingItem
-                        onPress={handlePress}
-                        icon={<HugeiconsIcon icon={SecurityLockIcon} size={24} color={textColor} />}
-                        label="Privacy Policy"
-                        nonBorder
-                        isLink
-                    />
-                </View>
+                        <SettingItem
+                            onPress={handlePress}
+                            icon={<HugeiconsIcon icon={SecurityLockIcon} size={24} color={textColor} />}
+                            label="Privacy Policy"
+                            nonBorder
+                            isLink
+                        />
+                    </View>
 
-                <View style={[styles.card, { backgroundColor: backgroundColor }]}>
-                    <SwitchItem
-                        icon={<HugeiconsIcon icon={Moon02Icon} size={24} color={textColor} />}
-                        label="Dark Theme"
-                        value={mode === 'dark'}
-                        onValueChange={toggleTheme}
-                    />
-                    <SwitchItem
-                        icon={<HugeiconsIcon icon={Notification01Icon} size={24} color={textColor} />}
-                        label="Push Progress Notifications"
-                        value={pushNotif}
-                        onValueChange={setPushNotif}
-                    />
-                    <SettingItem
-                        onPress={handlePress}
-                        icon={<HugeiconsIcon icon={Comment01Icon} size={24} color={textColor} />}
-                        label="Feedback"
-                        isLink
-                    />
-                    {/* <SettingItem
+                    <View style={[styles.card, { backgroundColor: settingBoxBg, shadowColor }]}>
+                        <SwitchItem
+                            icon={<HugeiconsIcon icon={Moon02Icon} size={24} color={textColor} />}
+                            label="Dark Theme"
+                            value={mode === 'dark'}
+                            onValueChange={toggleTheme}
+                        />
+                        <SwitchItem
+                            icon={<HugeiconsIcon icon={Notification01Icon} size={24} color={textColor} />}
+                            label="Push Progress Notifications"
+                            value={pushNotif}
+                            onValueChange={setPushNotif}
+                        />
+                        <SettingItem
+                            onPress={handlePress}
+                            icon={<HugeiconsIcon icon={Comment01Icon} size={24} color={textColor} />}
+                            label="Feedback"
+                            isLink
+                        />
+                        {/* <SettingItem
                         onPress={handlePress}
                         icon={<HugeiconsIcon icon={Analytics01Icon} size={24} color={textColor} />}
                         label="Usage"
                         isLink
                     /> */}
-                    <SettingItem
-                        onPress={handlePress}
-                        icon={<HugeiconsIcon icon={Clock01Icon} size={24} color={textColor} />}
-                        label="Nhắc nhở học tập"
-                        nonBorder
-                    />
-                </View>
+                        <SettingItem
+                            onPress={handlePress}
+                            icon={<HugeiconsIcon icon={Clock01Icon} size={24} color={textColor} />}
+                            label="Nhắc nhở học tập"
+                            nonBorder
+                        />
+                    </View>
 
-                <View style={[styles.card, { backgroundColor: backgroundColor }]}>
-                    <SettingItem
-                        onPress={handlePress}
-                        icon={<HugeiconsIcon icon={HelpCircleIcon} size={24} color={textColor} />}
-                        label="Help"
-                        isLink
-                    />
-                    <SettingItem
-                        onPress={handlePress}
-                        icon={<HugeiconsIcon icon={InformationCircleIcon} size={24} color={textColor} />}
-                        label="About"
-                        nonBorder
-                        isLink
-                    />
-                </View>
+                    <View style={[styles.card, { backgroundColor: settingBoxBg, shadowColor }]}>
+                        <SettingItem
+                            onPress={handlePress}
+                            icon={<HugeiconsIcon icon={HelpCircleIcon} size={24} color={textColor} />}
+                            label="Help"
+                            isLink
+                        />
+                        <SettingItem
+                            onPress={handlePress}
+                            icon={<HugeiconsIcon icon={InformationCircleIcon} size={24} color={textColor} />}
+                            label="About"
+                            nonBorder
+                            isLink
+                        />
+                    </View>
 
-                {/* Logout */}
-                <Button type="dangerous" buttonStyle={{ margin: 20 }} onPress={handleLogout}>
-                    Logout
-                </Button>
-            </ScrollView>
-        </SafeAreaView>
+                    {/* Logout */}
+                    <Button type="dangerous" buttonStyle={{ margin: 20 }} onPress={handleLogout}>
+                        Logout
+                    </Button>
+                </ScrollView>
+            </SafeArea>
+        </ScreenWrapper>
     );
 }
 
@@ -233,10 +237,11 @@ const styles = StyleSheet.create({
         borderRadius: 16,
         paddingHorizontal: 10,
         paddingVertical: 5,
-        shadowColor: '#000',
+
+        shadowOffset: { width: 2, height: 2 },
         shadowOpacity: 0.05,
-        shadowRadius: 4,
-        elevation: 2,
+        shadowRadius: 2,
+        elevation: 1,
     },
     settingItem: {
         flexDirection: 'row',

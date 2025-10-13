@@ -12,6 +12,7 @@ export const commonColor = {
     trueBgColor: '#69e25922',
     trueBorderColor: '#29b83aff',
     volumeColor: '#396feeff',
+    primaryColor: '#FF9800',
 };
 
 export const Colors = {
@@ -19,13 +20,14 @@ export const Colors = {
         primary: '#FF9800',
         text: '#11181C',
         lighterText: '#6d6d6dff',
-        background: '#ffffffff',
+        background: '#eee',
         white: '#fff',
         black: '#333',
         tint: tintColorLight,
         icon: '#687076',
         tabIconDefault: '#687076',
         tabIconSelected: tintColorLight,
+        shadowColor: '#333',
 
         authSwitcherActiveTabBackground: '#c2c2c244',
         authSwitcherActiveText: '#1D1D1F',
@@ -33,8 +35,9 @@ export const Colors = {
 
         dividerColor: '#E5E5E7',
         chartBg: '#fff',
-        chartHeaderBG: '#ffffffff',
+        chartHeaderBG: '#eee',
         goalBg: '#c4ed81ff',
+        emptySquareColor: '#e2e2e277',
 
         // learning card
         learningListCardBg: '#f3f4f6',
@@ -46,24 +49,29 @@ export const Colors = {
         // quiz setting
         quizLinkTextColor: '#4f46e5',
         quizLinkBg: '#eef2ff',
+        reviewBg: '#E5E1DA',
 
         // battle header
         battleHeaderBorder: '#ddd',
 
         // input
         inputBorderColor: '#88888855',
+
+        // setting
+        settingBoxBg: '#fff',
     },
     dark: {
         primary: '#FF9800',
         text: '#ECEDEE',
         lighterText: '#9c9b9bff',
-        background: '#151718',
+        background: '#222222',
         white: '#333',
         black: '#fff',
         tint: tintColorDark,
         icon: '#9BA1A6',
         tabIconDefault: '#9BA1A6',
         tabIconSelected: tintColorDark,
+        shadowColor: '#dadada',
 
         authSwitcherActiveTabBackground: '#d9d8d844',
         authSwitcherActiveText: '#ffffffff',
@@ -73,6 +81,7 @@ export const Colors = {
         chartBg: '#0c1117',
         chartHeaderBG: '#131a23ff',
         goalBg: '#1b530cff',
+        emptySquareColor: '#e2e2e222',
 
         // learning card
         learningListCardBg: '#343434ff',
@@ -84,7 +93,13 @@ export const Colors = {
         // quiz setting
         quizLinkTextColor: '#f7f7f7ff',
         quizLinkBg: '#5c5d5dff',
+        reviewBg: '#2C3333',
+
+        // battle
         battleHeaderBorder: '#5a5a5aff',
+        // input
         inputBorderColor: '#88888855',
+
+        settingBoxBg: '#111',
     },
 };

@@ -22,7 +22,7 @@ function TypingCard({ quiz, onSubmit }: { quiz: Quiz; onSubmit: () => void }) {
     const [value, setValue] = useState('');
     const [isShowAnswer, setIsShowAnswer] = useState(false);
     const [isCorrect, setIsCorrect] = useState<null | boolean>(null);
-    const backgroundColor = useThemeColor({}, 'background');
+    const white = useThemeColor({}, 'white');
     const isAutoSound = useSelector((state: RootState) => state.sound.autoSound);
 
     useEffect(() => {
@@ -74,8 +74,8 @@ function TypingCard({ quiz, onSubmit }: { quiz: Quiz; onSubmit: () => void }) {
     };
 
     return (
-        <View style={[styles.wrapper, { backgroundColor: backgroundColor }]}>
-            <ViToEng meaning={quiz.meaning} example={quiz.ex[0]} url={quiz?.image_url} />
+        <View style={[styles.wrapper, { backgroundColor: white }]}>
+            <ViToEng meaning={quiz.meaning} example={quiz.ex[0]} url={quiz?.image_url} type={quiz?.type} />
             <View style={styles.tools}>
                 <View style={styles.toolItem}>
                     <ThemedText style={styles.type}>Ôn tập</ThemedText>

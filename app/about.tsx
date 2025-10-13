@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/ThemedText';
 import HeaderWithBack from '@/components/header-with-back';
+import ScreenWrapper from '@/components/screen-wrapper';
 
 export default function About() {
     const appVersion = '1.0.0';
@@ -18,32 +19,36 @@ export default function About() {
     };
 
     return (
-        <SafeAreaView style={styles.container}>
-            <HeaderWithBack title="About" />
+        <ScreenWrapper>
+            <SafeAreaView style={styles.container}>
+                <HeaderWithBack title="About" />
 
-            {/* Nội dung About */}
-            <ThemedText style={styles.description}>Ứng dụng giúp bạn học tập hiệu quả hơn với flashcards.</ThemedText>
+                {/* Nội dung About */}
+                <ThemedText style={styles.description}>
+                    Ứng dụng giúp bạn học tập hiệu quả hơn với flashcards.
+                </ThemedText>
 
-            <View style={styles.item}>
-                <ThemedText style={styles.label}>Phiên bản:</ThemedText>
-                <ThemedText>{appVersion}</ThemedText>
-            </View>
+                <View style={styles.item}>
+                    <ThemedText style={styles.label}>Phiên bản:</ThemedText>
+                    <ThemedText>{appVersion}</ThemedText>
+                </View>
 
-            <View style={styles.item}>
-                <ThemedText style={styles.label}>Nhà phát triển:</ThemedText>
-                <ThemedText>{developer}</ThemedText>
-            </View>
+                <View style={styles.item}>
+                    <ThemedText style={styles.label}>Nhà phát triển:</ThemedText>
+                    <ThemedText>{developer}</ThemedText>
+                </View>
 
-            <ThemedText style={styles.label}>GitHub:</ThemedText>
-            <TouchableOpacity style={styles.item} onPress={() => openLink(githubUrl)}>
-                <ThemedText style={styles.link}>{githubUrl}</ThemedText>
-            </TouchableOpacity>
+                <ThemedText style={styles.label}>GitHub:</ThemedText>
+                <TouchableOpacity style={styles.item} onPress={() => openLink(githubUrl)}>
+                    <ThemedText style={styles.link}>{githubUrl}</ThemedText>
+                </TouchableOpacity>
 
-            <ThemedText style={styles.label}>Website:</ThemedText>
-            <TouchableOpacity style={styles.item} onPress={() => openLink(websiteUrl)}>
-                <ThemedText style={styles.link}>{websiteUrl}</ThemedText>
-            </TouchableOpacity>
-        </SafeAreaView>
+                <ThemedText style={styles.label}>Website:</ThemedText>
+                <TouchableOpacity style={styles.item} onPress={() => openLink(websiteUrl)}>
+                    <ThemedText style={styles.link}>{websiteUrl}</ThemedText>
+                </TouchableOpacity>
+            </SafeAreaView>
+        </ScreenWrapper>
     );
 }
 

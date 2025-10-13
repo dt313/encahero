@@ -12,6 +12,7 @@ import { ThemedView } from '@/components/ThemedView';
 import Charts from '@/components/charts';
 import CompletedList from '@/components/completed-list';
 import GoalList from '@/components/goal-list';
+import ScreenWrapper from '@/components/screen-wrapper';
 import StopList from '@/components/stop-list';
 
 const HEADER_HEIGHT = 60;
@@ -22,30 +23,32 @@ function Home() {
     }, []);
 
     return (
-        <ScrollView>
-            <SafeAreaView
-                style={{
-                    padding: 20,
-                    paddingBottom: Platform.OS === 'android' ? 40 : 80,
-                }}
-            >
-                <ThemedView style={styles.header}>
-                    <View style={styles.textWrapper}>
-                        <ThemedText type="title" style={styles.greeting} numberOfLines={1} ellipsizeMode="tail">
-                            Hello, {displayName}
-                        </ThemedText>
-                        <ThemedText lightColor="#636363ff">Lets check how you feel to day</ThemedText>
-                    </View>
-                    <Image style={styles.avatar} source={avatar} />
-                </ThemedView>
+        <ScreenWrapper>
+            <ScrollView>
+                <SafeAreaView
+                    style={{
+                        padding: 20,
+                        paddingBottom: Platform.OS === 'android' ? 40 : 80,
+                    }}
+                >
+                    <ThemedView style={styles.header}>
+                        <View style={styles.textWrapper}>
+                            <ThemedText type="title" style={styles.greeting} numberOfLines={1} ellipsizeMode="tail">
+                                Hello, {displayName}
+                            </ThemedText>
+                            <ThemedText lightColor="#636363ff">Lets check how you feel to day</ThemedText>
+                        </View>
+                        <Image style={styles.avatar} source={avatar} />
+                    </ThemedView>
 
-                <Charts />
+                    <Charts />
 
-                <GoalList containerStyle={{ marginTop: 16 }} title="Today's Goal" />
-                <StopList containerStyle={{ marginTop: 16 }} title="Stop List" />
-                <CompletedList containerStyle={{ marginTop: 16 }} title="Completed List" />
-            </SafeAreaView>
-        </ScrollView>
+                    <GoalList containerStyle={{ marginTop: 16 }} title="Today's Goal" />
+                    <StopList containerStyle={{ marginTop: 16 }} title="Stop List" />
+                    <CompletedList containerStyle={{ marginTop: 16 }} title="Completed List" />
+                </SafeAreaView>
+            </ScrollView>
+        </ScreenWrapper>
     );
 }
 

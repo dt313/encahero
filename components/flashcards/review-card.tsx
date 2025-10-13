@@ -50,7 +50,7 @@ function ReviewCard({
     onSubmit: (name: 'E' | 'M' | 'H') => void;
     isNew: boolean;
 }) {
-    const backgroundColor = useThemeColor({}, 'background');
+    const white = useThemeColor({}, 'white');
     const textColor = useThemeColor({}, 'text');
 
     const [flip, setFlip] = useState(false);
@@ -81,15 +81,15 @@ function ReviewCard({
         Speech.speak(quiz.en_word);
     };
     return (
-        <View style={styles.wrapper}>
-            <View style={[styles.questionBox, { backgroundColor: backgroundColor }]}>
+        <View style={[styles.wrapper]}>
+            <View style={[styles.questionBox, { backgroundColor: white }]}>
                 <View style={[styles.flip]}>
                     <FlipCard
                         flip={flip}
                         style={{
                             flex: 1,
                             height: '100%',
-                            backgroundColor: backgroundColor,
+                            backgroundColor: white,
                             borderWidth: 1.5,
                             borderColor: '#909090ff',
                             borderRadius: 16,
@@ -122,7 +122,7 @@ function ReviewCard({
                     </TouchableOpacity>
                 </View>
             </View>
-            <View style={[styles.replyBox, { backgroundColor: backgroundColor }]}>
+            <View style={[styles.replyBox, { backgroundColor: white }]}>
                 {answers.map((ans: AnswerType) => {
                     return (
                         <TouchableOpacity key={ans.title} style={styles.btn} onPress={() => handleSubmit(ans.name)}>
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.15,
         shadowRadius: 4,
         // Shadow Android
-        elevation: 5,
+        elevation: 1,
     },
 
     type: {
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.15,
         shadowRadius: 4,
         // Shadow Android
-        elevation: 5,
+        elevation: 1,
     },
 
     btn: {

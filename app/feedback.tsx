@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '@/components/ThemedText';
 import HeaderWithBack from '@/components/header-with-back';
 import ImageUpload from '@/components/image-upload';
+import ScreenWrapper from '@/components/screen-wrapper';
 
 import { useThemeColor, useThemeColors } from '@/hooks/useThemeColor';
 import useToast from '@/hooks/useToast';
@@ -45,31 +46,36 @@ export default function FeedbackScreen() {
     };
 
     return (
-        <SafeAreaView style={styles.container}>
-            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-                <HeaderWithBack title="Feedback" />
+        <ScreenWrapper>
+            <SafeAreaView style={styles.container}>
+                <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+                    <HeaderWithBack title="Feedback" />
 
-                <ThemedText style={styles.description}>We’d love to hear your thoughts or suggestions!</ThemedText>
+                    <ThemedText style={styles.description}>We’d love to hear your thoughts or suggestions!</ThemedText>
 
-                <TextInput
-                    style={[styles.input, { borderColor: inputBorderColor, color: colors.text }]}
-                    value={feedback}
-                    onChangeText={setFeedback}
-                    placeholder="Write your feedback..."
-                    placeholderTextColor="#A0A0A0"
-                    multiline
-                    numberOfLines={6}
-                />
+                    <TextInput
+                        style={[styles.input, { borderColor: inputBorderColor, color: colors.text }]}
+                        value={feedback}
+                        onChangeText={setFeedback}
+                        placeholder="Write your feedback..."
+                        placeholderTextColor="#A0A0A0"
+                        multiline
+                        numberOfLines={6}
+                    />
 
-                <ImageUpload images={images} onChangeImages={setImages} />
+                    <ImageUpload images={images} onChangeImages={setImages} />
 
-                <View style={styles.actionRow}>
-                    <TouchableOpacity style={[styles.button, { backgroundColor: colors.primary }]} onPress={handleSend}>
-                        <ThemedText style={styles.buttonText}>Send</ThemedText>
-                    </TouchableOpacity>
-                </View>
-            </ScrollView>
-        </SafeAreaView>
+                    <View style={styles.actionRow}>
+                        <TouchableOpacity
+                            style={[styles.button, { backgroundColor: colors.primary }]}
+                            onPress={handleSend}
+                        >
+                            <ThemedText style={styles.buttonText}>Send</ThemedText>
+                        </TouchableOpacity>
+                    </View>
+                </ScrollView>
+            </SafeAreaView>
+        </ScreenWrapper>
     );
 }
 

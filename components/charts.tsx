@@ -82,11 +82,11 @@ const styles = StyleSheet.create({
 
         // Shadow iOS
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
+        shadowOffset: { width: 12, height: 2 },
         shadowOpacity: 0.25,
         shadowRadius: 4,
         // Shadow Android
-        elevation: 5,
+        elevation: 1,
     },
     tabs: {
         display: 'flex',

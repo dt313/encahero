@@ -79,6 +79,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         columnGap: 4,
         paddingBottom: 12,
+        paddingHorizontal: 24,
     },
 
     search: {
@@ -96,14 +97,14 @@ const styles = StyleSheet.create({
         paddingVertical: 8,
         fontSize: 18,
         flex: 1,
-        // Shadow cho iOS
-        shadowColor: '#9e9e9eff',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
+        // // Shadow cho iOS
+        // shadowColor: '#9e9e9eff',
+        // shadowOffset: { width: 0, height: 1 },
+        // shadowOpacity: 0.25,
+        // shadowRadius: 3.84,
 
-        // Shadow cho Android
-        elevation: 5,
+        // // Shadow cho Android
+        // elevation: 5,
     },
 
     searchIcon: {
@@ -113,14 +114,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 40,
 
-        // Shadow cho iOS
-        shadowColor: '#9e9e9eff',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
+        //     // Shadow cho iOS
+        //     shadowColor: '#9e9e9eff',
+        //     shadowOffset: { width: 0, height: 1 },
+        //     shadowOpacity: 0.25,
+        //     shadowRadius: 3.84,
 
-        // Shadow cho Android
-        elevation: 5,
+        //     // Shadow cho Android
+        //     elevation: 5,
     },
 });
 export default ListHeader;

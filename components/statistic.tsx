@@ -7,6 +7,8 @@ import { useQuery } from '@tanstack/react-query';
 import chargerIcon from '@/assets/images/charger.png';
 import thunderIcon from '@/assets/images/thunder.png';
 
+import { useThemeColor } from '@/hooks/useThemeColor';
+
 import { progressService } from '@/services';
 
 import { ThemedText } from './ThemedText';
@@ -36,9 +38,9 @@ function Statistic() {
         ],
         [stats],
     );
-
+    const chartBg = useThemeColor({}, 'chartBg');
     return (
-        <View style={styles.wrapper}>
+        <View style={[styles.wrapper, { backgroundColor: chartBg }]}>
             {data.map((item) => {
                 return (
                     <View key={item.title} style={styles.item}>

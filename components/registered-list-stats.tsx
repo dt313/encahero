@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
         shadowRadius: 3.84,
 
         // Shadow cho Android
-        elevation: 5,
+        elevation: 1,
     },
     statNumber: {
         fontSize: 20,

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { FlatList, Image, ImageBackground, StyleSheet, View } from 'react-native';
+import { FlatList, Image, ImageBackground, Platform, StyleSheet, View } from 'react-native';
 
 import confetti from '@/assets/images/confetti.png';
 import avatar from '@/assets/images/peeps-avatar-alpha.png';
@@ -144,6 +144,7 @@ export default function Leaderboard() {
                 keyExtractor={(item) => item.id}
                 contentContainerStyle={{
                     padding: 16,
+                    paddingBottom: Platform.OS === 'ios' ? 120 : 60,
                 }}
             />
         </View>
@@ -195,7 +196,7 @@ const styles = StyleSheet.create({
         shadowRadius: 3.84,
 
         // Shadow cho Android
-        elevation: 5,
+        elevation: 1,
     },
     avatar: {
         width: 40,

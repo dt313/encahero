@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.08,
         shadowRadius: 8,
         shadowOffset: { width: 0, height: 3 },
-        elevation: 2,
+        elevation: 1,
     },
     name: { fontSize: 16, fontWeight: '700', marginBottom: 6 },
     row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },

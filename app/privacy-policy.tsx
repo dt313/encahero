@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/ThemedText';
 import HeaderWithBack from '@/components/header-with-back';
+import ScreenWrapper from '@/components/screen-wrapper';
 
 function PrivacyPolicy() {
     const sections = [
@@ -47,18 +48,20 @@ function PrivacyPolicy() {
     ];
 
     return (
-        <SafeAreaView style={styles.container}>
-            <HeaderWithBack title="Chính sách" />
-            <ScrollView contentContainerStyle={styles.scrollContainer}>
-                <ThemedText style={styles.title}>Chính sách quyền riêng tư (Privacy Policy)</ThemedText>
-                {sections.map((section, index) => (
-                    <View key={index} style={styles.section}>
-                        <ThemedText type="defaultSemiBold">{section.title}</ThemedText>
-                        <ThemedText style={styles.text}>{section.content}</ThemedText>
-                    </View>
-                ))}
-            </ScrollView>
-        </SafeAreaView>
+        <ScreenWrapper>
+            <SafeAreaView style={styles.container}>
+                <HeaderWithBack title="Chính sách" />
+                <ScrollView contentContainerStyle={styles.scrollContainer}>
+                    <ThemedText style={styles.title}>Chính sách quyền riêng tư (Privacy Policy)</ThemedText>
+                    {sections.map((section, index) => (
+                        <View key={index} style={styles.section}>
+                            <ThemedText type="defaultSemiBold">{section.title}</ThemedText>
+                            <ThemedText style={styles.text}>{section.content}</ThemedText>
+                        </View>
+                    ))}
+                </ScrollView>
+            </SafeAreaView>
+        </ScreenWrapper>
     );
 }
 

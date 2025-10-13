@@ -25,7 +25,7 @@ import TabSwitcher from '@/components/tab-swicher';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import useToast from '@/hooks/useToast';
 
-import { ThemedView } from './ThemedView';
+import ScreenWrapper from './screen-wrapper';
 
 GoogleSignin.configure({
     webClientId: process.env.EXPO_PUBLIC_GG_WEB_CLIENT_ID,
@@ -120,7 +120,7 @@ function AuthScreen({ type, onPressGGLogin, onSubmit, onSend, infoMessage, error
     const inputBorderColor = useThemeColor({}, 'inputBorderColor');
 
     return (
-        <ThemedView style={styles.wrapper}>
+        <ScreenWrapper>
             <ScrollView>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <SafeAreaView style={styles.content}>
@@ -306,14 +306,11 @@ function AuthScreen({ type, onPressGGLogin, onSubmit, onSend, infoMessage, error
                     </SafeAreaView>
                 </TouchableWithoutFeedback>
             </ScrollView>
-        </ThemedView>
+        </ScreenWrapper>
     );
 }
 
 const styles = StyleSheet.create({
-    wrapper: {
-        flex: 1,
-    },
     content: {
         flex: 1,
         paddingHorizontal: 24,

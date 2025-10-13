@@ -11,6 +11,10 @@ import { ContributionGraph as Graph } from 'react-native-chart-kit';
 import { ContributionChartValue } from 'react-native-chart-kit/dist/contribution-graph/ContributionGraph';
 import { useSelector } from 'react-redux';
 
+import { commonColor } from '@/constants/Colors';
+
+import { useThemeColor } from '@/hooks/useThemeColor';
+
 import { generateGraphData } from '@/utils';
 import { getEndOfYearUTC } from '@/utils/get-end-of-year';
 
@@ -40,6 +44,9 @@ function ContributionGraph({ bgColor }: { bgColor: string }) {
 
         setTooltip({ count: count || 0, date: formattedDate });
     };
+
+    const chartBg = useThemeColor({}, 'chartBg');
+    const emptySquareColor = useThemeColor({}, 'emptySquareColor');
     return (
         <View style={styles.container}>
             <ScrollView
@@ -60,17 +67,17 @@ function ContributionGraph({ bgColor }: { bgColor: string }) {
                     gutterSize={2}
                     onDayPress={handleDayPress}
                     chartConfig={{
-                        backgroundColor: '#fff',
-                        backgroundGradientFrom: '#fff',
-                        backgroundGradientTo: '#fff',
+                        backgroundColor: chartBg,
+                        backgroundGradientFrom: chartBg,
+                        backgroundGradientTo: chartBg,
                         color: (opacity) => {
                             if (opacity === 0.15) {
-                                return `#e2e2e277`;
+                                return emptySquareColor;
                             }
                             return `rgba(255, 152, 0,${opacity})`;
                         },
                         propsForLabels: {
-                            fill: '#FF9800',
+                            fill: commonColor.primaryColor,
                             fontWeight: 'bold',
                             strokeWidth: 1,
                         },

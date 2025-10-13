@@ -4,6 +4,7 @@ import { AppState, Platform } from 'react-native';
 
 import { Tabs } from 'expo-router';
 
+import { useThemeSwitcher } from '@/context/custom-theme-provider';
 import { updateUser } from '@/store/action/auth-action';
 import { initLearningList } from '@/store/action/learning-list-action';
 import { RootState } from '@/store/reducers';
@@ -17,7 +18,6 @@ import { Colors } from '@/constants/Colors';
 import TabIconButton from '@/components/tab-icon-button';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
 import useToast from '@/hooks/useToast';
 
 import { storage } from '@/utils';
@@ -25,7 +25,7 @@ import { storage } from '@/utils';
 import { collectionService, userService } from '@/services';
 
 export default function TabLayout() {
-    const colorScheme = useColorScheme();
+    const { mode } = useThemeSwitcher();
     const dispatch = useDispatch();
     const { showErrorToast } = useToast();
     const { data: myCollections } = useQuery({
@@ -74,7 +74,7 @@ export default function TabLayout() {
     return (
         <Tabs
             screenOptions={{
-                tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+                tabBarActiveTintColor: Colors[mode ?? 'light'].tint,
                 headerShown: false,
                 // tabBarButton: HapticTab,
                 tabBarBackground: TabBarBackground,

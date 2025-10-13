@@ -1,6 +1,6 @@
 import { ReactNode, useRef, useState } from 'react';
 
-import { FlatList, StyleSheet, Text, View, ViewStyle, useColorScheme } from 'react-native';
+import { FlatList, Platform, StyleSheet, Text, View, ViewStyle, useColorScheme } from 'react-native';
 
 import { register } from '@/store/action/learning-list-action';
 import { CollectionProgress } from '@/store/reducers/learning-list-reducer';
@@ -220,6 +220,8 @@ function HorizontalList({
                     columnGap: 8,
                     paddingVertical: 16,
                     rowGap: isVertical ? 12 : undefined,
+                    paddingHorizontal: isVertical ? 24 : undefined,
+                    paddingBottom: isVertical ? (Platform.OS === 'ios' ? 140 : 80) : 0,
                 }}
                 showsHorizontalScrollIndicator={false}
             />
@@ -246,12 +248,12 @@ const styles = StyleSheet.create({
         maxWidth: 300,
         minWidth: 250,
 
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
+        shadowColor: '#333',
+        shadowOffset: { width: 1, height: 1 },
         shadowOpacity: 0.15,
-        shadowRadius: 4,
+        shadowRadius: 2,
 
-        elevation: 5,
+        elevation: 1,
     },
     itemHeader: {
         flexDirection: 'row',

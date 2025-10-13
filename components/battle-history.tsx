@@ -61,7 +61,7 @@ export default function BattleHistory() {
                 <ThemedText style={styles.historyTitle}>Battle History</ThemedText>
                 <FlatList
                     data={mockHistory}
-                    contentContainerStyle={{ paddingBottom: Platform.OS === 'ios' ? 40 : 20 }}
+                    contentContainerStyle={{ paddingBottom: Platform.OS === 'ios' ? 120 : 60, paddingHorizontal: 16 }}
                     keyExtractor={(item) => item.id}
                     renderItem={({ item }) => (
                         <View style={[styles.historyItem, { backgroundColor }]}>
@@ -82,19 +82,19 @@ export default function BattleHistory() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-
-        padding: 16,
+        paddingTop: 16,
     },
     myRanking: {
         flexDirection: 'row',
         alignItems: 'center',
         padding: 16,
+        marginHorizontal: 16,
         borderRadius: 12,
         marginBottom: 24,
         shadowColor: '#000',
         shadowOpacity: 0.1,
         shadowRadius: 10,
-        elevation: 3,
+        elevation: 1,
     },
     avatar: {
         width: 70,
@@ -138,6 +138,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         marginBottom: 12,
+        paddingHorizontal: 16,
     },
     historyItem: {
         flexDirection: 'row',

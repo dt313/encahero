@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { ActivityIndicator, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { useRouter } from 'expo-router';
 
@@ -122,7 +122,7 @@ function BattleUserList() {
                 keyExtractor={(item) => item.id}
                 renderItem={renderItem}
                 contentContainerStyle={{
-                    paddingBottom: 80,
+                    paddingBottom: Platform.OS === 'ios' ? 120 : 60,
                     paddingTop: 12,
                     backgroundColor: backgroundColor,
                     borderRadius: 12,
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.1,
         shadowRadius: 6,
-        elevation: 4, // shadow cho Android
+        elevation: 1, // shadow cho Android
     },
 
     dice: {
@@ -213,6 +213,6 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.1,
         shadowRadius: 6,
-        elevation: 4, // shadow cho Android
+        elevation: 1, // shadow cho Android
     },
 });

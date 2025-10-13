@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
         shadowColor: '#000',
         shadowOpacity: 0.1,
         shadowRadius: 8,
-        elevation: 5,
+        elevation: 1,
     },
     optionText: {
         fontSize: 16,

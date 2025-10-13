@@ -1,12 +1,12 @@
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
 
 import { ThemeProviderCustom } from '@/context/custom-theme-provider';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 
+import CustomStatusBar from '@/components/custom-status-bar';
 import QueryProvider from '@/components/query-client-provider';
 import StoreProvider from '@/components/store-provider';
 import ToastContainer from '@/components/toast-container';
@@ -49,7 +49,7 @@ export default function RootLayout() {
                             </Stack>
                         </BottomSheetModalProvider>
 
-                        <StatusBar style="auto" />
+                        <CustomStatusBar />
                     </GestureHandlerRootView>
                 </StoreProvider>
             </ThemeProviderCustom>

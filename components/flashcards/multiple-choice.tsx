@@ -101,7 +101,7 @@ export const ViToEng = ({
 };
 
 function MultipleChoice({ quiz, type, onSubmit }: { quiz: Quiz; type: QuizDirection; onSubmit: () => void }) {
-    const backgroundColor = useThemeColor({}, 'background');
+    const white = useThemeColor({}, 'white');
     const textColor = useThemeColor({}, 'text');
     const [answers, setAnswers] = useState<AnswerType[]>([]);
     const [isCorrected, setIsCorrected] = useState<boolean>(false);
@@ -152,7 +152,7 @@ function MultipleChoice({ quiz, type, onSubmit }: { quiz: Quiz; type: QuizDirect
     };
 
     return (
-        <View style={[styles.wrapper, { backgroundColor: backgroundColor }]}>
+        <View style={[styles.wrapper, { backgroundColor: white }]}>
             <View style={[styles.questionBox]}>
                 <View style={styles.wordType}>
                     <ThemedText style={styles.type}>Ôn tập</ThemedText>
@@ -164,7 +164,7 @@ function MultipleChoice({ quiz, type, onSubmit }: { quiz: Quiz; type: QuizDirect
                     <ViToEng meaning={quiz.meaning} example={quiz.ex[0]} url={quiz?.image_url} type={quiz.type} />
                 )}
             </View>
-            <View style={[styles.answersBox, { backgroundColor: backgroundColor }]}>
+            <View style={[styles.answersBox, { backgroundColor: white }]}>
                 {answers.map((ans, index) => {
                     return (
                         <TouchableOpacity
