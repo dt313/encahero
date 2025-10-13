@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { FlatList, Platform, StyleSheet, View } from 'react-native';
 
 import { RootState } from '@/store/reducers';
 import { CollectionProgress } from '@/store/reducers/learning-list-reducer';
@@ -37,32 +37,30 @@ function List() {
     return (
         <SafeAreaView style={[styles.wrapper]}>
             <ListHeader onSearchChange={setSearchText} />
-            <View>
-                <ScrollView contentContainerStyle={{ paddingBottom: Platform.OS === 'ios' ? 140 : 80 }}>
-                    {searchText ? (
-                        <HorizontalList
-                            headerName="Search Result"
-                            containerStyle={{ margin: 24 }}
-                            list={filteredAll}
-                            isVertical
-                        />
-                    ) : (
-                        <View
-                            style={{
-                                paddingHorizontal: 20,
-                            }}
-                        >
-                            <HorizontalList isRandomColor containerStyle={{ marginTop: 24 }} list={allList} />
-                            <HorizontalList
-                                headerName="Learning List"
-                                containerStyle={{ marginTop: 24 }}
-                                list={progressList}
-                                isLearningList={true}
-                            />
-                            <CategoryList />
-                        </View>
-                    )}
-                </ScrollView>
+
+            <View style={{ paddingBottom: Platform.OS === 'ios' ? 140 : 80 }}>
+                {searchText ? (
+                    <HorizontalList list={filteredAll} isVertical={true} headerName="Search Result" />
+                ) : (
+                    <FlatList
+                        data={['popular', 'learningList', 'category']}
+                        keyExtractor={(_, idx) => idx.toString()}
+                        renderItem={({ item }) => {
+                            if (item === 'learningList' && progressList?.length)
+                                return (
+                                    <HorizontalList
+                                        headerName="Learning List"
+                                        containerStyle={{ marginTop: 24 }}
+                                        list={progressList}
+                                        isLearningList={true}
+                                    />
+                                );
+                            if (item === 'popular') return <HorizontalList isRandomColor list={allList} />;
+                            return <CategoryList />;
+                        }}
+                        contentContainerStyle={{ paddingVertical: 16 }}
+                    />
+                )}
             </View>
         </SafeAreaView>
     );
@@ -71,6 +69,7 @@ function List() {
 const styles = StyleSheet.create({
     wrapper: {
         flex: 1,
+        paddingHorizontal: 24,
     },
 });
 

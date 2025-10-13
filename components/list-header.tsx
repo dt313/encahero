@@ -79,7 +79,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         columnGap: 4,
         paddingBottom: 12,
-        paddingHorizontal: 20,
     },
 
     search: {
