@@ -24,6 +24,15 @@ export const magicAuth = async (token: string, deviceId: string) => {
     }
 };
 
+export const verifyOTP = async (email: string, otp: number) => {
+    try {
+        const res = await instance.post(`/auth/verify-otp`, { email, otp });
+        return res.data;
+    } catch (error: any) {
+        throw error;
+    }
+};
+
 export const ggLogin = async (token: string, deviceId: string) => {
     try {
         return await instance.post(`/auth/google-login`, { token, deviceId });
@@ -40,9 +49,18 @@ export const ggRegister = async (token: string, deviceId: string) => {
     }
 };
 
-export const logout = async (token: string | undefined) => {
+export const logout = async (token: string) => {
     try {
         return await instance.post(`/auth/logout`, { token });
+    } catch (error: any) {
+        throw error;
+    }
+};
+
+export const resetPassword = async (password: string, token: string) => {
+    try {
+        const res = await instance.post(`/auth/reset-password`, { password, token });
+        return res.data;
     } catch (error: any) {
         throw error;
     }

@@ -66,6 +66,7 @@ function AuthScreen({ type, onPressGGLogin, onSubmit, onSend, infoMessage, error
         control,
         watch,
         handleSubmit,
+        reset,
         formState: { errors },
     } = useForm<FormValues>({
         defaultValues: {
@@ -101,6 +102,7 @@ function AuthScreen({ type, onPressGGLogin, onSubmit, onSend, infoMessage, error
             } else {
                 await onSubmit(data.email, data.password);
             }
+            reset({ email: '', password: '', confirmPassword: '' });
         } catch (error) {
             showErrorToast(error);
         } finally {

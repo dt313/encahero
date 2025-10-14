@@ -337,7 +337,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.3,
         shadowRadius: 6,
         // elevation Android
-        elevation: 8,
+        elevation: 1,
     },
     content: {
         alignItems: 'center',

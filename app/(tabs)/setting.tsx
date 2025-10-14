@@ -28,8 +28,6 @@ import ScreenWrapper from '@/components/screen-wrapper';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
 
-import { userService } from '@/services';
-
 export default function SettingsScreen() {
     const { mode, toggleTheme } = useThemeSwitcher();
     const [pushNotif, setPushNotif] = useState(true);
@@ -42,15 +40,11 @@ export default function SettingsScreen() {
         router.replace('/login');
     };
 
-    const handleTest = async () => {
-        await userService.getUsers();
-    };
     // ✅ Common handler for items
     const handlePress = useCallback((label: string) => {
         switch (label) {
             case 'Password & Security':
-                // router.push('/mail-otp');
-                handleTest();
+                router.push('/mail-otp');
                 break;
             case 'Privacy Policy':
                 router.push('/privacy-policy');

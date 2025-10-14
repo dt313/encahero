@@ -17,3 +17,12 @@ export const sendRegisterMagicLink = async (email: string) => {
         throw error; // lỗi khác (network, timeout, ...)
     }
 };
+
+export const sendResetPasswordOTP = async (email: string) => {
+    try {
+        const res = await instance.post('/mail/reset-password-otp', { email });
+        return res;
+    } catch (error: any) {
+        throw error; // lỗi khác (network, timeout, ...)
+    }
+};
