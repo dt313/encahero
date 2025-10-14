@@ -49,7 +49,7 @@ export const ggRegister = async (token: string, deviceId: string) => {
     }
 };
 
-export const logout = async (token: string) => {
+export const logout = async (token: string | undefined) => {
     try {
         return await instance.post(`/auth/logout`, { token });
     } catch (error: any) {

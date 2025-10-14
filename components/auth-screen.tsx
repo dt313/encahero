@@ -305,6 +305,18 @@ function AuthScreen({ type, onPressGGLogin, onSubmit, onSend, infoMessage, error
                                 {type === 'register' ? 'Login' : 'Register'} Now
                             </Button>
                         </View>
+
+                        {type === 'login' && tab === 'password' && (
+                            <View style={{ marginTop: 8, marginBottom: 32 }}>
+                                <Button
+                                    type="link"
+                                    textStyle={{ fontSize: 16 }}
+                                    onPress={() => router.push('/mail-otp')}
+                                >
+                                    Bạn đã quên mật khẩu ?
+                                </Button>
+                            </View>
+                        )}
                     </SafeAreaView>
                 </TouchableWithoutFeedback>
             </ScrollView>
@@ -369,7 +381,6 @@ const styles = StyleSheet.create({
     },
 
     footerContainer: {
-        marginBottom: 32,
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'row',
