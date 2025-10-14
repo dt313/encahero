@@ -4,8 +4,11 @@ import axios from 'axios';
 
 import { storage } from '@/utils';
 
+const API_HOST = process.env.EXPO_PUBLIC_API_HOST;
+const API_PORT = process.env.EXPO_PUBLIC_API_PORT;
+const API_VERSION = process.env.EXPO_PUBLIC_API_VERSION;
 const instance = axios.create({
-    baseURL: process.env.EXPO_PUBLIC_API_URL,
+    baseURL: `${API_HOST}:${API_PORT}/${API_VERSION}`,
     headers: {
         'Content-Type': 'application/json',
     },

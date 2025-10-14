@@ -66,7 +66,6 @@ function AuthScreen({ type, onPressGGLogin, onSubmit, onSend, infoMessage, error
         control,
         watch,
         handleSubmit,
-        reset,
         formState: { errors },
     } = useForm<FormValues>({
         defaultValues: {
@@ -102,7 +101,6 @@ function AuthScreen({ type, onPressGGLogin, onSubmit, onSend, infoMessage, error
             } else {
                 await onSubmit(data.email, data.password);
             }
-            reset({ email: '', password: '', confirmPassword: '' });
         } catch (error) {
             showErrorToast(error);
         } finally {
@@ -118,7 +116,6 @@ function AuthScreen({ type, onPressGGLogin, onSubmit, onSend, infoMessage, error
     const color = useThemeColor({}, 'text');
     const whiteColor = useThemeColor({}, 'white');
     const dividerColor = useThemeColor({}, 'dividerColor');
-
     const inputBorderColor = useThemeColor({}, 'inputBorderColor');
 
     return (

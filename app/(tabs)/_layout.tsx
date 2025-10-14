@@ -48,9 +48,9 @@ export default function TabLayout() {
                 try {
                     const res = await userService.updateTimeZone(currentTimeZone);
 
-                    if (res.data) {
-                        await storage.setUser(res.data);
-                        dispatch(updateUser(res.data));
+                    if (res) {
+                        await storage.setUser(res);
+                        dispatch(updateUser(res));
                     }
                 } catch (error) {
                     showErrorToast(error);

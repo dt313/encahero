@@ -2,8 +2,11 @@ import { useMemo } from 'react';
 
 import { Image, Platform, ScrollView, StyleSheet, View } from 'react-native';
 
+import getAvatarOfUser from '@/helper/get-avatar-of-user';
 import getNameOfUser from '@/helper/get-name-of-user';
+import { RootState } from '@/store/reducers';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSelector } from 'react-redux';
 
 import avatar from '@/assets/images/peeps-avatar-alpha.png';
 
@@ -18,9 +21,14 @@ import StopList from '@/components/stop-list';
 const HEADER_HEIGHT = 60;
 
 function Home() {
-    const displayName = useMemo(async () => {
-        return await getNameOfUser();
-    }, []);
+    const user = useSelector((state: RootState) => state.auth.user);
+    const displayName = useMemo(() => {
+        return getNameOfUser(user);
+    }, [user]);
+
+    const displayAvatar = useMemo(() => {
+        return getAvatarOfUser(user.avatar);
+    }, [user]);
 
     return (
         <ScreenWrapper>
@@ -38,7 +46,7 @@ function Home() {
                             </ThemedText>
                             <ThemedText lightColor="#636363ff">Lets check how you feel to day</ThemedText>
                         </View>
-                        <Image style={styles.avatar} source={avatar} />
+                        <Image style={styles.avatar} source={displayAvatar ? { uri: displayAvatar } : avatar} />
                     </ThemedView>
 
                     <Charts />

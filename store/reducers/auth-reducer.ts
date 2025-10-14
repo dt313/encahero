@@ -1,5 +1,7 @@
 import ReduxActionType from '@/types/redux-action-type';
 
+import { storage } from '@/utils';
+
 import { LOGIN, LOGOUT, UPDATE_USER } from '../action/auth-action';
 
 const initialState = {
@@ -24,6 +26,7 @@ export default function authReducer(state = initialState, action: ReduxActionTyp
             };
 
         case UPDATE_USER:
+            storage.setUser(action.payload);
             return {
                 ...state,
                 user: action.payload,

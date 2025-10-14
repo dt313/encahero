@@ -45,6 +45,7 @@ export default function RootLayout() {
                                 <Stack.Screen name="privacy-policy" options={{ headerShown: false }} />
                                 <Stack.Screen name="help" options={{ headerShown: false }} />
                                 <Stack.Screen name="about" options={{ headerShown: false }} />
+                                <Stack.Screen name="information" options={{ headerShown: false }} />
                                 <Stack.Screen name="+not-found" />
                             </Stack>
                         </BottomSheetModalProvider>

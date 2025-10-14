@@ -1,12 +1,15 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
 import { Alert, Image, Platform, ScrollView, StyleSheet, Switch, TouchableOpacity, View } from 'react-native';
 
 import { useRouter } from 'expo-router';
 
 import { useThemeSwitcher } from '@/context/custom-theme-provider';
+import getAvatarOfUser from '@/helper/get-avatar-of-user';
+import getNameOfUser from '@/helper/get-name-of-user';
 import { AppDispatch } from '@/store';
 import { logoutAsync } from '@/store/action/auth-action';
+import { RootState } from '@/store/reducers';
 import {
     ArrowRight01Icon,
     Clock01Icon,
@@ -17,9 +20,12 @@ import {
     Moon02Icon,
     Notification01Icon,
     SecurityLockIcon,
+    User02FreeIcons,
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+
+import avatar from '@/assets/images/peeps-avatar-alpha.png';
 
 import { ThemedText } from '@/components/ThemedText';
 import Button from '@/components/button';
@@ -31,6 +37,7 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 export default function SettingsScreen() {
     const { mode, toggleTheme } = useThemeSwitcher();
     const [pushNotif, setPushNotif] = useState(true);
+    const user = useSelector((state: RootState) => state.auth.user);
 
     const router = useRouter();
     const dispatch = useDispatch<AppDispatch>();
@@ -40,9 +47,20 @@ export default function SettingsScreen() {
         router.replace('/login');
     };
 
+    const displayName = useMemo(() => {
+        return getNameOfUser(user);
+    }, [user]);
+
+    const displayAvatar = useMemo(() => {
+        return getAvatarOfUser(user.avatar);
+    }, [user]);
+
     // ✅ Common handler for items
     const handlePress = useCallback((label: string) => {
         switch (label) {
+            case 'Information':
+                router.push('/information');
+                break;
             case 'Password & Security':
                 router.push('/mail-otp');
                 break;
@@ -80,16 +98,23 @@ export default function SettingsScreen() {
                     {/* Avatar + Info */}
                     <View style={styles.profileSection}>
                         <View style={{ padding: 4, borderWidth: 1.5, borderColor: '#d1d1d1ff', borderRadius: 100 }}>
-                            <Image source={{ uri: 'https://i.pravatar.cc/150?img=3' }} style={styles.avatar} />
+                            <Image source={displayAvatar ? { uri: displayAvatar } : avatar} style={styles.avatar} />
                         </View>
                         <ThemedText type="subtitle" style={{ marginVertical: 4 }}>
-                            KhelWolf
+                            {displayName}
                         </ThemedText>
-                        <ThemedText lighter>mikaelo.navarro@gmail.com</ThemedText>
+                        <ThemedText lighter>{user?.email}</ThemedText>
                     </View>
 
                     {/* Setting list */}
                     <View style={[styles.card, { backgroundColor: settingBoxBg, shadowColor }]}>
+                        <SettingItem
+                            onPress={handlePress}
+                            icon={<HugeiconsIcon icon={User02FreeIcons} size={24} color={textColor} />}
+                            label="Information"
+                            isLink
+                            nonBorder
+                        />
                         <SettingItem
                             onPress={handlePress}
                             icon={<HugeiconsIcon icon={Key01Icon} size={24} color={textColor} />}

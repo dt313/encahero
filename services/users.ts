@@ -10,7 +10,17 @@ export const getUsers = async () => {
 
 export const updateTimeZone = async (timeZone: string) => {
     try {
-        return await instance.post('/users/time-zone', { timeZone });
+        const res = await instance.post('/users/time-zone', { timeZone });
+        return res.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const updateProfile = async (id: string, data: FormData) => {
+    try {
+        const res = await instance.patch(`/users/${id}`, data);
+        return res.data;
     } catch (error) {
         throw error;
     }

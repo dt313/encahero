@@ -1,6 +1,6 @@
 import { ReactNode, useState } from 'react';
 
-import { StyleSheet, TextInput, TextInputProps, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TextInput, TextInputProps, TouchableOpacity, View, ViewStyle } from 'react-native';
 
 import { ViewIcon, ViewOffSlashIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
@@ -19,6 +19,7 @@ type InputProps = {
     leftIcon?: ReactNode;
     errorMessage?: string | undefined;
     borderColor?: string;
+    containerStyle?: ViewStyle;
 } & TextInputProps;
 
 function Input({
@@ -29,6 +30,7 @@ function Input({
     onChangeText,
     isPassword = false,
     borderColor,
+    containerStyle,
     ...rest
 }: InputProps) {
     const colors = useThemeColors();
@@ -36,7 +38,7 @@ function Input({
     const inputBorderColor = useThemeColor({}, 'inputBorderColor');
 
     return (
-        <View>
+        <View style={containerStyle}>
             {label && <ThemedText style={styles.label}>{label}</ThemedText>}
             <View style={[styles.inputWrap, { borderColor: borderColor || inputBorderColor }]}>
                 {leftIcon}
