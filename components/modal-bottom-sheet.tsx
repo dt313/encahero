@@ -25,7 +25,8 @@ const CustomBackdrop = (props: BottomSheetBackdropProps) => {
 };
 
 function ModalBottomSheet({ bottomSheetModalRef, snapPoints = [], children }: ModalBottomSheetProps) {
-    const background = useThemeColor({}, 'background');
+    const bottomModalBg = useThemeColor({}, 'bottomModalBg');
+
     const text = useThemeColor({}, 'text');
     const _snapPoints = useMemo(() => snapPoints, []);
 
@@ -39,7 +40,7 @@ function ModalBottomSheet({ bottomSheetModalRef, snapPoints = [], children }: Mo
             backdropComponent={renderBackdrop}
             snapPoints={_snapPoints}
             enablePanDownToClose
-            backgroundStyle={{ backgroundColor: background }}
+            backgroundStyle={{ backgroundColor: bottomModalBg }}
             handleIndicatorStyle={{ backgroundColor: text }}
         >
             <BottomSheetView style={[styles.bottomModal]}>

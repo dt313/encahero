@@ -59,6 +59,9 @@ export const Colors = {
 
         // setting
         settingBoxBg: '#fff',
+
+        androidPickerBg: '#ddd',
+        bottomModalBg: '#fff',
     },
     dark: {
         primary: '#FF9800',
@@ -71,7 +74,7 @@ export const Colors = {
         icon: '#9BA1A6',
         tabIconDefault: '#9BA1A6',
         tabIconSelected: tintColorDark,
-        shadowColor: '#dadada',
+        shadowColor: '#DEDED1',
 
         authSwitcherActiveTabBackground: '#d9d8d844',
         authSwitcherActiveText: '#ffffffff',
@@ -101,5 +104,8 @@ export const Colors = {
         inputBorderColor: '#88888855',
 
         settingBoxBg: '#111',
+
+        androidPickerBg: '#333',
+        bottomModalBg: '#222',
     },
 };

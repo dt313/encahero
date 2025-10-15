@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 
 import { useRouter } from 'expo-router';
 
 import { Picker } from '@react-native-picker/picker';
+
+import { commonColor } from '@/constants/Colors';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
 
@@ -34,14 +36,15 @@ export default function ListRegister({
 
     const router = useRouter();
 
-    const textColor = useThemeColor({}, 'text');
-    const background = useThemeColor({}, 'background');
     const lighterText = useThemeColor({}, 'lighterText');
 
     const directLinkHandler = () => {
         router.push(`/cards/${id}`);
         onClose();
     };
+
+    const black = useThemeColor({}, 'black');
+    const androidPickerBg = useThemeColor({}, 'androidPickerBg');
     return (
         <View style={styles.container}>
             <ThemedText type="subtitle">{title}</ThemedText>
@@ -63,19 +66,22 @@ export default function ListRegister({
                 onValueChange={(value) => setTaskCount(value)}
                 style={{
                     width: '100%',
-                    backgroundColor: background, // đổi nền cả picker
-                    color: textColor,
+                    backgroundColor: Platform.OS === 'android' ? androidPickerBg : undefined,
+                    marginVertical: Platform.OS === 'android' ? 24 : undefined,
                 }}
-                dropdownIconColor={textColor}
+                dropdownIconColor={black}
+                dropdownIconRippleColor={commonColor.primaryColor}
+                mode="dropdown"
             >
                 {[20, 50, 100, 150, 200, 300, 350, 400, 450, 500].map((num) => (
                     <Picker.Item
                         key={num}
                         label={`${num} tasks per day`}
                         value={num}
+                        color={black}
                         style={{
-                            // backgroundColor: background,
-                            color: '#333',
+                            backgroundColor: androidPickerBg,
+                            margin: 0,
                         }}
                     />
                 ))}

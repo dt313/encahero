@@ -28,12 +28,11 @@ type RegisteredStatsProps = {
 };
 
 export default function RegisteredListStats({ id, title, onClose }: RegisteredStatsProps) {
-    const background = useThemeColor({}, 'background');
     const linkColor = useThemeColor({}, 'quizLinkTextColor');
     const linkBg = useThemeColor({}, 'quizLinkBg');
     const white = useThemeColor({}, 'white');
     const textColor = useThemeColor({}, 'text');
-
+    const shadowColor = useThemeColor({}, 'shadowColor');
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
     const dispatch = useDispatch();
     const router = useRouter();
@@ -93,25 +92,25 @@ export default function RegisteredListStats({ id, title, onClose }: RegisteredSt
     }
 
     return (
-        <View style={[styles.container, { backgroundColor: background }]}>
+        <View style={[styles.container]}>
             <ThemedText type="title" style={styles.title} numberOfLines={2}>
                 {title}
             </ThemedText>
 
             <View style={styles.statsContainer}>
-                <View style={[styles.statBox, { backgroundColor: white }]}>
+                <View style={[styles.statBox, { backgroundColor: white, shadowColor }]}>
                     <ThemedText style={styles.statNumber}>{10}</ThemedText>
                     <ThemedText lighter style={styles.statLabel}>
                         Đã học
                     </ThemedText>
                 </View>
-                <View style={[styles.statBox, { backgroundColor: white }]}>
+                <View style={[styles.statBox, { backgroundColor: white, shadowColor }]}>
                     <ThemedText style={styles.statNumber}>{collection?.mastered_card_count ?? 0}</ThemedText>
                     <ThemedText lighter style={styles.statLabel}>
                         Đã thuộc
                     </ThemedText>
                 </View>
-                <View style={[styles.statBox, { backgroundColor: white }]}>
+                <View style={[styles.statBox, { backgroundColor: white, shadowColor }]}>
                     <ThemedText style={styles.statNumber}>{collection?.collection?.card_count ?? 0}</ThemedText>
                     <ThemedText lighter style={styles.statLabel}>
                         Tổng số từ
@@ -227,13 +226,13 @@ const styles = StyleSheet.create({
         borderRadius: 16,
         alignItems: 'center',
         // Shadow cho iOS
-        shadowColor: '#9e9e9eff',
-        shadowOffset: { width: 0, height: 1 },
+
+        shadowOffset: { width: 1, height: 1 },
         shadowOpacity: 0.25,
-        shadowRadius: 3.84,
+        shadowRadius: 1,
 
         // Shadow cho Android
-        elevation: 1,
+        elevation: 1.5,
     },
     statNumber: {
         fontSize: 20,
