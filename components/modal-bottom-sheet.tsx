@@ -13,13 +13,14 @@ type ModalBottomSheetProps = {
 };
 
 const CustomBackdrop = (props: BottomSheetBackdropProps) => {
+    const overlayBg = useThemeColor({}, 'overlayBg');
     return (
         <BottomSheetBackdrop
             {...props}
             disappearsOnIndex={-1}
             appearsOnIndex={1}
             pressBehavior="close"
-            style={[props.style, { backgroundColor: '#a8b5ebbb' }]}
+            style={[props.style, { backgroundColor: overlayBg }]}
         />
     );
 };

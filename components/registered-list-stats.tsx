@@ -164,9 +164,9 @@ export default function RegisteredListStats({ id, title, onClose }: RegisteredSt
                 onRequestClose={() => setConfirmVisible(false)}
             >
                 <View style={styles.modalOverlay}>
-                    <View style={styles.modalContent}>
-                        <Text style={styles.modalTitle}>Xác nhận dừng học</Text>
-                        <Text style={styles.modalMessage}>Bạn có chắc muốn dừng học list này không?</Text>
+                    <View style={[styles.modalContent, { backgroundColor: white }]}>
+                        <ThemedText style={styles.modalTitle}>Xác nhận dừng học</ThemedText>
+                        <ThemedText style={styles.modalMessage}>Bạn có chắc muốn dừng học list này không?</ThemedText>
 
                         <View style={styles.modalActions}>
                             <Pressable
@@ -279,7 +279,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     modalContent: {
-        backgroundColor: 'white',
         borderRadius: 16,
         padding: 20,
         width: '80%',
@@ -293,7 +292,6 @@ const styles = StyleSheet.create({
     modalMessage: {
         fontSize: 16,
         textAlign: 'center',
-        color: '#555',
         marginBottom: 20,
     },
     modalActions: {

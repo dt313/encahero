@@ -1,7 +1,8 @@
 import { ReactNode, useRef, useState } from 'react';
 
-import { FlatList, Platform, StyleSheet, Text, View, ViewStyle, useColorScheme } from 'react-native';
+import { FlatList, Platform, StyleSheet, Text, View, ViewStyle } from 'react-native';
 
+import { useThemeSwitcher } from '@/context/custom-theme-provider';
 import { register } from '@/store/action/learning-list-action';
 import { CollectionProgress } from '@/store/reducers/learning-list-reducer';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
@@ -55,12 +56,12 @@ const ListItem = ({
     isShowBar,
     containerStyle,
 }: ListItemType) => {
-    const theme = useColorScheme();
+    const { mode } = useThemeSwitcher();
     const lighterText = useThemeColor({}, 'lighterText');
     const textColor = useThemeColor({}, 'text');
-    const white = useThemeColor({}, 'white');
+    const mainBoxBg = useThemeColor({}, 'mainBoxBg');
 
-    const backgroundColor = isRandomColor ? getRandomColor(theme) : white;
+    const backgroundColor = isRandomColor ? getRandomColor(mode) : mainBoxBg;
     const { showErrorToast, showSuccessToast } = useToast();
     const [registered, setRegistered] = useState(isRegistered);
     const dispatch = useDispatch();

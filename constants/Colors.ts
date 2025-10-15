@@ -28,6 +28,9 @@ export const Colors = {
         tabIconDefault: '#687076',
         tabIconSelected: tintColorLight,
         shadowColor: '#333',
+        overlayBg: '#333',
+        mainBoxBg: '#fff',
+        choiceNumberBg: '#dadada77',
 
         authSwitcherActiveTabBackground: '#c2c2c244',
         authSwitcherActiveText: '#1D1D1F',
@@ -38,6 +41,15 @@ export const Colors = {
         chartHeaderBG: '#eee',
         goalBg: '#c4ed81ff',
         emptySquareColor: '#e2e2e277',
+
+        // quizModeCard
+        reviewTagBorderColor: '#bdc5d1',
+        reviewTagColor: '#333',
+        reviewTagBg: '#e7eaf388',
+
+        newTagBorderColor: '#007AFF',
+        newTagBg: '#E8F0FF',
+        newTagColor: '#0051A8',
 
         // learning card
         learningListCardBg: '#f3f4f6',
@@ -75,6 +87,9 @@ export const Colors = {
         tabIconDefault: '#9BA1A6',
         tabIconSelected: tintColorDark,
         shadowColor: '#DEDED1',
+        overlayBg: '#dadada66',
+        mainBoxBg: '#151515',
+        choiceNumberBg: '#9e9e9e44',
 
         authSwitcherActiveTabBackground: '#d9d8d844',
         authSwitcherActiveText: '#ffffffff',
@@ -83,7 +98,7 @@ export const Colors = {
         dividerColor: '#747474ff',
         chartBg: '#0c1117',
         chartHeaderBG: '#131a23ff',
-        goalBg: '#1b530cff',
+        goalBg: '#005B4188',
         emptySquareColor: '#e2e2e222',
 
         // learning card
@@ -96,7 +111,15 @@ export const Colors = {
         // quiz setting
         quizLinkTextColor: '#f7f7f7ff',
         quizLinkBg: '#5c5d5dff',
-        reviewBg: '#2C3333',
+        reviewBg: '#3C3D37',
+
+        // quizModeCard
+        reviewTagBorderColor: '#88888855',
+        reviewTagColor: '#fff',
+        reviewTagBg: '#9e9e9e44',
+        newTagBorderColor: '#5AA0FF',
+        newTagBg: '#1A1F2E',
+        newTagColor: '#AFCBFF',
 
         // battle
         battleHeaderBorder: '#5a5a5aff',

@@ -88,6 +88,8 @@ function QuizScreen() {
         }
     }, [collectionId, isReviewMode, quizMode]);
 
+    console.log(quizList);
+
     useEffect(() => {
         fetchQuiz();
     }, [collectionId, quizMode]);
@@ -162,7 +164,8 @@ function QuizScreen() {
     const total = currentCollection?.task_count ?? 1;
     const progress = learned / total;
 
-    const white = useThemeColor({}, 'white');
+    const mainBoxBg = useThemeColor({}, 'mainBoxBg');
+    const shadowColor = useThemeColor({}, 'shadowColor');
     const textColor = useThemeColor({}, 'text');
     const reviewBg = useThemeColor({}, 'reviewBg');
 
@@ -177,14 +180,17 @@ function QuizScreen() {
         <ScreenWrapper>
             <SafeAreaView style={[isReviewMode && { backgroundColor: reviewBg }, { paddingHorizontal: 20, flex: 1 }]}>
                 <View style={styles.header}>
-                    <TouchableOpacity style={[styles.btnWrap, { backgroundColor: white }]} onPress={handleOpenListMenu}>
+                    <TouchableOpacity
+                        style={[styles.btnWrap, { backgroundColor: mainBoxBg, shadowColor }]}
+                        onPress={handleOpenListMenu}
+                    >
                         <HugeiconsIcon icon={BookOpen02Icon} size={24} color={textColor} />
                     </TouchableOpacity>
                     <ThemedText type="subtitle" style={styles.headerName} numberOfLines={1} ellipsizeMode="tail">
                         {currentCollection ? currentCollection?.collection?.name : 'Name'}
                     </ThemedText>
                     <TouchableOpacity
-                        style={[styles.btnWrap, { backgroundColor: white }]}
+                        style={[styles.btnWrap, { backgroundColor: mainBoxBg, shadowColor }]}
                         onPress={handleOpenSettingBox}
                     >
                         <HugeiconsIcon icon={Settings01Icon} size={24} color={textColor} />
@@ -288,13 +294,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 100,
-        // Shadow cho iOS
-        shadowColor: '#9e9e9eff',
         shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-
-        // Shadow cho Android
+        shadowOpacity: 0.08,
+        shadowRadius: 3,
+        // Shadow Android
         elevation: 1,
     },
 

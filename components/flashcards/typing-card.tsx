@@ -22,7 +22,7 @@ function TypingCard({ quiz, onSubmit }: { quiz: Quiz; onSubmit: () => void }) {
     const [value, setValue] = useState('');
     const [isShowAnswer, setIsShowAnswer] = useState(false);
     const [isCorrect, setIsCorrect] = useState<null | boolean>(null);
-    const white = useThemeColor({}, 'white');
+
     const isAutoSound = useSelector((state: RootState) => state.sound.autoSound);
 
     useEffect(() => {
@@ -42,8 +42,8 @@ function TypingCard({ quiz, onSubmit }: { quiz: Quiz; onSubmit: () => void }) {
     };
 
     const showAnswer = () => {
-        setValue(quiz.en_word);
         setIsShowAnswer(true);
+        setValue('');
     };
 
     const handleSubmit = (text: string) => {
@@ -61,8 +61,8 @@ function TypingCard({ quiz, onSubmit }: { quiz: Quiz; onSubmit: () => void }) {
     };
 
     const borderColor = useMemo(() => {
-        if (isShowAnswer) return '#FF9800';
         if (isCorrect === true) return commonColor.trueBorderColor;
+        if (isShowAnswer) return '#FF9800';
         if (isCorrect === false) return commonColor.failBorderColor;
         return undefined;
     }, [isCorrect, isShowAnswer]);
@@ -73,12 +73,29 @@ function TypingCard({ quiz, onSubmit }: { quiz: Quiz; onSubmit: () => void }) {
         setIsShowAnswer(false);
     };
 
+    const mainBoxBg = useThemeColor({}, 'mainBoxBg');
+    const shadowColor = useThemeColor({}, 'shadowColor');
+    const reviewTagBorderColor = useThemeColor({}, 'reviewTagBorderColor');
+    const reviewTagBg = useThemeColor({}, 'reviewTagBg');
+    const reviewTagColor = useThemeColor({}, 'reviewTagColor');
+
     return (
-        <View style={[styles.wrapper, { backgroundColor: white }]}>
+        <View style={[styles.wrapper, { backgroundColor: mainBoxBg, shadowColor }]}>
             <ViToEng meaning={quiz.meaning} example={quiz.ex[0]} url={quiz?.image_url} type={quiz?.type} />
             <View style={styles.tools}>
                 <View style={styles.toolItem}>
-                    <ThemedText style={styles.type}>Ôn tập</ThemedText>
+                    <ThemedText
+                        style={[
+                            styles.type,
+                            {
+                                borderColor: reviewTagBorderColor,
+                                color: reviewTagColor,
+                                backgroundColor: reviewTagBg,
+                            },
+                        ]}
+                    >
+                        Ôn tập
+                    </ThemedText>
                 </View>
                 <TouchableOpacity style={styles.toolItem} onPress={speak}>
                     <HugeiconsIcon icon={VolumeHighIcon} size={28} color={commonColor.volumeColor} />
@@ -92,8 +109,8 @@ function TypingCard({ quiz, onSubmit }: { quiz: Quiz; onSubmit: () => void }) {
             </View>
             <Input
                 borderColor={borderColor ?? undefined}
-                placeholder="Type your answer here ..."
-                editable={!isShowAnswer && isCorrect !== true}
+                placeholder={isShowAnswer ? `Hãy nhập lại : ${quiz.en_word}` : 'Type your answer here ...'}
+                editable={isCorrect !== true}
                 value={value}
                 onChangeText={setValue}
                 onSubmitEditing={(e) => {
@@ -110,6 +127,13 @@ const styles = StyleSheet.create({
         rowGap: 12,
         padding: 16,
         borderRadius: 12,
+
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.08,
+        shadowRadius: 3,
+
+        // Shadow Android
+        elevation: 1,
     },
 
     tools: {

@@ -61,7 +61,7 @@ instance.interceptors.response.use(
                     try {
                         const accessToken = await refreshToken();
                         error.config.headers.Authorization = `Bearer ${accessToken}`;
-                        return axios(error.config);
+                        return instance(error.config);
                     } catch (error) {
                         console.log('Refresh token', error);
                     }

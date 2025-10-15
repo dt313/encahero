@@ -50,8 +50,15 @@ function ReviewCard({
     onSubmit: (name: 'E' | 'M' | 'H') => void;
     isNew: boolean;
 }) {
-    const white = useThemeColor({}, 'white');
+    const mainBoxBg = useThemeColor({}, 'mainBoxBg');
+    const shadowColor = useThemeColor({}, 'shadowColor');
     const textColor = useThemeColor({}, 'text');
+    const reviewTagBorderColor = useThemeColor({}, 'reviewTagBorderColor');
+    const reviewTagBg = useThemeColor({}, 'reviewTagBg');
+    const reviewTagColor = useThemeColor({}, 'reviewTagColor');
+    const newTagBorderColor = useThemeColor({}, 'newTagBorderColor');
+    const newTagBg = useThemeColor({}, 'newTagBg');
+    const newTagColor = useThemeColor({}, 'newTagColor');
 
     const [flip, setFlip] = useState(false);
     const isAutoSound = useSelector((state: RootState) => state.sound.autoSound);
@@ -82,14 +89,14 @@ function ReviewCard({
     };
     return (
         <View style={[styles.wrapper]}>
-            <View style={[styles.questionBox, { backgroundColor: white }]}>
+            <View style={[styles.questionBox, { backgroundColor: mainBoxBg, shadowColor }]}>
                 <View style={[styles.flip]}>
                     <FlipCard
                         flip={flip}
                         style={{
                             flex: 1,
                             height: '100%',
-                            backgroundColor: white,
+                            backgroundColor: mainBoxBg,
                             borderWidth: 1.5,
                             borderColor: '#909090ff',
                             borderRadius: 16,
@@ -110,7 +117,22 @@ function ReviewCard({
 
                 <View style={styles.tools}>
                     <View style={styles.toolItem}>
-                        <ThemedText style={[styles.type, isNew ? styles.newType : styles.reviewType]}>
+                        <ThemedText
+                            style={[
+                                styles.type,
+                                isNew
+                                    ? {
+                                          borderColor: newTagBorderColor,
+                                          color: newTagColor,
+                                          backgroundColor: newTagBg,
+                                      }
+                                    : {
+                                          borderColor: reviewTagBorderColor,
+                                          color: reviewTagColor,
+                                          backgroundColor: reviewTagBg,
+                                      },
+                            ]}
+                        >
                             {isNew ? 'Từ mới' : 'Ôn tập'}
                         </ThemedText>
                     </View>
@@ -122,7 +144,7 @@ function ReviewCard({
                     </TouchableOpacity>
                 </View>
             </View>
-            <View style={[styles.replyBox, { backgroundColor: white }]}>
+            <View style={[styles.replyBox, { backgroundColor: mainBoxBg, shadowColor }]}>
                 {answers.map((ans: AnswerType) => {
                     return (
                         <TouchableOpacity key={ans.title} style={styles.btn} onPress={() => handleSubmit(ans.name)}>
@@ -154,11 +176,10 @@ const styles = StyleSheet.create({
         borderRadius: 16,
         padding: 12,
         rowGap: 12,
-        // Shadow iOS
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.15,
-        shadowRadius: 4,
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.08,
+        shadowRadius: 3,
+
         // Shadow Android
         elevation: 1,
     },
@@ -205,10 +226,9 @@ const styles = StyleSheet.create({
         height: 100,
 
         // Shadow iOS
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.15,
-        shadowRadius: 4,
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.08,
+        shadowRadius: 3,
         // Shadow Android
         elevation: 1,
     },
@@ -223,16 +243,6 @@ const styles = StyleSheet.create({
     E: { color: '#4CAF50', fontWeight: '600' }, // xanh lá
     M: { color: '#FFC107', fontWeight: '600' }, // vàng cam
     H: { color: '#F44336', fontWeight: '600' }, // đỏ
-
-    newType: {
-        borderColor: 'blue',
-        color: 'blue',
-    },
-    reviewType: {
-        borderColor: '#bdc5d1',
-        color: '#333',
-        backgroundColor: '#e7eaf388',
-    },
 });
 
 export default ReviewCard;

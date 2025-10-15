@@ -30,7 +30,7 @@ type GoalItemType = {
 };
 
 const GoalItem = ({ index, id, name, todayCount, taskCount }: GoalItemType) => {
-    const bgColor = useThemeColor({}, 'white');
+    const mainBoxBg = useThemeColor({}, 'mainBoxBg');
     const goalBg = useThemeColor({}, 'goalBg');
     const lighterText = useThemeColor({}, 'lighterText');
 
@@ -38,7 +38,7 @@ const GoalItem = ({ index, id, name, todayCount, taskCount }: GoalItemType) => {
     const router = useRouter();
 
     return (
-        <View style={[styles.item, { backgroundColor: index % 2 === 0 ? bgColor : goalBg }]}>
+        <View style={[styles.item, { backgroundColor: index % 2 === 0 ? mainBoxBg : goalBg }]}>
             <View style={styles.header}>
                 <ThemedText type="defaultSemiBold" style={styles.itemName} numberOfLines={1}>
                     {name}
@@ -102,6 +102,13 @@ function GoalList({ title, containerStyle }: GoalListType) {
     return (
         <View style={[containerStyle]}>
             <ThemedText type="subtitle">{title}</ThemedText>
+            {progressList.length <= 0 && (
+                <View style={{ marginTop: 12 }}>
+                    <ThemedText style={{ fontStyle: 'italic', fontSize: 14 }}>
+                        Chưa có nhiệm vụ nào . Hãy đăng kí các bài học mới
+                    </ThemedText>
+                </View>
+            )}
             <View style={styles.body}>
                 {progressList.map((item: any, index: number) => {
                     return (

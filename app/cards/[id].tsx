@@ -27,6 +27,7 @@ function CardList() {
     const [search, setSearch] = useState('');
     const backgroundColor = useThemeColor({}, 'background');
     const white = useThemeColor({}, 'white');
+    const black = useThemeColor({}, 'black');
     const textColor = useThemeColor({}, 'text');
     const lighterText = useThemeColor({}, 'lighterText');
     const { id, type } = useLocalSearchParams<{ id: string; type?: 'all' | 'learning' | 'mastered' }>();
@@ -200,7 +201,7 @@ function CardList() {
                 onRequestClose={() => setModalVisible(false)}
             >
                 <View style={styles.modalOverlay}>
-                    <View style={styles.modalContent}>
+                    <View style={[styles.modalContent, { backgroundColor }]}>
                         <View style={styles.content}>
                             {selectedWord?.image_url && (
                                 <Image
@@ -228,8 +229,8 @@ function CardList() {
                             )}
                         </View>
 
-                        <TouchableOpacity style={styles.closeIcon} onPress={() => setModalVisible(false)}>
-                            <HugeiconsIcon icon={Cancel01Icon} />
+                        <TouchableOpacity style={[styles.closeIcon]} onPress={() => setModalVisible(false)}>
+                            <HugeiconsIcon icon={Cancel01Icon} color={black} />
                         </TouchableOpacity>
 
                         {selectedWord?.stats?.status === 'mastered' && (
@@ -326,7 +327,7 @@ const styles = StyleSheet.create({
     modalContent: {
         width: '90%',
         maxHeight: '80%',
-        backgroundColor: '#fff',
+
         borderRadius: 12,
         paddingTop: 40,
         padding: 16,
@@ -374,14 +375,12 @@ const styles = StyleSheet.create({
         right: 10,
         zIndex: 10,
         padding: 6,
-        backgroundColor: '#eee',
         borderRadius: 12,
     },
 
     closeIconText: {
         fontSize: 20,
         fontWeight: 'bold',
-        color: '#333',
     },
 
     progressContainer: {

@@ -58,7 +58,8 @@ function List() {
                                         />
                                     );
                                 if (item === 'popular') return <HorizontalList isRandomColor list={allList} />;
-                                return <CategoryList />;
+                                if (item === 'category') return <CategoryList />;
+                                return <></>;
                             }}
                             contentContainerStyle={{
                                 paddingVertical: 16,

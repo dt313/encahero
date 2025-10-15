@@ -101,8 +101,14 @@ export const ViToEng = ({
 };
 
 function MultipleChoice({ quiz, type, onSubmit }: { quiz: Quiz; type: QuizDirection; onSubmit: () => void }) {
-    const white = useThemeColor({}, 'white');
-    const textColor = useThemeColor({}, 'text');
+    const mainBoxBg = useThemeColor({}, 'mainBoxBg');
+    const shadowColor = useThemeColor({}, 'shadowColor');
+    const inputBorderColor = useThemeColor({}, 'inputBorderColor');
+    const choiceNumberBg = useThemeColor({}, 'choiceNumberBg');
+    const reviewTagBorderColor = useThemeColor({}, 'reviewTagBorderColor');
+    const reviewTagBg = useThemeColor({}, 'reviewTagBg');
+    const reviewTagColor = useThemeColor({}, 'reviewTagColor');
+
     const [answers, setAnswers] = useState<AnswerType[]>([]);
     const [isCorrected, setIsCorrected] = useState<boolean>(false);
     const correctAnswer = useMemo(() => (type === QuizDirection.V2E ? quiz.en_word : quiz.vn_word), [type, quiz]);
@@ -152,10 +158,21 @@ function MultipleChoice({ quiz, type, onSubmit }: { quiz: Quiz; type: QuizDirect
     };
 
     return (
-        <View style={[styles.wrapper, { backgroundColor: white }]}>
+        <View style={[styles.wrapper, { backgroundColor: mainBoxBg, shadowColor }]}>
             <View style={[styles.questionBox]}>
                 <View style={styles.wordType}>
-                    <ThemedText style={styles.type}>Ôn tập</ThemedText>
+                    <ThemedText
+                        style={[
+                            styles.type,
+                            {
+                                borderColor: reviewTagBorderColor,
+                                color: reviewTagColor,
+                                backgroundColor: reviewTagBg,
+                            },
+                        ]}
+                    >
+                        Ôn tập
+                    </ThemedText>
                 </View>
 
                 {type === QuizDirection.E2V ? (
@@ -164,12 +181,13 @@ function MultipleChoice({ quiz, type, onSubmit }: { quiz: Quiz; type: QuizDirect
                     <ViToEng meaning={quiz.meaning} example={quiz.ex[0]} url={quiz?.image_url} type={quiz.type} />
                 )}
             </View>
-            <View style={[styles.answersBox, { backgroundColor: white }]}>
+            <View style={[styles.answersBox, { backgroundColor: mainBoxBg }]}>
                 {answers.map((ans, index) => {
                     return (
                         <TouchableOpacity
                             style={[
                                 styles.answer,
+                                { borderColor: inputBorderColor },
                                 ans.state === AnswerState.FALSE && {
                                     borderColor: commonColor.failBorderColor,
                                     backgroundColor: commonColor.failBgColor,
@@ -186,21 +204,13 @@ function MultipleChoice({ quiz, type, onSubmit }: { quiz: Quiz; type: QuizDirect
                             <View
                                 style={[
                                     styles.answerNumber,
+                                    { backgroundColor: choiceNumberBg },
                                     ans.state !== AnswerState.UNSET ? { backgroundColor: 'transparent' } : undefined,
                                 ]}
                             >
-                                {getState(ans.state, index)}
+                                <ThemedText>{getState(ans.state, index)}</ThemedText>
                             </View>
-                            <ThemedText
-                                style={[
-                                    styles.answerText,
-                                    {
-                                        color: textColor,
-                                    },
-                                ]}
-                            >
-                                {ans.text}
-                            </ThemedText>
+                            <ThemedText style={[styles.answerText]}>{ans.text}</ThemedText>
                         </TouchableOpacity>
                     );
                 })}
@@ -213,7 +223,14 @@ const styles = StyleSheet.create({
     wrapper: {
         rowGap: 12,
         padding: 16,
+        paddingVertical: 30,
         borderRadius: 16,
+
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.08,
+        shadowRadius: 3,
+        // Shadow Android
+        elevation: 1,
     },
     questionBox: {
         paddingTop: 24,
@@ -230,7 +247,6 @@ const styles = StyleSheet.create({
     answer: {
         width: '48%', // để chừa khoảng gap
         borderWidth: 1.5,
-        borderColor: '#ccc',
         borderRadius: 8,
         padding: 8,
         alignItems: 'center',
@@ -238,7 +254,6 @@ const styles = StyleSheet.create({
     },
 
     answerNumber: {
-        backgroundColor: '#f8fafd',
         width: 32,
         height: 32,
         justifyContent: 'center',
@@ -269,9 +284,6 @@ const styles = StyleSheet.create({
         paddingVertical: 4,
         paddingHorizontal: 12,
         borderRadius: 12,
-        borderColor: '#bdc5d1',
-        color: '#333',
-        backgroundColor: '#e7eaf388',
     },
 });
 
