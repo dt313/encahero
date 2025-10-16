@@ -2,6 +2,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { ActivityIndicator, Text, View } from 'react-native';
 
+import { QuizDirection } from '@/types/quiz';
+import type { Quiz } from '@/types/quiz';
 import { useQueryClient } from '@tanstack/react-query';
 import { debounce } from 'lodash';
 
@@ -13,34 +15,6 @@ export enum QuestionType {
     MULTI_CHOICE = 'multi_choice',
     RATING = 'rating',
     TYPING = 'typing',
-}
-
-export type Quiz = {
-    id: number;
-    en_word: string;
-    vn_word: string;
-    vn_choice: string[];
-    en_choice: string[];
-    meaning: string;
-    ex: string[];
-    image_url?: string;
-    type:
-        | 'noun'
-        | 'verb'
-        | 'adjective'
-        | 'adverb'
-        | 'pronoun'
-        | 'preposition'
-        | 'conjunction'
-        | 'interjection'
-        | 'phrase'
-        | 'idiom'
-        | 'other';
-};
-
-export enum QuizDirection {
-    E2V = 'e2v',
-    V2E = 'v2e',
 }
 
 export function randomQuestionType(): QuestionType {

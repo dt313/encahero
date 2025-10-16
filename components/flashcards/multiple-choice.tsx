@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
+import type { Quiz } from '@/types/quiz';
+import { QuizDirection } from '@/types/quiz';
 import { Cancel01Icon, Tick01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 
@@ -10,7 +12,6 @@ import { commonColor } from '@/constants/Colors';
 import { useThemeColor } from '@/hooks/useThemeColor';
 
 import { ThemedText } from '../ThemedText';
-import { Quiz, QuizDirection } from '../random-quiz';
 import TextWithSound from '../text-with-sound';
 
 enum AnswerState {

@@ -5,6 +5,7 @@ import { AppState, Platform } from 'react-native';
 import { Tabs } from 'expo-router';
 
 import { useThemeSwitcher } from '@/context/custom-theme-provider';
+import { askPermissionIfNeeded, removeNotificationPermissionKey } from '@/helper/permission';
 import { updateUser } from '@/store/action/auth-action';
 import { initLearningList } from '@/store/action/learning-list-action';
 import { RootState } from '@/store/reducers';
@@ -32,8 +33,16 @@ export default function TabLayout() {
         queryKey: ['my-collections'],
         queryFn: collectionService.getMyLearningList,
     });
-
     const me = useSelector((state: RootState) => state.auth.user);
+
+    useEffect(() => {
+        removeNotificationPermissionKey();
+
+        const timeout = setTimeout(() => {
+            askPermissionIfNeeded();
+        }, 1000);
+        return () => clearTimeout(timeout);
+    }, []);
 
     useEffect(() => {
         if (myCollections?.length) {

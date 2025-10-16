@@ -88,8 +88,6 @@ function QuizScreen() {
         }
     }, [collectionId, isReviewMode, quizMode]);
 
-    console.log(quizList);
-
     useEffect(() => {
         fetchQuiz();
     }, [collectionId, quizMode]);
