@@ -5,6 +5,7 @@ import { Image, RefreshControl, ScrollView, StyleSheet, View } from 'react-nativ
 import getAvatarOfUser from '@/helper/get-avatar-of-user';
 import getNameOfUser from '@/helper/get-name-of-user';
 import { RootState } from '@/store/reducers';
+import { useQueryClient } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 
 import avatar from '@/assets/images/peeps-avatar-alpha.png';
@@ -18,11 +19,15 @@ import SafeArea from '@/components/safe-area';
 import ScreenWrapper from '@/components/screen-wrapper';
 import StopList from '@/components/stop-list';
 
+import useToast from '@/hooks/useToast';
+
 const HEADER_HEIGHT = 60;
 
 function Home() {
     const [refreshing, setRefreshing] = useState(false);
     const user = useSelector((state: RootState) => state.auth.user);
+    const queryClient = useQueryClient();
+    const { showErrorToast } = useToast();
     const displayName = useMemo(() => {
         return getNameOfUser(user);
     }, [user]);
@@ -33,10 +38,15 @@ function Home() {
 
     const onRefresh = useCallback(() => {
         setRefreshing(true);
-        setTimeout(() => {
-            console.log('refresh done');
+        try {
+            queryClient.invalidateQueries({ queryKey: ['my-collections'] });
+            queryClient.invalidateQueries({ queryKey: ['userStatsDailyAndWeekly'] });
+            queryClient.invalidateQueries({ queryKey: ['contribution'] });
+        } catch (error) {
+            showErrorToast(error);
+        } finally {
             setRefreshing(false);
-        }, 1500);
+        }
     }, []);
 
     return (
@@ -54,18 +64,18 @@ function Home() {
                     <ThemedView style={styles.header}>
                         <View style={styles.textWrapper}>
                             <ThemedText type="title" style={styles.greeting} numberOfLines={1} ellipsizeMode="tail">
-                                Hello, {displayName}
+                                Xin chào, {displayName}
                             </ThemedText>
-                            <ThemedText lightColor="#636363ff">Lets check how you feel to day</ThemedText>
+                            <ThemedText lightColor="#636363ff">Cùng học tập năng suất trong 1 ngày nhé!</ThemedText>
                         </View>
-                        <Image style={styles.avatar} source={displayAvatar ? { uri: displayAvatar } : avatar} />
+                        <Image style={[styles.avatar]} source={displayAvatar ? { uri: displayAvatar } : avatar} />
                     </ThemedView>
 
                     <Charts />
 
-                    <GoalList containerStyle={{ marginTop: 16 }} title="Today's Goal" />
-                    <StopList containerStyle={{ marginTop: 16 }} title="Stop List" />
-                    <CompletedList containerStyle={{ marginTop: 16 }} title="Completed List" />
+                    <GoalList containerStyle={{ marginTop: 16 }} title="Mục tiêu hôm nay" />
+                    <StopList containerStyle={{ marginTop: 16 }} title="Danh sách dừng" />
+                    <CompletedList containerStyle={{ marginTop: 16 }} title="Danh sách hoàn thành" />
                 </ScrollView>
             </SafeArea>
         </ScreenWrapper>
@@ -91,7 +101,9 @@ const styles = StyleSheet.create({
     avatar: {
         width: HEADER_HEIGHT,
         height: HEADER_HEIGHT,
-        borderRadius: 4,
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: '#7e7c7c44',
     },
 });
 

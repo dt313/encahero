@@ -39,7 +39,7 @@ const StopItem = ({ id, name, masteredCount, cardCount }: StopItemType) => {
             </ThemedText>
 
             <ThemedText numberOfLines={1}>
-                {masteredCount}/{cardCount} cards
+                {masteredCount}/{cardCount} thẻ
             </ThemedText>
 
             <Button
@@ -47,7 +47,7 @@ const StopItem = ({ id, name, masteredCount, cardCount }: StopItemType) => {
                 textStyle={{ color: '#333' }}
                 onPress={() => continueCollection(id)}
             >
-                Continue
+                Tiếp tục
             </Button>
         </View>
     );

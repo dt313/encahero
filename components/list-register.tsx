@@ -76,7 +76,7 @@ export default function ListRegister({
                 {[20, 50, 100, 150, 200, 300, 350, 400, 450, 500].map((num) => (
                     <Picker.Item
                         key={num}
-                        label={`${num} tasks per day`}
+                        label={`${num} quizs / ngày`}
                         value={num}
                         color={black}
                         style={{
@@ -93,10 +93,10 @@ export default function ListRegister({
                     rowGap: 12,
                 }}
             >
-                <Button onPress={() => onConfirm(taskCount)}>{isRegistered ? 'Change' : 'Register'}</Button>
+                <Button onPress={() => onConfirm(taskCount)}>{isRegistered ? 'Thay đổi' : 'Đăng ký'}</Button>
                 {!isRegistered && (
                     <Button type="link" onPress={directLinkHandler}>
-                        View all cards →
+                        Xem tất cả từ →
                     </Button>
                 )}
             </View>

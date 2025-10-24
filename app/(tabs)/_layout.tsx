@@ -29,10 +29,12 @@ export default function TabLayout() {
     const { mode } = useThemeSwitcher();
     const dispatch = useDispatch();
     const { showErrorToast } = useToast();
+
     const { data: myCollections } = useQuery({
         queryKey: ['my-collections'],
         queryFn: collectionService.getMyLearningList,
     });
+
     const me = useSelector((state: RootState) => state.auth.user);
 
     useEffect(() => {
@@ -99,7 +101,7 @@ export default function TabLayout() {
             <Tabs.Screen
                 name="index"
                 options={{
-                    title: 'Home',
+                    title: 'Trang chủ',
                     tabBarIcon: ({ color, focused }) => {
                         return <TabIconButton icon={Home01Icon} color={color} focused={focused} />;
                     },
@@ -108,7 +110,7 @@ export default function TabLayout() {
             <Tabs.Screen
                 name="list"
                 options={{
-                    title: 'List',
+                    title: 'Bài học',
                     tabBarIcon: ({ color, focused }) => (
                         <TabIconButton icon={BookOpen01Icon} color={color} focused={focused} />
                     ),
@@ -117,7 +119,7 @@ export default function TabLayout() {
             <Tabs.Screen
                 name="quiz/[id]"
                 options={{
-                    title: 'Quiz',
+                    title: 'Học',
                     tabBarIcon: ({ color, focused }) => (
                         <TabIconButton icon={Quiz02Icon} color={color} focused={focused} />
                     ),
@@ -128,7 +130,7 @@ export default function TabLayout() {
             <Tabs.Screen
                 name="battle"
                 options={{
-                    title: 'Battle',
+                    title: 'Đấu',
                     tabBarIcon: ({ color, focused }) => (
                         <TabIconButton icon={Sword03Icon} color={color} focused={focused} />
                     ),
@@ -137,7 +139,7 @@ export default function TabLayout() {
             <Tabs.Screen
                 name="setting"
                 options={{
-                    title: 'Setting',
+                    title: 'Cài đặt',
                     tabBarIcon: ({ color, focused }) => (
                         <TabIconButton icon={Settings02Icon} color={color} focused={focused} />
                     ),

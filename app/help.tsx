@@ -32,7 +32,7 @@ export default function HelpScreen() {
     return (
         <ThemedView style={{ flex: 1 }}>
             <SafeAreaView style={styles.container}>
-                <HeaderWithBack title="Help / FAQ" />
+                <HeaderWithBack title="Trợ giúp và FAQ" />
 
                 <ScrollView>
                     {faqs.map((item, index) => (

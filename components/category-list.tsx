@@ -38,7 +38,7 @@ const CategoryItem = ({ id, name, collectionCount }: CategoryItemType) => {
     );
 };
 
-function CategoryList() {
+function CategoryList({ headerName = 'Category', containerStyle }: { headerName?: string; containerStyle?: any }) {
     const {
         data: categories = [],
         isLoading,
@@ -50,7 +50,7 @@ function CategoryList() {
 
     return (
         <View style={[styles.wrapper]}>
-            <ThemedText style={styles.headerName}>Category</ThemedText>
+            <ThemedText style={styles.headerName}>{headerName}</ThemedText>
 
             <View style={styles.body}>
                 {categories.map((item: any, index: number) => {

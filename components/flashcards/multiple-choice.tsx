@@ -150,9 +150,9 @@ function MultipleChoice({ quiz, type, onSubmit }: { quiz: Quiz; type: QuizDirect
     const getState = (state: AnswerState, index: number) => {
         switch (state) {
             case AnswerState.TRUE:
-                return <HugeiconsIcon icon={Tick01Icon} color={commonColor.trueBorderColor} size={24} />;
+                return <HugeiconsIcon icon={Tick01Icon} color={commonColor.trueBorderColor} size={18} />;
             case AnswerState.FALSE:
-                return <HugeiconsIcon icon={Cancel01Icon} color={commonColor.failBorderColor} size={24} />;
+                return <HugeiconsIcon icon={Cancel01Icon} color={commonColor.failBorderColor} size={18} />;
             default:
                 return <Text>{index + 1}</Text>;
         }
@@ -209,7 +209,7 @@ function MultipleChoice({ quiz, type, onSubmit }: { quiz: Quiz; type: QuizDirect
                                     ans.state !== AnswerState.UNSET ? { backgroundColor: 'transparent' } : undefined,
                                 ]}
                             >
-                                <ThemedText>{getState(ans.state, index)}</ThemedText>
+                                <ThemedText style={[styles.answerNumberText]}>{getState(ans.state, index)}</ThemedText>
                             </View>
                             <ThemedText style={[styles.answerText]}>{ans.text}</ThemedText>
                         </TouchableOpacity>
@@ -249,17 +249,17 @@ const styles = StyleSheet.create({
         width: '48%', // để chừa khoảng gap
         borderWidth: 1.5,
         borderRadius: 8,
-        padding: 8,
+        paddingVertical: 12,
+        paddingHorizontal: 8,
         alignItems: 'center',
         flexDirection: 'row',
     },
 
     answerNumber: {
-        width: 32,
-        height: 32,
-        justifyContent: 'center',
+        width: 24,
+        height: 24,
         alignItems: 'center',
-        padding: 4,
+        justifyContent: 'center',
         borderRadius: 50,
         marginRight: 12,
         fontWeight: 500,
@@ -270,6 +270,11 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         width: '100%',
         fontWeight: 500,
+    },
+
+    answerNumberText: {
+        fontWeight: 600,
+        fontSize: 12,
     },
 
     wordType: {

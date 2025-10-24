@@ -24,11 +24,7 @@ function List() {
         setProgressList(collections.filter((item: CollectionProgress) => item.status === 'in_progress'));
     }, [collections]);
 
-    const {
-        data: allList = [],
-        isLoading: isLoadingAll,
-        error: errorAll,
-    } = useQuery({
+    const { data: allList = [] } = useQuery({
         queryKey: ['allList'],
         queryFn: collectionService.getAllCollection,
     });
@@ -42,7 +38,7 @@ function List() {
 
                 <View style={{}}>
                     {searchText ? (
-                        <HorizontalList list={filteredAll} isVertical={true} headerName="Search Result" />
+                        <HorizontalList list={filteredAll} isVertical={true} headerName="Kết quả" />
                     ) : (
                         <FlatList
                             data={['popular', 'learningList', 'category']}
@@ -51,14 +47,15 @@ function List() {
                                 if (item === 'learningList' && progressList?.length)
                                     return (
                                         <HorizontalList
-                                            headerName="Learning List"
+                                            headerName="Đang học"
                                             containerStyle={{ marginTop: 24 }}
                                             list={progressList}
                                             isLearningList={true}
                                         />
                                     );
-                                if (item === 'popular') return <HorizontalList isRandomColor list={allList} />;
-                                if (item === 'category') return <CategoryList />;
+                                if (item === 'popular')
+                                    return <HorizontalList isRandomColor list={allList} headerName="Phổ biến" />;
+                                if (item === 'category') return <CategoryList headerName="Danh mục" />;
                                 return <></>;
                             }}
                             contentContainerStyle={{

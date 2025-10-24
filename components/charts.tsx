@@ -14,7 +14,7 @@ const CHART_TABS = [
         title: '🚀',
     },
     {
-        title: 'Graph',
+        title: 'Biểu đồ',
     },
     // {
     //     title: 'Bar',
@@ -34,7 +34,7 @@ function Charts() {
 
     const renderComponent = (activeTab: string) => {
         switch (activeTab) {
-            case 'Graph':
+            case 'Biểu đồ':
                 return <ContributionGraph bgColor={chartBg} />;
             case 'Bar':
                 return <Fragment />;
@@ -66,7 +66,7 @@ function Charts() {
                 })}
             </ThemedView>
 
-            <View style={styles.body}>{renderComponent(activeTab)}</View>
+            <View style={[styles.body, { backgroundColor: chartBg }]}>{renderComponent(activeTab)}</View>
         </ThemedView>
     );
 }

@@ -21,7 +21,7 @@ export default function About() {
     return (
         <ScreenWrapper>
             <SafeAreaView style={styles.container}>
-                <HeaderWithBack title="About" />
+                <HeaderWithBack title="Giới thiệu" />
 
                 {/* Nội dung About */}
                 <ThemedText style={styles.description}>

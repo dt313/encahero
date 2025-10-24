@@ -6,7 +6,7 @@ import { useRouter } from 'expo-router';
 
 import { RootState } from '@/store/reducers';
 import { CollectionProgress } from '@/store/reducers/learning-list-reducer';
-import { ArrowRight01Icon } from '@hugeicons/core-free-icons';
+import { ArrowRightDoubleIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import * as Progress from 'react-native-progress';
 import { useSelector } from 'react-redux';
@@ -47,7 +47,7 @@ const GoalItem = ({ index, id, name, todayCount, taskCount }: GoalItemType) => {
                 <Button
                     type="link"
                     textStyle={{ color: lighterText, paddingVertical: 0, fontWeight: 400 }}
-                    rightIcon={<HugeiconsIcon icon={ArrowRight01Icon} color={lighterText} />}
+                    rightIcon={<HugeiconsIcon icon={ArrowRightDoubleIcon} color={lighterText} size={20} />}
                     onPress={() =>
                         router.push({
                             pathname: '/quiz/[id]',
@@ -55,7 +55,7 @@ const GoalItem = ({ index, id, name, todayCount, taskCount }: GoalItemType) => {
                         })
                     }
                 >
-                    Learn
+                    {todayCount <= 0 ? 'Bắt đầu ' : progress > 1 ? 'Ôn tập' : 'Tiếp tục'}
                 </Button>
             </View>
 
@@ -66,7 +66,7 @@ const GoalItem = ({ index, id, name, todayCount, taskCount }: GoalItemType) => {
                             fontWeight: 500,
                         }}
                     >
-                        Today
+                        {progress > 1 ? '🎉🎉🎉' : '🔥 Thành tích'}
                     </ThemedText>
                     <ThemedText
                         style={{
@@ -75,11 +75,11 @@ const GoalItem = ({ index, id, name, todayCount, taskCount }: GoalItemType) => {
                         }}
                     >
                         {todayCount}
-                        <ThemedText lighter>/{taskCount} cards</ThemedText>
+                        <ThemedText lighter>/{taskCount} quizs</ThemedText>
                     </ThemedText>
                 </View>
                 <Progress.Bar
-                    color="#4CAF50"
+                    color="#4caf50"
                     progress={progress}
                     width={null}
                     borderWidth={0}

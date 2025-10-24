@@ -144,7 +144,7 @@ export default function LearningList({
     return (
         <View style={styles.container}>
             <ThemedText type="title" style={{ paddingHorizontal: 12 }}>
-                Learning List
+                Danh sách của bạn
             </ThemedText>
             <View style={{ flex: 1, width: '100%' }}>
                 <FlatList
@@ -187,7 +187,7 @@ export default function LearningList({
                 }}
                 onPress={handleLearnNow}
             >
-                Learn now
+                Học
             </Button>
         </View>
     );

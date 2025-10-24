@@ -77,13 +77,13 @@ function QuizSetting({
     return (
         <View style={styles.container}>
             <ThemedText type="title" style={styles.header}>
-                Quiz Settings
+                Cài đặt Quiz
             </ThemedText>
 
             {/* Review Mode */}
             {isShowReviewMode && (
                 <View style={[styles.optionRow, { backgroundColor: white }]}>
-                    <ThemedText style={styles.optionText}>Review Mode</ThemedText>
+                    <ThemedText style={styles.optionText}>Chế độ ôn tập</ThemedText>
                     <Switch
                         value={reviewMode}
                         onValueChange={onToggle}
@@ -94,25 +94,25 @@ function QuizSetting({
 
             {/* Auto Play Sound */}
             <View style={[styles.optionRow, { backgroundColor: white }]}>
-                <ThemedText style={styles.optionText}>Auto Play Sound</ThemedText>
+                <ThemedText style={styles.optionText}>Âm thanh tự động</ThemedText>
                 <Switch value={autoPlay} onValueChange={toggleAutoPlaySound} />
             </View>
 
             {/* Links */}
             <Pressable style={[styles.link, { backgroundColor: linkBg }]} onPress={redirectToKnownWords}>
-                <Text style={[styles.linkText, { color: linkColor }]}>📖 Known Words</Text>
+                <Text style={[styles.linkText, { color: linkColor }]}>📖 Xem các từ đã thuộc</Text>
                 <HugeiconsIcon icon={ArrowRight02Icon} size={24} color={textColor} />
             </Pressable>
 
             <Pressable style={[styles.link, { backgroundColor: linkBg }]} onPress={redirectToAllWords}>
-                <Text style={[styles.linkText, { color: linkColor }]}>📚 View All Words</Text>
+                <Text style={[styles.linkText, { color: linkColor }]}>📚 Xem tất cả từ</Text>
                 <HugeiconsIcon icon={ArrowRight02Icon} size={24} color={textColor} />
             </Pressable>
 
             {/* Stop Learning Button */}
 
             <Button type="dangerous" onPress={handleStopLearning}>
-                🛑 Stop Learning This List
+                🛑 Dừng học danh sách này
             </Button>
         </View>
     );

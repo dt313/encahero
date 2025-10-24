@@ -18,6 +18,7 @@ import useToast from '@/hooks/useToast';
 import { collectionService } from '@/services';
 
 import { ThemedText } from './ThemedText';
+import Button from './button';
 import ListRegister from './list-register';
 import ModalBottomSheet from './modal-bottom-sheet';
 
@@ -87,6 +88,11 @@ export default function RegisteredListStats({ id, title, onClose }: RegisteredSt
         onClose();
     };
 
+    const handleRedirectToQuiz = () => {
+        router.push(`/quiz/${id}`);
+        onClose();
+    };
+
     if (!collection) {
         return <ThemedText>Collection không tồn tại hoặc chưa load xong</ThemedText>;
     }
@@ -120,26 +126,25 @@ export default function RegisteredListStats({ id, title, onClose }: RegisteredSt
 
             <View style={styles.buttonContainer}>
                 <Pressable style={[styles.link, { backgroundColor: linkBg }]} onPress={handleRedirectToKnownCards}>
-                    <Text style={[styles.linkText, { color: linkColor }]}>📖 Known Words</Text>
+                    <Text style={[styles.linkText, { color: linkColor }]}>📖 Các từ đã biết</Text>
                     <HugeiconsIcon icon={ArrowRight02Icon} size={24} color={textColor} />
                 </Pressable>
 
                 <Pressable style={[styles.link, { backgroundColor: linkBg }]} onPress={handleRedirectToAllCards}>
-                    <Text style={[styles.linkText, { color: linkColor }]}>📚 View All Words</Text>
+                    <Text style={[styles.linkText, { color: linkColor }]}>📚 Xem tất cả từ</Text>
                     <HugeiconsIcon icon={ArrowRight02Icon} size={24} color={textColor} />
                 </Pressable>
 
                 {collection?.status === 'in_progress' && (
                     <Pressable style={[styles.link, { backgroundColor: linkBg }]} onPress={handleOpenBottomModal}>
-                        <Text style={[styles.linkText, { color: linkColor }]}>🔄 Chỉnh số lượng Task</Text>
+                        <Text style={[styles.linkText, { color: linkColor }]}>🔄 Chỉnh số lượng quiz/ngày</Text>
                         <HugeiconsIcon icon={ArrowRight02Icon} size={24} color={textColor} />
                     </Pressable>
                 )}
-                {/* Stop Learning Button */}
                 {collection.status === 'in_progress' ? (
-                    <Pressable style={styles.stopButton} onPress={() => setConfirmVisible(true)}>
-                        <Text style={styles.stopButtonText}>🛑 Stop Learning This List</Text>
-                    </Pressable>
+                    <Button type="dangerous" onPress={() => setConfirmVisible(true)} textStyle={{ textAlign: 'left' }}>
+                        🛑 Dừng học danh sách này
+                    </Button>
                 ) : (
                     <ThemedText
                         style={{
@@ -153,6 +158,9 @@ export default function RegisteredListStats({ id, title, onClose }: RegisteredSt
                         {collection.status === 'stopped' ? 'Bạn đã dừng bài này' : 'Bạn đã hoàn thành bài này'}
                     </ThemedText>
                 )}
+
+                {collection?.status === 'in_progress' && <Button onPress={handleRedirectToQuiz}>Học ngay</Button>}
+                {/* Stop Learning Button */}
             </View>
 
             {/* Stop Confirm Modal */}
@@ -264,8 +272,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#fee2e2',
         padding: 15,
         borderRadius: 12,
-        alignItems: 'center',
+        // alignItems: 'center',
     },
+
     stopButtonText: {
         fontSize: 16,
         fontWeight: '600',

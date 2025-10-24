@@ -58,28 +58,28 @@ export default function SettingsScreen() {
     // ✅ Common handler for items
     const handlePress = useCallback((label: string) => {
         switch (label) {
-            case 'Information':
+            case 'Thông tin cá nhân':
                 router.push('/information');
                 break;
-            case 'Password & Security':
+            case 'Mật khẩu & Bảo mật':
                 router.push('/mail-otp');
                 break;
-            case 'Privacy Policy':
+            case 'Chính sách bảo mật':
                 router.push('/privacy-policy');
                 break;
-            case 'Feedback':
+            case 'Góp ý':
                 router.push('/feedback');
                 break;
-            case 'Usage':
+            case 'Sử dụng':
                 Alert.alert('Navigate', 'Go to Usage');
                 break;
             case 'Nhắc nhở học tập':
                 Alert.alert('Navigate', 'Go to Reminders');
                 break;
-            case 'Help':
+            case 'Trợ giúp':
                 router.push('/help');
                 break;
-            case 'About':
+            case 'Giới thiệu':
                 router.push('/about');
 
                 break;
@@ -111,14 +111,14 @@ export default function SettingsScreen() {
                         <SettingItem
                             onPress={handlePress}
                             icon={<HugeiconsIcon icon={User02FreeIcons} size={24} color={textColor} />}
-                            label="Information"
+                            label="Thông tin cá nhân"
                             isLink
                             nonBorder
                         />
                         <SettingItem
                             onPress={handlePress}
                             icon={<HugeiconsIcon icon={Key01Icon} size={24} color={textColor} />}
-                            label="Password & Security"
+                            label="Mật khẩu & Bảo mật"
                             isLink
                             nonBorder
                         />
@@ -126,7 +126,7 @@ export default function SettingsScreen() {
                         <SettingItem
                             onPress={handlePress}
                             icon={<HugeiconsIcon icon={SecurityLockIcon} size={24} color={textColor} />}
-                            label="Privacy Policy"
+                            label="Chính sách bảo mật"
                             nonBorder
                             isLink
                         />
@@ -135,20 +135,20 @@ export default function SettingsScreen() {
                     <View style={[styles.card, { backgroundColor: settingBoxBg, shadowColor }]}>
                         <SwitchItem
                             icon={<HugeiconsIcon icon={Moon02Icon} size={24} color={textColor} />}
-                            label="Dark Theme"
+                            label="Chế độ tối"
                             value={mode === 'dark'}
                             onValueChange={toggleTheme}
                         />
                         <SwitchItem
                             icon={<HugeiconsIcon icon={Notification01Icon} size={24} color={textColor} />}
-                            label="Push Progress Notifications"
+                            label="Thông báo tiến độ"
                             value={pushNotif}
                             onValueChange={setPushNotif}
                         />
                         <SettingItem
                             onPress={handlePress}
                             icon={<HugeiconsIcon icon={Comment01Icon} size={24} color={textColor} />}
-                            label="Feedback"
+                            label="Góp ý"
                             isLink
                         />
                         {/* <SettingItem
@@ -169,13 +169,13 @@ export default function SettingsScreen() {
                         <SettingItem
                             onPress={handlePress}
                             icon={<HugeiconsIcon icon={HelpCircleIcon} size={24} color={textColor} />}
-                            label="Help"
+                            label="Trợ giúp"
                             isLink
                         />
                         <SettingItem
                             onPress={handlePress}
                             icon={<HugeiconsIcon icon={InformationCircleIcon} size={24} color={textColor} />}
-                            label="About"
+                            label="Giới thiệu"
                             nonBorder
                             isLink
                         />

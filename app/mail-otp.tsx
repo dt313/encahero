@@ -40,7 +40,7 @@ export default function MailOTP() {
 
     const handleSendCode = async () => {
         if (!email) {
-            Alert.alert('Error', 'Please enter your email');
+            Alert.alert('Error', 'Hãy nhập email của bạn');
             return;
         }
         setSending(true);
@@ -53,7 +53,7 @@ export default function MailOTP() {
                 setResendCountdown(60);
             }
         } catch (error) {
-            const msg = getErrorMessage(error, 'Error in send mail');
+            const msg = getErrorMessage(error, 'Lỗi khi gửi lại OTP');
             setErrorText(msg);
         } finally {
             setSending(false);
@@ -62,7 +62,7 @@ export default function MailOTP() {
 
     const handleConfirm = async () => {
         if (!email || !code) {
-            Alert.alert('Error', 'Please enter all field');
+            Alert.alert('Error', 'Hãy nhập đầy đủ thông tin');
             return;
         }
         setIsSuccess(false);
@@ -74,7 +74,7 @@ export default function MailOTP() {
                 throw new Error('Error in response');
             }
         } catch (error) {
-            const msg = getErrorMessage(error, 'Error in confirm otp code');
+            const msg = getErrorMessage(error, 'Lỗi khi xác thực mã OTP');
             setErrorText(msg);
         }
     };
@@ -96,7 +96,7 @@ export default function MailOTP() {
 
     const handleResend = async () => {
         if (!email) {
-            Alert.alert('Error', 'Please enter your email');
+            Alert.alert('Error', 'Hãy nhập email của bạn');
             return;
         }
         if (resendCountdown > 0 || sending) return; // đang countdown hoặc đang gửi
@@ -112,7 +112,7 @@ export default function MailOTP() {
                 setResendCountdown(60); // 60s mới cho resend tiếp
             }
         } catch (error) {
-            const msg = getErrorMessage(error, 'Error in resend OTP');
+            const msg = getErrorMessage(error, 'Lỗi khi gửi lại OTP');
             setErrorText(msg);
         } finally {
             setSending(false);
@@ -133,7 +133,7 @@ export default function MailOTP() {
                     <Input
                         leftIcon={<HugeiconsIcon icon={Mail01FreeIcons} color={inputBorderColor} size={24} />}
                         label="Email"
-                        placeholder="Enter your email"
+                        placeholder="Nhập email của bạn"
                         keyboardType="email-address"
                         value={email}
                         onChangeText={handleChangeInput(setEmail)}
@@ -144,8 +144,8 @@ export default function MailOTP() {
                 {codeSent && (
                     <View style={styles.inputWrap}>
                         <Input
-                            label="OTP Code"
-                            placeholder="Enter your OPT code"
+                            label="Mã xác thực"
+                            placeholder="Nhập mã xác thực"
                             keyboardType="number-pad"
                             value={code}
                             onChangeText={handleChangeInput(setCode)}

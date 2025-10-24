@@ -90,7 +90,7 @@ function AuthScreen({ type, onPressGGLogin, onSubmit, onSend, infoMessage, error
         hideMessage();
     };
 
-    const typeValue = useMemo(() => (type === 'register' ? 'Register' : 'Login'), [type]);
+    const typeValue = useMemo(() => (type === 'register' ? 'Đăng kí' : 'Đăng nhập'), [type]);
 
     const submit = async (data: FormValues) => {
         try {
@@ -145,10 +145,10 @@ function AuthScreen({ type, onPressGGLogin, onSubmit, onSend, infoMessage, error
                                 control={control}
                                 name="email"
                                 rules={{
-                                    required: 'Email is required',
+                                    required: 'Email là bắt buộc',
                                     pattern: {
                                         value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
-                                        message: 'Invalid email format',
+                                        message: 'Định dạng email không hợp lệ',
                                     },
                                 }}
                                 render={({ field: { onChange, onBlur, value } }) => (
@@ -171,10 +171,10 @@ function AuthScreen({ type, onPressGGLogin, onSubmit, onSend, infoMessage, error
                                     control={control}
                                     name="password"
                                     rules={{
-                                        required: 'Password is required',
+                                        required: 'Mật khẩu là bắt buộc',
                                         minLength: {
                                             value: 6,
-                                            message: 'Password must be at least 6 characters',
+                                            message: 'Mật khẩu phải có ít nhất 6 ký tự',
                                         },
                                     }}
                                     render={({ field: { onChange, onBlur, value } }) => (
@@ -186,7 +186,7 @@ function AuthScreen({ type, onPressGGLogin, onSubmit, onSend, infoMessage, error
                                                     size={24}
                                                 />
                                             }
-                                            label="Password"
+                                            label="Mật khẩu"
                                             value={value}
                                             placeholder="Abcd123@"
                                             onChangeText={onChange}
@@ -203,9 +203,9 @@ function AuthScreen({ type, onPressGGLogin, onSubmit, onSend, infoMessage, error
                                     control={control}
                                     name="confirmPassword"
                                     rules={{
-                                        required: 'Confirm Password is required',
+                                        required: 'Xác nhận mật khẩu là bắt buộc',
                                         validate: (value, formValues) =>
-                                            value === formValues.password || 'Passwords do not match',
+                                            value === formValues.password || 'Mật khẩu không khớp',
                                     }}
                                     render={({ field: { onChange, onBlur, value } }) => (
                                         <Input
@@ -216,9 +216,9 @@ function AuthScreen({ type, onPressGGLogin, onSubmit, onSend, infoMessage, error
                                                     size={24}
                                                 />
                                             }
-                                            label="Confirm Password"
+                                            label="Xác nhận mật khẩu"
                                             value={value}
-                                            placeholder="Re-enter password"
+                                            placeholder="Nhập lại mật khẩu"
                                             onChangeText={onChange}
                                             onBlur={onBlur}
                                             isPassword
@@ -246,7 +246,7 @@ function AuthScreen({ type, onPressGGLogin, onSubmit, onSend, infoMessage, error
                             ) : tab === 'password' ? (
                                 typeValue
                             ) : (
-                                'Send'
+                                'Gửi'
                             )}
                         </Button>
 
@@ -269,7 +269,7 @@ function AuthScreen({ type, onPressGGLogin, onSubmit, onSend, infoMessage, error
                                 leftIcon={<Image style={styles.socialIcon} source={ggIcon} />}
                                 onPress={onPressGGLogin}
                             >
-                                Continue with Google
+                                {typeValue} với Google
                             </Button>
                             <Button
                                 buttonStyle={{
@@ -281,14 +281,14 @@ function AuthScreen({ type, onPressGGLogin, onSubmit, onSend, infoMessage, error
                                 leftIcon={<Image style={styles.socialIcon} source={fbIcon} />}
                                 onPress={handleFbButton}
                             >
-                                Continue with Facebook
+                                {typeValue} với Facebook
                             </Button>
                         </View>
 
                         {/* Register Link */}
                         <View style={styles.footerContainer}>
                             <Text style={styles.footerText}>
-                                {type === 'register' ? 'Are you already a member? ' : 'Not a Collect member yet? '}
+                                {type === 'register' ? 'Bạn đã là thành viên? ' : 'Chưa phải là thành viên? '}
                             </Text>
                             <Button
                                 type="link"
@@ -299,7 +299,7 @@ function AuthScreen({ type, onPressGGLogin, onSubmit, onSend, infoMessage, error
                                     }
                                 }}
                             >
-                                {type === 'register' ? 'Login' : 'Register'} Now
+                                {type === 'register' ? 'Đăng nhập' : 'Đăng ký'}
                             </Button>
                         </View>
 

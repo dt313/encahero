@@ -7,6 +7,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { answerCard, changeStatus, increaseMasteredCount } from '@/store/action/learning-list-action';
 import { RootState } from '@/store/reducers';
 import { CollectionProgress } from '@/store/reducers/learning-list-reducer';
+import type { Quiz } from '@/types/quiz';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { BookOpen02Icon, Settings01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
@@ -20,7 +21,7 @@ import CongratsModal from '@/components/congratulation-modal';
 import LearningList from '@/components/learning-list';
 import ModalBottomSheet from '@/components/modal-bottom-sheet';
 import QuizSetting from '@/components/quiz-setting';
-import RandomQuiz, { QuestionType, Quiz } from '@/components/random-quiz';
+import RandomQuiz, { QuestionType } from '@/components/random-quiz';
 import ScreenWrapper from '@/components/screen-wrapper';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
@@ -245,7 +246,7 @@ function QuizScreen() {
                             </Button>
                         )}
                         <Button type="link" textStyle={{ color: textColor }} onPress={handleSkip}>
-                            Skip →
+                            Bỏ qua →
                         </Button>
                     </View>
                 )}

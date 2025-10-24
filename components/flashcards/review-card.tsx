@@ -5,6 +5,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import * as Speech from 'expo-speech';
 
 import { RootState } from '@/store/reducers';
+import { Quiz } from '@/types/quiz';
 import { ArrowReloadHorizontalIcon, VolumeHighIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import FlipCard from 'react-native-flip-card';
@@ -13,7 +14,6 @@ import { useSelector } from 'react-redux';
 import { useThemeColor } from '@/hooks/useThemeColor';
 
 import { ThemedText } from '../ThemedText';
-import { Quiz } from '../random-quiz';
 
 type AnswerType = {
     title: string;
@@ -22,20 +22,20 @@ type AnswerType = {
 };
 const answers: AnswerType[] = [
     {
-        title: 'Easy',
+        title: 'Dễ',
         name: 'E',
         icon: '😊',
     },
 
     {
-        title: 'Medium',
+        title: 'Trung bình',
         name: 'M',
 
         icon: '🤔',
     },
 
     {
-        title: 'Hard',
+        title: 'Khó',
         name: 'H',
         icon: '😡',
     },

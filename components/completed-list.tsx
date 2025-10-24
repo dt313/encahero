@@ -32,7 +32,7 @@ const CompletedListItem = ({ id, name, masteredCount, cardCount }: CompletedItem
             </ThemedText>
 
             <ThemedText numberOfLines={1}>
-                {masteredCount}/{cardCount} cards
+                {masteredCount}/{cardCount} thẻ
             </ThemedText>
 
             <Button
@@ -40,7 +40,7 @@ const CompletedListItem = ({ id, name, masteredCount, cardCount }: CompletedItem
                 textStyle={{ color: '#333' }}
                 onPress={() => router.replace(`/quiz/${id}?mode=recap`)}
             >
-                Review
+                Ôn tập
             </Button>
         </View>
     );

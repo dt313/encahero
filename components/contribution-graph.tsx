@@ -52,9 +52,10 @@ function ContributionGraph({ bgColor }: { bgColor: string }) {
             <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.scrollContent}
-                style={styles.scrollView}
                 centerContent
+                contentContainerStyle={{
+                    paddingRight: 24,
+                }}
             >
                 <Graph
                     values={normalizedContribution ?? []}
@@ -96,7 +97,7 @@ function ContributionGraph({ bgColor }: { bgColor: string }) {
                 <View style={styles.tooltip}>
                     <Text
                         style={styles.tooltipText}
-                    >{`${tooltip.count} cards on ${tooltip.date ? new Date(tooltip.date).toISOString().split('T')[0] : ''}`}</Text>
+                    >{`${tooltip.count} quizs ngày ${tooltip.date ? new Date(tooltip.date).toISOString().split('T')[0] : ''}`}</Text>
                 </View>
             )}
         </View>
@@ -108,14 +109,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent',
         height: 'auto',
     },
-    scrollView: {
-        // backgroundColor: '#333',
-    },
-    scrollContent: {
-        // Remove flex: 1 - this was preventing horizontal scrolling
-        // backgroundColor: '#333',
-        // paddingHorizontal: 10,
-    },
+
     tooltip: {
         position: 'absolute',
         top: 0,

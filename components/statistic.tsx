@@ -26,12 +26,12 @@ function Statistic() {
     const data = useMemo(
         () => [
             {
-                title: 'Today',
+                title: 'Hôm nay',
                 count: stats?.today ?? 0,
                 image: chargerIcon,
             },
             {
-                title: 'This Week',
+                title: 'Tuần này',
                 count: stats?.week ?? 0,
                 image: thunderIcon,
             },
@@ -49,7 +49,7 @@ function Statistic() {
                             <ThemedText lighter style={styles.title}>
                                 {item.title}
                             </ThemedText>
-                            <ThemedText type="subtitle">{item.count} Cards</ThemedText>
+                            <ThemedText type="subtitle">{item.count} quizs</ThemedText>
                         </View>
                     </View>
                 );

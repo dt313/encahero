@@ -104,7 +104,7 @@ function Information() {
     return (
         <ScreenWrapper>
             <SafeArea style={{ flex: 1, paddingHorizontal: 12 }}>
-                <HeaderWithBack title="Personal Information" />
+                <HeaderWithBack title="Thông tin cá nhân" />
                 <View style={styles.info}>
                     <TouchableOpacity onPress={pickAvatar} style={styles.avatarWrapper}>
                         {avatar ? (
@@ -128,24 +128,24 @@ function Information() {
                                 control={control}
                                 name="firstName"
                                 rules={{
-                                    required: 'First Name is required',
+                                    required: 'Tên là bắt buộc',
                                     minLength: {
                                         value: 2,
-                                        message: 'First Name must be at least 2 characters',
+                                        message: 'Tên phải có ít nhất 2 ký tự',
                                     },
                                     maxLength: {
                                         value: 10,
-                                        message: 'First Name cannot exceed 10 characters',
+                                        message: 'Tên không được vượt quá 10 ký tự',
                                     },
                                     pattern: {
                                         value: /^[A-Za-z]+$/, // chỉ cho phép chữ cái
-                                        message: 'First Name can only contain letters',
+                                        message: 'Tên chỉ có thể chứa chữ cái',
                                     },
                                 }}
                                 render={({ field: { onChange, onBlur, value } }) => (
                                     <Input
                                         containerStyle={styles.halfInput}
-                                        label="First Name"
+                                        label="Tên"
                                         value={value}
                                         placeholder="John"
                                         onChangeText={onChange}
@@ -158,24 +158,24 @@ function Information() {
                                 control={control}
                                 name="lastName"
                                 rules={{
-                                    required: 'Last Name is required',
+                                    required: 'Họ là bắt buộc',
                                     minLength: {
                                         value: 2,
-                                        message: 'Last Name must be at least 2 characters',
+                                        message: 'Họ phải có ít nhất 2 ký tự',
                                     },
                                     maxLength: {
                                         value: 10,
-                                        message: 'Last Name cannot exceed 10 characters',
+                                        message: 'Họ không được vượt quá 10 ký tự',
                                     },
                                     pattern: {
                                         value: /^[A-Za-z]+$/, // chỉ cho phép chữ cái
-                                        message: 'Last Name can only contain letters',
+                                        message: 'Họ chỉ có thể chứa chữ cái',
                                     },
                                 }}
                                 render={({ field: { onChange, onBlur, value } }) => (
                                     <Input
                                         containerStyle={styles.halfInput}
-                                        label="Last Name"
+                                        label="Họ"
                                         value={value}
                                         placeholder="David"
                                         onChangeText={onChange}
@@ -189,18 +189,18 @@ function Information() {
                             control={control}
                             name="username"
                             rules={{
-                                required: 'Username is required',
+                                required: 'Username là bắt buộc',
                                 minLength: {
                                     value: 6,
-                                    message: 'Username must be at least 6 characters',
+                                    message: 'Username phải có ít nhất 6 ký tự',
                                 },
                                 maxLength: {
                                     value: 15,
-                                    message: 'Username cannot exceed 15 characters',
+                                    message: 'Username không được vượt quá 15 ký tự',
                                 },
                                 pattern: {
                                     value: /^[a-z0-9_]+$/,
-                                    message: 'Username can only contain lowercase letters, numbers, and underscores',
+                                    message: 'Username chỉ có thể chứa chữ cái thường, số và dấu gạch dưới',
                                 },
                             }}
                             render={({ field: { onChange, onBlur, value } }) => (
@@ -219,7 +219,7 @@ function Information() {
                     {/* Buttons */}
                     <View style={styles.buttonRow}>
                         <Button type="default" buttonStyle={{ flex: 1 }} onPress={handleSubmit(handleSave)}>
-                            Save
+                            Lưu
                         </Button>
                     </View>
                 </View>

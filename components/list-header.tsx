@@ -36,7 +36,7 @@ function ListHeader({ onSearchChange }: { onSearchChange: (text: string) => void
 
     return (
         <View style={styles.wrapper}>
-            {!isSearching && <ThemedText type="title">Search</ThemedText>}
+            {!isSearching && <ThemedText type="title">Tìm kiếm</ThemedText>}
 
             <Animated.View style={[styles.search, { flex: widthAnim }]}>
                 {isSearching && (

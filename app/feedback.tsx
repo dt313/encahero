@@ -38,7 +38,7 @@ export default function FeedbackScreen() {
             if (res) {
                 setFeedback('');
                 setImages([]);
-                showSuccessToast('Sent feedback successfully');
+                showSuccessToast('Gửi phản hồi thành công!');
             }
         } catch (err) {
             showErrorToast(err);
@@ -49,15 +49,17 @@ export default function FeedbackScreen() {
         <ScreenWrapper>
             <SafeAreaView style={styles.container}>
                 <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-                    <HeaderWithBack title="Feedback" />
+                    <HeaderWithBack title="Góp ý" />
 
-                    <ThemedText style={styles.description}>We’d love to hear your thoughts or suggestions!</ThemedText>
+                    <ThemedText style={styles.description}>
+                        Chúng tôi rất muốn nghe ý kiến hoặc đề xuất của bạn!
+                    </ThemedText>
 
                     <TextInput
                         style={[styles.input, { borderColor: inputBorderColor, color: colors.text }]}
                         value={feedback}
                         onChangeText={setFeedback}
-                        placeholder="Write your feedback..."
+                        placeholder="Viết phản hồi của bạn..."
                         placeholderTextColor="#A0A0A0"
                         multiline
                         numberOfLines={6}
@@ -70,7 +72,7 @@ export default function FeedbackScreen() {
                             style={[styles.button, { backgroundColor: colors.primary }]}
                             onPress={handleSend}
                         >
-                            <ThemedText style={styles.buttonText}>Send</ThemedText>
+                            <ThemedText style={styles.buttonText}>Gửi</ThemedText>
                         </TouchableOpacity>
                     </View>
                 </ScrollView>

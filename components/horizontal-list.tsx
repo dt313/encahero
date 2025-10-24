@@ -135,7 +135,7 @@ const ListItem = ({
                             }}
                         >
                             {masteredCount}
-                            <ThemedText lighter>/{cardCount} cards</ThemedText>
+                            <ThemedText lighter>/{cardCount} thẻ</ThemedText>
                         </ThemedText>
                     </View>
                     {progress > 0 && (

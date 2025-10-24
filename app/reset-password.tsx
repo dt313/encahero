@@ -52,13 +52,13 @@ export default function ResetPassword() {
         try {
             const tokenStr = Array.isArray(token) ? token[0] : token;
             if (!tokenStr) {
-                Alert.alert('Error', 'You have no privilege');
+                Alert.alert('Error', 'Token không hợp lệ . Vui lòng thử lại.');
                 return;
             }
             const res = await authServices.resetPassword(values.confirmPassword, tokenStr);
 
             if (res) {
-                showSuccessToast('Your password has been reset! Please login again with your new password.');
+                showSuccessToast('Mật khẩu của bạn đã được đặt lại! Vui lòng đăng nhập lại bằng mật khẩu mới.');
                 reset({ password: '', confirmPassword: '' });
                 dispatch(logoutAsync());
                 router.replace('/login');
@@ -72,7 +72,7 @@ export default function ResetPassword() {
     return (
         <ScreenWrapper>
             <SafeArea style={styles.container}>
-                <HeaderWithBack title="Reset Password" />
+                <HeaderWithBack title="Đặt lại mật khẩu" />
 
                 <View style={{ paddingHorizontal: 16, marginVertical: 12 }}>
                     <ThemedText style={{ textAlign: 'center', fontSize: 16, marginBottom: 12 }}>
@@ -85,16 +85,16 @@ export default function ResetPassword() {
                         control={control}
                         name="password"
                         rules={{
-                            required: 'Password is required',
+                            required: 'Mật khẩu là bắt buộc',
                             minLength: {
                                 value: 6,
-                                message: 'Password must be at least 6 characters',
+                                message: 'Mật khẩu phải có ít nhất 6 ký tự',
                             },
                         }}
                         render={({ field: { onChange, onBlur, value } }) => (
                             <Input
                                 leftIcon={<HugeiconsIcon icon={LockPasswordIcon} color={inputBorderColor} size={24} />}
-                                label="Password"
+                                label="Mật khẩu"
                                 value={value}
                                 placeholder="Abcd123@"
                                 onChangeText={onChange}
@@ -111,15 +111,15 @@ export default function ResetPassword() {
                         control={control}
                         name="confirmPassword"
                         rules={{
-                            required: 'Confirm Password is required',
-                            validate: (value, formValues) => value === formValues.password || 'Passwords do not match',
+                            required: 'Xác nhận mật khẩu là bắt buộc',
+                            validate: (value, formValues) => value === formValues.password || 'Mật khẩu không khớp',
                         }}
                         render={({ field: { onChange, onBlur, value } }) => (
                             <Input
                                 leftIcon={<HugeiconsIcon icon={LockPasswordIcon} color={inputBorderColor} size={24} />}
-                                label="Confirm Password"
+                                label="Xác nhận mật khẩu"
                                 value={value}
-                                placeholder="Re-enter password"
+                                placeholder="Nhập lại mật khẩu"
                                 onChangeText={onChange}
                                 onBlur={onBlur}
                                 isPassword
@@ -136,7 +136,7 @@ export default function ResetPassword() {
                 ) : null}
 
                 <Button onPress={handleSubmit(handleReset)} buttonStyle={{ borderRadius: 100, marginTop: 12 }}>
-                    Reset Password
+                    Đặt lại mật khẩu
                 </Button>
             </SafeArea>
         </ScreenWrapper>

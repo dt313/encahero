@@ -29,12 +29,12 @@ export default function Register() {
             const response = await GoogleSignin.signIn();
 
             if (!isSuccessResponse(response)) {
-                throw new Error('Google Sign in Failed');
+                throw new Error('Đang xảy ra lỗi trong quá trình đăng ký với Google. Vui lòng thử lại.');
             }
 
             const idToken = response.data.idToken;
             if (!idToken) {
-                throw new Error('No idToken found in Google Sign-In response');
+                throw new Error('Không tìm thấy idToken trong phản hồi đăng ký Google');
             }
             await dispatch(socialAuthAsync(idToken, true));
             router.replace('/');
