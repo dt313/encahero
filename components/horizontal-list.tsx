@@ -193,7 +193,7 @@ function HorizontalList({
                                 key={item.collection_id}
                                 isRandomColor={isRandomColor}
                                 isRegistered={true}
-                                icon="1️⃣"
+                                icon={item.collection.icon || '📗'}
                                 name={item?.collection?.name}
                                 cardCount={item?.collection?.card_count}
                                 masteredCount={item.mastered_card_count}
@@ -207,7 +207,7 @@ function HorizontalList({
                                 key={item.id}
                                 isRandomColor={isRandomColor}
                                 isRegistered={item.is_registered}
-                                icon="1️⃣"
+                                icon={item.icon || '📗'}
                                 name={item.name}
                                 cardCount={item.card_count}
                                 id={item.id}
