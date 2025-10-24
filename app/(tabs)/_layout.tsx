@@ -131,6 +131,7 @@ export default function TabLayout() {
                 name="battle"
                 options={{
                     title: 'Đấu',
+                    href: null,
                     tabBarIcon: ({ color, focused }) => (
                         <TabIconButton icon={Sword03Icon} color={color} focused={focused} />
                     ),

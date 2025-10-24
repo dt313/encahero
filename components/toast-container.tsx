@@ -13,8 +13,9 @@ function ToastContainer() {
     };
     return (
         <>
-            {list?.length > 0 &&
-                list?.map((toast: ToastType) => {
+            {list &&
+                list.length > 0 &&
+                list.map((toast: ToastType) => {
                     return (
                         <Toast
                             key={toast.id}

@@ -61,11 +61,13 @@ function Toast({ title, message, type, duration, position, onHide }: ToastProps)
         // Auto hide after duration
         const timer = setTimeout(() => {
             hideToast();
-            keyboardDidShowListener?.remove();
-            keyboardDidHideListener?.remove();
         }, duration);
 
-        return () => clearTimeout(timer);
+        return () => {
+            keyboardDidShowListener?.remove();
+            keyboardDidHideListener?.remove();
+            clearTimeout(timer);
+        };
     }, [duration]);
 
     const hideToast = () => {
@@ -81,7 +83,9 @@ function Toast({ title, message, type, duration, position, onHide }: ToastProps)
                 useNativeDriver: true,
             }),
         ]).start(() => {
-            if (onHide) onHide();
+            setTimeout(() => {
+                if (onHide) onHide();
+            }, 0);
         });
     };
 

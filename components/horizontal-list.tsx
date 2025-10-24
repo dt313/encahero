@@ -86,9 +86,9 @@ const ListItem = ({
                 dispatch(
                     register({
                         ...res,
-                        collection_id: res.id,
+                        collection_id: res.collection_id,
                         collection: {
-                            id: res.id,
+                            id: res.collection_id,
                             name: res.collection.name,
                             card_count: res.collection.card_count,
                         },

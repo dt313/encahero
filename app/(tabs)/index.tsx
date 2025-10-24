@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 
-import { Image, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { Image, Platform, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 
 import getAvatarOfUser from '@/helper/get-avatar-of-user';
 import getNameOfUser from '@/helper/get-name-of-user';
@@ -60,6 +60,7 @@ function Home() {
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                     refreshControl={<RefreshControl tintColor="#000" refreshing={refreshing} onRefresh={onRefresh} />}
+                    contentContainerStyle={{ paddingBottom: Platform.OS === 'ios' ? 120 : 60 }}
                 >
                     <ThemedView style={styles.header}>
                         <View style={styles.textWrapper}>

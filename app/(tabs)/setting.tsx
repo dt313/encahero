@@ -183,7 +183,7 @@ export default function SettingsScreen() {
 
                     {/* Logout */}
                     <Button type="dangerous" buttonStyle={{ margin: 20 }} onPress={handleLogout}>
-                        Logout
+                        Đăng xuất
                     </Button>
                 </ScrollView>
             </SafeArea>

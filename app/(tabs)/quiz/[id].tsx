@@ -18,10 +18,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ThemedText } from '@/components/ThemedText';
 import Button from '@/components/button';
 import CongratsModal from '@/components/congratulation-modal';
+import FastRegister from '@/components/fast-register';
 import LearningList from '@/components/learning-list';
 import ModalBottomSheet from '@/components/modal-bottom-sheet';
 import QuizSetting from '@/components/quiz-setting';
 import RandomQuiz, { QuestionType } from '@/components/random-quiz';
+import SafeArea from '@/components/safe-area';
 import ScreenWrapper from '@/components/screen-wrapper';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
@@ -33,8 +35,10 @@ import type { QuizMode } from '@/services/quiz';
 function QuizScreen() {
     const leftRef = useRef<BottomSheetModal>(null);
     const rightRef = useRef<BottomSheetModal>(null);
+
     const dispatch = useDispatch();
     const router = useRouter();
+
     const collections = useSelector((state: RootState) => state.learningList.collections);
     const { id, mode } = useLocalSearchParams();
     const { showErrorToast } = useToast();
@@ -44,7 +48,6 @@ function QuizScreen() {
     const [currentCollection, setCurrentCollection] = useState<CollectionProgress>();
     const [isReviewMode, setIsReviewMode] = useState(false);
     const [showCongratsModal, setShowCongratsModal] = useState(false);
-
     const toggleReviewMode = () => {
         setIsReviewMode(!isReviewMode);
     };
@@ -75,7 +78,7 @@ function QuizScreen() {
             return 'new';
         } else if (typeof mode === 'string') return mode as QuizMode;
         return isReviewMode ? 'mixed' : 'old';
-    }, [mode, isReviewMode, currentCollection]);
+    }, [mode, isReviewMode, currentCollection, collectionId]);
 
     const fetchQuiz = useCallback(async () => {
         if (!collectionId || !quizMode) return;
@@ -95,7 +98,10 @@ function QuizScreen() {
 
     useEffect(() => {
         if (!collectionId || !collections) return;
-        const collection = collections.find((c: CollectionProgress) => c.collection_id === collectionId);
+        const collection = collections.find(
+            (c: CollectionProgress) => c.collection_id === collectionId && c.status !== 'stopped',
+        );
+        console.log({ collection });
         setCurrentCollection(collection);
     }, [collectionId, collections]);
 
@@ -168,12 +174,42 @@ function QuizScreen() {
     const textColor = useThemeColor({}, 'text');
     const reviewBg = useThemeColor({}, 'reviewBg');
 
-    if (!collectionId)
+    if (!currentCollection)
         return (
-            <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <ThemedText type="subtitle">Have no quiz in this collection</ThemedText>
-            </SafeAreaView>
+            <ScreenWrapper>
+                <SafeArea style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <ThemedText type="subtitle" style={{ textAlign: 'center', padding: 16 }}>
+                        Bạn chưa đăng kí bài học nào ! Đăng kí bài học nhanh bên dưới
+                    </ThemedText>
+                    <FastRegister />
+                </SafeArea>
+            </ScreenWrapper>
         );
+
+    if (currentCollection && quizList.length === 0) {
+        return (
+            <ScreenWrapper>
+                <SafeArea style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <ThemedText type="subtitle">Xin lỗi ! Bài học này không có quiz nào!</ThemedText>
+                </SafeArea>
+            </ScreenWrapper>
+        );
+    }
+
+    if (!quizList || quizList.length === 0) {
+        return (
+            <ScreenWrapper>
+                <SafeArea style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <ThemedText type="subtitle" style={{ padding: 16 }}>
+                        Have no quiz in this collection
+                    </ThemedText>
+                    <Button type="link" onPress={() => router.replace('/')}>
+                        Go to home
+                    </Button>
+                </SafeArea>
+            </ScreenWrapper>
+        );
+    }
 
     return (
         <ScreenWrapper>
@@ -212,7 +248,7 @@ function QuizScreen() {
                     </View>
                 )}
 
-                {quizList.length > 0 ? (
+                {quizList.length > 0 && (
                     <View style={styles.flashcards}>
                         {quizList.length > 0 && (
                             <RandomQuiz
@@ -221,15 +257,6 @@ function QuizScreen() {
                                 isNew={quizMode === 'new'}
                             />
                         )}
-                    </View>
-                ) : (
-                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                        <ThemedText type="subtitle" style={{ padding: 16 }}>
-                            Have no quiz in this collection
-                        </ThemedText>
-                        <Button type="link" onPress={() => router.replace('/')}>
-                            Go to home
-                        </Button>
                     </View>
                 )}
 
