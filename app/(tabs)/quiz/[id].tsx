@@ -1,31 +1,28 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { useLocalSearchParams } from 'expo-router';
 
-import { useLocalSearchParams, useRouter } from 'expo-router';
-
+import checkNewMode from '@/helper/check-new-mode';
 import { answerCard, changeStatus, increaseMasteredCount } from '@/store/action/learning-list-action';
 import { RootState } from '@/store/reducers';
 import { CollectionProgress } from '@/store/reducers/learning-list-reducer';
-import type { Quiz } from '@/types/quiz';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { BookOpen02Icon, Settings01Icon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
-import { Bar } from 'react-native-progress';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { ThemedText } from '@/components/ThemedText';
-import Button from '@/components/button';
 import CongratsModal from '@/components/congratulation-modal';
-import FastRegister from '@/components/fast-register';
 import LearningList from '@/components/learning-list';
 import ModalBottomSheet from '@/components/modal-bottom-sheet';
 import QuizSetting from '@/components/quiz-setting';
+import NoCollection from '@/components/quiz-ui/no-collection';
+import NoQuiz from '@/components/quiz-ui/no-quiz';
+import QuizAction from '@/components/quiz-ui/quiz-action';
+import QuizHeader from '@/components/quiz-ui/quiz-header';
+import QuizProgress from '@/components/quiz-ui/quiz-progress';
 import RandomQuiz, { QuestionType } from '@/components/random-quiz';
-import SafeArea from '@/components/safe-area';
 import ScreenWrapper from '@/components/screen-wrapper';
 
+import { useBottomSheet } from '@/hooks/useBottomSheet';
+import { useFetchQuiz } from '@/hooks/useFetchQuiz';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import useToast from '@/hooks/useToast';
 
@@ -33,93 +30,66 @@ import { collectionService, quizService } from '@/services';
 import type { QuizMode } from '@/services/quiz';
 
 function QuizScreen() {
-    const leftRef = useRef<BottomSheetModal>(null);
-    const rightRef = useRef<BottomSheetModal>(null);
+    const { ref: leftRef, open: openList, close: closeList } = useBottomSheet();
+    const { ref: rightRef, open: openSetting, close: closeSetting } = useBottomSheet();
 
     const dispatch = useDispatch();
-    const router = useRouter();
 
     const collections = useSelector((state: RootState) => state.learningList.collections);
     const { id, mode } = useLocalSearchParams();
     const { showErrorToast } = useToast();
 
-    const [quizList, setQuizList] = useState<Quiz[]>([]);
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [currentCollection, setCurrentCollection] = useState<CollectionProgress>();
     const [isReviewMode, setIsReviewMode] = useState(false);
     const [showCongratsModal, setShowCongratsModal] = useState(false);
-    const toggleReviewMode = () => {
-        setIsReviewMode(!isReviewMode);
-    };
+    const [currentCollection, setCurrentCollection] = useState<CollectionProgress | null>(null);
 
-    const collectionId = useMemo(() => {
-        if (id) return Number(id);
-        const learningList = collections?.filter((c: CollectionProgress) => {
-            return c.status === 'in_progress';
-        });
-        return learningList?.[0]?.collection_id;
-    }, [id, collections]);
-
+    // Determine quiz mode
     const quizMode = useMemo<QuizMode | null>(() => {
         if (!currentCollection) return null;
-        if (
-            (currentCollection?.learned_card_count === 0 ||
-                currentCollection?.learned_card_count < currentCollection.daily_new_limit) &&
-            currentCollection.learned_card_count < currentCollection.collection.card_count
-        )
-            return 'new';
-        if (
-            currentCollection?.today_new_count < currentCollection?.daily_new_limit &&
-            currentCollection.collection.card_count > currentCollection.learned_card_count &&
-            (currentCollection?.today_learned_count >= currentCollection?.task_count ||
-                (currentCollection.learned_card_count === currentCollection.mastered_card_count &&
-                    currentCollection.mastered_card_count < currentCollection.collection.card_count))
-        ) {
+        if (checkNewMode(currentCollection)) {
             return 'new';
         } else if (typeof mode === 'string') return mode as QuizMode;
         return isReviewMode ? 'mixed' : 'old';
-    }, [mode, isReviewMode, currentCollection, collectionId]);
+    }, [mode, isReviewMode, currentCollection]);
 
-    const fetchQuiz = useCallback(async () => {
-        if (!collectionId || !quizMode) return;
+    // Determine current collection ID
+    const collectionId = useMemo(() => {
+        if (!collections) return undefined;
 
-        const res = await quizService.getRandomQuizOfCollection(collectionId, quizMode);
-        if (res?.length > 0) {
-            setQuizList(res);
-            setCurrentIndex(0);
-        } else {
-            setQuizList([]);
+        // Kiểm tra nếu có id trong URL
+        if (id) {
+            const current = collections.find((c: CollectionProgress) => c.collection_id === Number(id));
+            if (current && current.status !== 'stopped') {
+                return Number(id);
+            }
         }
-    }, [collectionId, isReviewMode, quizMode]);
 
-    useEffect(() => {
-        fetchQuiz();
-    }, [collectionId, quizMode]);
+        const activeCollection = collections.find((c: CollectionProgress) => c.status === 'in_progress');
+        return activeCollection?.collection_id;
+    }, [id, collections]);
 
+    const { quizList, currentIndex, setCurrentIndex, fetchQuiz } = useFetchQuiz(collectionId, quizMode);
+
+    console.log(
+        quizMode,
+        collectionId,
+        currentCollection?.collection_id,
+        currentCollection?.collection?.name,
+        quizList[0]?.en_word,
+    );
+
+    //  Set current collection
     useEffect(() => {
-        if (!collectionId || !collections) return;
+        if (!collectionId || !collections) {
+            setCurrentCollection(null);
+            return;
+        }
         const collection = collections.find(
             (c: CollectionProgress) => c.collection_id === collectionId && c.status !== 'stopped',
         );
-        console.log({ collection });
+        console.log('Current collection set to:', collection, collectionId);
         setCurrentCollection(collection);
     }, [collectionId, collections]);
-
-    const handleOpenListMenu = useCallback(() => {
-        leftRef.current?.present();
-    }, []);
-
-    const handleCloseListMenu = useCallback(() => {
-        leftRef.current?.close();
-    }, []);
-
-    const handleOpenSettingBox = useCallback(() => {
-        rightRef.current?.present();
-    }, []);
-
-    const handleCloseSettingBox = useCallback(() => {
-        rightRef.current?.close();
-    }, []);
 
     const handleSkip = () => {
         if (currentIndex < quizList.length - 1) {
@@ -129,9 +99,12 @@ function QuizScreen() {
         }
     };
 
-    const handleMasteredWord = async () => {
+    const toggleReviewMode = () => {
+        setIsReviewMode(!isReviewMode);
+    };
+
+    const handleMasteredWord = useCallback(async () => {
         try {
-            let collectionId = id ? Number(id) : collections?.[0]?.collection_id;
             if (!collectionId) return;
             const res = await collectionService.changeStatusOfCard(collectionId, quizList[currentIndex].id, 'mastered');
             if (res) {
@@ -148,144 +121,72 @@ function QuizScreen() {
         } catch (error) {
             showErrorToast(error);
         }
-    };
+    }, [collectionId, collections, currentIndex, quizList, quizMode, dispatch]);
 
-    const handleSubmitAnswer = async (quizType: QuestionType, cardId: number, rating?: 'E' | 'M' | 'H') => {
-        try {
-            let collectionId = id ? Number(id) : collections?.[0]?.collection_id;
-            if (!collectionId) return;
-            const res = await quizService.answer(collectionId, cardId, quizType, rating, quizMode === 'new');
+    const handleSubmitAnswer = useCallback(
+        async (quizType: QuestionType, cardId: number, rating?: 'E' | 'M' | 'H') => {
+            try {
+                if (!collectionId) return;
+                const res = await quizService.answer(collectionId, cardId, quizType, rating, quizMode === 'new');
 
-            if (res) {
-                dispatch(answerCard({ id: collectionId, isNew: quizMode === 'new' }));
-                handleSkip();
+                if (res) {
+                    dispatch(answerCard({ id: collectionId, isNew: quizMode === 'new' }));
+                    handleSkip();
+                }
+            } catch (error) {
+                showErrorToast(error);
             }
-        } catch (error) {
-            showErrorToast(error);
-        }
-    };
+        },
+        [collectionId, collections, quizMode, dispatch],
+    );
 
-    const learned = currentCollection?.today_learned_count ?? 0;
-    const total = currentCollection?.task_count ?? 1;
-    const progress = learned / total;
-
-    const mainBoxBg = useThemeColor({}, 'mainBoxBg');
-    const shadowColor = useThemeColor({}, 'shadowColor');
-    const textColor = useThemeColor({}, 'text');
     const reviewBg = useThemeColor({}, 'reviewBg');
 
-    if (!currentCollection)
-        return (
-            <ScreenWrapper>
-                <SafeArea style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <ThemedText type="subtitle" style={{ textAlign: 'center', padding: 16 }}>
-                        Bạn chưa đăng kí bài học nào ! Đăng kí bài học nhanh bên dưới
-                    </ThemedText>
-                    <FastRegister />
-                </SafeArea>
-            </ScreenWrapper>
-        );
-
-    if (currentCollection && quizList.length === 0) {
-        return (
-            <ScreenWrapper>
-                <SafeArea style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <ThemedText type="subtitle">Xin lỗi ! Bài học này không có quiz nào!</ThemedText>
-                </SafeArea>
-            </ScreenWrapper>
-        );
-    }
-
-    if (!quizList || quizList.length === 0) {
-        return (
-            <ScreenWrapper>
-                <SafeArea style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <ThemedText type="subtitle" style={{ padding: 16 }}>
-                        Have no quiz in this collection
-                    </ThemedText>
-                    <Button type="link" onPress={() => router.replace('/')}>
-                        Go to home
-                    </Button>
-                </SafeArea>
-            </ScreenWrapper>
-        );
-    }
+    if (!currentCollection) return <NoCollection />;
 
     return (
         <ScreenWrapper>
             <SafeAreaView style={[isReviewMode && { backgroundColor: reviewBg }, { paddingHorizontal: 20, flex: 1 }]}>
-                <View style={styles.header}>
-                    <TouchableOpacity
-                        style={[styles.btnWrap, { backgroundColor: mainBoxBg, shadowColor }]}
-                        onPress={handleOpenListMenu}
-                    >
-                        <HugeiconsIcon icon={BookOpen02Icon} size={24} color={textColor} />
-                    </TouchableOpacity>
-                    <ThemedText type="subtitle" style={styles.headerName} numberOfLines={1} ellipsizeMode="tail">
-                        {currentCollection ? currentCollection?.collection?.name : 'Name'}
-                    </ThemedText>
-                    <TouchableOpacity
-                        style={[styles.btnWrap, { backgroundColor: mainBoxBg, shadowColor }]}
-                        onPress={handleOpenSettingBox}
-                    >
-                        <HugeiconsIcon icon={Settings01Icon} size={24} color={textColor} />
-                    </TouchableOpacity>
-                </View>
+                <QuizHeader
+                    collectionName={currentCollection?.collection?.name}
+                    onOpenList={openList}
+                    onOpenSetting={openSetting}
+                />
 
                 {quizList.length > 0 && (
-                    <View style={styles.progress}>
-                        <ThemedText style={styles.progressNumber}>{currentCollection?.today_learned_count}</ThemedText>
-                        <Bar
-                            style={{ flex: 1, marginHorizontal: 12, borderRadius: 30 }}
-                            color={progress > 1 ? '#2196f3' : '#4caf50'}
-                            height={12}
-                            progress={progress}
-                            width={null}
-                            borderWidth={0}
-                            unfilledColor="rgba(198, 198, 198, 0.4)"
-                        />
-                        <ThemedText style={[styles.progressNumber]}>{currentCollection?.task_count}</ThemedText>
-                    </View>
+                    <QuizProgress
+                        learned={currentCollection?.today_learned_count ?? 0}
+                        total={currentCollection?.task_count ?? 1}
+                    />
+                )}
+
+                {quizList.length > 0 ? (
+                    <RandomQuiz
+                        quiz={quizList[currentIndex]}
+                        onSubmit={handleSubmitAnswer}
+                        isNew={quizMode === 'new'}
+                    />
+                ) : (
+                    <NoQuiz />
                 )}
 
                 {quizList.length > 0 && (
-                    <View style={styles.flashcards}>
-                        {quizList.length > 0 && (
-                            <RandomQuiz
-                                quiz={quizList[currentIndex]}
-                                onSubmit={handleSubmitAnswer}
-                                isNew={quizMode === 'new'}
-                            />
-                        )}
-                    </View>
-                )}
-
-                {quizList.length > 0 && (
-                    <View
-                        style={[
-                            styles.btnBox,
-                            currentCollection?.status === 'completed' && { flexDirection: 'row-reverse' },
-                        ]}
-                    >
-                        {!(mode === 'recap') && (
-                            <Button type="link" onPress={handleMasteredWord}>
-                                🧠 Đã ghi nhớ
-                            </Button>
-                        )}
-                        <Button type="link" textStyle={{ color: textColor }} onPress={handleSkip}>
-                            Bỏ qua →
-                        </Button>
-                    </View>
+                    <QuizAction
+                        status={currentCollection?.status}
+                        onMasterWord={handleMasteredWord}
+                        onSkip={handleSkip}
+                        isShowMasteredButton={!(mode === 'recap')}
+                    />
                 )}
 
                 <ModalBottomSheet bottomSheetModalRef={leftRef}>
-                    <LearningList selectedIndex={currentCollection?.collection_id} close={handleCloseListMenu} />
+                    <LearningList selectedIndex={currentCollection?.collection_id} close={closeList} />
                 </ModalBottomSheet>
 
                 <ModalBottomSheet bottomSheetModalRef={rightRef}>
                     <QuizSetting
                         collectionId={currentCollection?.collection_id}
-                        onClose={handleCloseSettingBox}
+                        onClose={closeSetting}
                         onToggle={toggleReviewMode}
                         reviewMode={isReviewMode}
                         isShowReviewMode={!(mode === 'recap' && currentCollection?.status === 'completed')}
@@ -297,83 +198,5 @@ function QuizScreen() {
         </ScreenWrapper>
     );
 }
-
-const styles = StyleSheet.create({
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        height: 50,
-        marginBottom: 12,
-    },
-
-    headerName: {
-        flex: 1,
-        textAlign: 'center',
-        marginHorizontal: 24,
-        textTransform: 'capitalize',
-    },
-
-    btnWrap: {
-        width: 40,
-        height: 40,
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 100,
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.08,
-        shadowRadius: 3,
-        // Shadow Android
-        elevation: 1,
-    },
-
-    progress: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-around',
-        marginBottom: 24,
-        paddingHorizontal: 12,
-    },
-
-    progressNumber: {
-        fontWeight: 500,
-        fontSize: 18,
-    },
-
-    flashcards: {
-        height: 'auto',
-    },
-
-    btnBox: {
-        marginTop: 12,
-        marginHorizontal: 12,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-    },
-
-    modalOverlay: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        justifyContent: 'center',
-        alignItems: 'center',
-        zIndex: 999,
-    },
-    modalBox: {
-        backgroundColor: 'white',
-        borderRadius: 16,
-        padding: 24,
-        width: '80%',
-        alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.3,
-        shadowRadius: 4,
-        elevation: 1,
-    },
-});
 
 export default QuizScreen;

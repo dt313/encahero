@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
 
 import { ActivityIndicator, Text, View } from 'react-native';
 
-import { QuizDirection } from '@/types/quiz';
 import type { Quiz } from '@/types/quiz';
+import { QuizDirection } from '@/types/quiz';
 import { useQueryClient } from '@tanstack/react-query';
 import { debounce } from 'lodash';
 
@@ -105,4 +105,4 @@ function RandomQuiz({
     }
 }
 
-export default RandomQuiz;
+export default memo(RandomQuiz);
