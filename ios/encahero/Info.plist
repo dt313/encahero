@@ -34,6 +34,12 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
+          <string>exp+encahero</string>
+        </array>
+      </dict>
+      <dict>
+        <key>CFBundleURLSchemes</key>
+        <array>
           <string>com.googleusercontent.apps.17679739956-sm79blhtlg76u4v1fc7voslq8lp71o59</string>
         </array>
       </dict>

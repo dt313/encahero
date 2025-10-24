@@ -1,11 +1,10 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
-import { Image, Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { Image, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 
 import getAvatarOfUser from '@/helper/get-avatar-of-user';
 import getNameOfUser from '@/helper/get-name-of-user';
 import { RootState } from '@/store/reducers';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 
 import avatar from '@/assets/images/peeps-avatar-alpha.png';
@@ -15,12 +14,14 @@ import { ThemedView } from '@/components/ThemedView';
 import Charts from '@/components/charts';
 import CompletedList from '@/components/completed-list';
 import GoalList from '@/components/goal-list';
+import SafeArea from '@/components/safe-area';
 import ScreenWrapper from '@/components/screen-wrapper';
 import StopList from '@/components/stop-list';
 
 const HEADER_HEIGHT = 60;
 
 function Home() {
+    const [refreshing, setRefreshing] = useState(false);
     const user = useSelector((state: RootState) => state.auth.user);
     const displayName = useMemo(() => {
         return getNameOfUser(user);
@@ -30,14 +31,25 @@ function Home() {
         return getAvatarOfUser(user.avatar);
     }, [user]);
 
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        setTimeout(() => {
+            console.log('refresh done');
+            setRefreshing(false);
+        }, 1500);
+    }, []);
+
     return (
         <ScreenWrapper>
-            <ScrollView>
-                <SafeAreaView
-                    style={{
-                        padding: 20,
-                        paddingBottom: Platform.OS === 'android' ? 40 : 80,
-                    }}
+            <SafeArea
+                style={{
+                    padding: 20,
+                    flex: 1,
+                }}
+            >
+                <ScrollView
+                    showsVerticalScrollIndicator={false}
+                    refreshControl={<RefreshControl tintColor="#000" refreshing={refreshing} onRefresh={onRefresh} />}
                 >
                     <ThemedView style={styles.header}>
                         <View style={styles.textWrapper}>
@@ -54,8 +66,8 @@ function Home() {
                     <GoalList containerStyle={{ marginTop: 16 }} title="Today's Goal" />
                     <StopList containerStyle={{ marginTop: 16 }} title="Stop List" />
                     <CompletedList containerStyle={{ marginTop: 16 }} title="Completed List" />
-                </SafeAreaView>
-            </ScrollView>
+                </ScrollView>
+            </SafeArea>
         </ScreenWrapper>
     );
 }
