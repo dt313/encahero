@@ -25,3 +25,20 @@ export enum QuizDirection {
     E2V = 'e2v',
     V2E = 'v2e',
 }
+
+export enum AnswerState {
+    UNSET = 'UNSET',
+    FALSE = 'FALSE',
+    TRUE = 'TRUE',
+}
+
+export type AnswerType = {
+    text: string;
+    state: AnswerState;
+};
+
+export type ReviewAnswerType = {
+    title: string;
+    name: 'E' | 'M' | 'H';
+    icon: string;
+};

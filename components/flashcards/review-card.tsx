@@ -1,45 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-import * as Speech from 'expo-speech';
+import { Quiz, ReviewAnswerType } from '@/types/quiz';
 
-import { RootState } from '@/store/reducers';
-import { Quiz } from '@/types/quiz';
-import { ArrowReloadHorizontalIcon, VolumeHighIcon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
-import FlipCard from 'react-native-flip-card';
-import { useSelector } from 'react-redux';
+import { REVIEW_ANSWERS } from '@/constants';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
 
 import { ThemedText } from '../ThemedText';
-
-type AnswerType = {
-    title: string;
-    name: 'E' | 'M' | 'H';
-    icon: string;
-};
-const answers: AnswerType[] = [
-    {
-        title: 'Dễ',
-        name: 'E',
-        icon: '😊',
-    },
-
-    {
-        title: 'Trung bình',
-        name: 'M',
-
-        icon: '🤔',
-    },
-
-    {
-        title: 'Khó',
-        name: 'H',
-        icon: '😡',
-    },
-];
+import Action from './action';
+import FlipBox from './flip-box';
 
 function ReviewCard({
     quiz,
@@ -52,17 +23,8 @@ function ReviewCard({
 }) {
     const mainBoxBg = useThemeColor({}, 'mainBoxBg');
     const shadowColor = useThemeColor({}, 'shadowColor');
-    const textColor = useThemeColor({}, 'text');
-    const reviewTagBorderColor = useThemeColor({}, 'reviewTagBorderColor');
-    const reviewTagBg = useThemeColor({}, 'reviewTagBg');
-    const reviewTagColor = useThemeColor({}, 'reviewTagColor');
-    const newTagBorderColor = useThemeColor({}, 'newTagBorderColor');
-    const newTagBg = useThemeColor({}, 'newTagBg');
-    const newTagColor = useThemeColor({}, 'newTagColor');
 
     const [flip, setFlip] = useState(false);
-    const isAutoSound = useSelector((state: RootState) => state.sound.autoSound);
-
     const handleFlip = () => {
         setFlip(!flip);
     };
@@ -73,79 +35,14 @@ function ReviewCard({
         }, 1000);
     };
 
-    useEffect(() => {
-        if (!isAutoSound) return;
-        Speech.stop();
-        Speech.speak(quiz.en_word);
-
-        return () => {
-            Speech.stop();
-        };
-    }, [quiz, isAutoSound]);
-
-    const speak = () => {
-        Speech.stop();
-        Speech.speak(quiz.en_word);
-    };
     return (
         <View style={[styles.wrapper]}>
             <View style={[styles.questionBox, { backgroundColor: mainBoxBg, shadowColor }]}>
-                <View style={[styles.flip]}>
-                    <FlipCard
-                        flip={flip}
-                        style={{
-                            flex: 1,
-                            height: '100%',
-                            backgroundColor: mainBoxBg,
-                            borderWidth: 1.5,
-                            borderColor: '#909090ff',
-                            borderRadius: 16,
-                        }}
-                        friction={9}
-                        flipHorizontal={true}
-                        flipVertical={false}
-                        perspective={1000}
-                    >
-                        <View style={styles.card}>
-                            <ThemedText type="title">{quiz.en_word}</ThemedText>
-                        </View>
-                        <View style={styles.card}>
-                            <ThemedText type="title">{quiz.vn_word}</ThemedText>
-                        </View>
-                    </FlipCard>
-                </View>
-
-                <View style={styles.tools}>
-                    <View style={styles.toolItem}>
-                        <ThemedText
-                            style={[
-                                styles.type,
-                                isNew
-                                    ? {
-                                          borderColor: newTagBorderColor,
-                                          color: newTagColor,
-                                          backgroundColor: newTagBg,
-                                      }
-                                    : {
-                                          borderColor: reviewTagBorderColor,
-                                          color: reviewTagColor,
-                                          backgroundColor: reviewTagBg,
-                                      },
-                            ]}
-                        >
-                            {isNew ? 'Từ mới' : 'Ôn tập'}
-                        </ThemedText>
-                    </View>
-                    <TouchableOpacity style={styles.toolItem} onPress={speak}>
-                        <HugeiconsIcon icon={VolumeHighIcon} size={28} color={textColor} />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.toolItem} onPress={handleFlip}>
-                        <HugeiconsIcon icon={ArrowReloadHorizontalIcon} size={28} color={textColor} />
-                    </TouchableOpacity>
-                </View>
+                <FlipBox flip={flip} onFlip={handleFlip} quiz={quiz} />
+                <Action isNew={isNew} speakWord={quiz.en_word} onFlip={handleFlip} />
             </View>
             <View style={[styles.replyBox, { backgroundColor: mainBoxBg, shadowColor }]}>
-                {answers.map((ans: AnswerType) => {
+                {REVIEW_ANSWERS.map((ans: ReviewAnswerType) => {
                     return (
                         <TouchableOpacity key={ans.title} style={styles.btn} onPress={() => handleSubmit(ans.name)}>
                             <Text
@@ -182,39 +79,6 @@ const styles = StyleSheet.create({
 
         // Shadow Android
         elevation: 1,
-    },
-
-    type: {
-        borderWidth: 1.5,
-        paddingVertical: 4,
-        paddingHorizontal: 12,
-        borderRadius: 12,
-        fontWeight: 500,
-    },
-
-    flip: {
-        flex: 1,
-        borderRadius: 16,
-    },
-
-    card: {
-        flex: 1,
-        height: '100%',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    tools: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        height: 50,
-        borderRadius: 16,
-    },
-
-    toolItem: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
     },
 
     replyBox: {
