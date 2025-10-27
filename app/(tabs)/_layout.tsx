@@ -21,7 +21,7 @@ import TabBarBackground from '@/components/ui/TabBarBackground';
 
 import useToast from '@/hooks/useToast';
 
-import { storage } from '@/utils';
+import * as storage from '@/utils/storage';
 
 import { collectionService, userService } from '@/services';
 
@@ -29,11 +29,6 @@ export default function TabLayout() {
     const { mode } = useThemeSwitcher();
     const dispatch = useDispatch();
     const { showErrorToast } = useToast();
-
-    const { data: myCollections } = useQuery({
-        queryKey: ['my-collections'],
-        queryFn: collectionService.getMyLearningList,
-    });
 
     const me = useSelector((state: RootState) => state.auth.user);
 
@@ -45,6 +40,12 @@ export default function TabLayout() {
         }, 1000);
         return () => clearTimeout(timeout);
     }, []);
+
+    const { data: myCollections } = useQuery({
+        queryKey: ['my-collections'],
+        queryFn: collectionService.getMyLearningList,
+        staleTime: 1000 * 60 * 10,
+    });
 
     useEffect(() => {
         if (myCollections?.length) {

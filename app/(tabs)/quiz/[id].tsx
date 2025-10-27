@@ -2,9 +2,11 @@ import { useCallback, useMemo, useState } from 'react';
 
 import { useLocalSearchParams } from 'expo-router';
 
+import checkNewDay from '@/helper/check-new-day';
 import { answerCard, changeStatus, increaseMasteredCount } from '@/store/action/learning-list-action';
 import { RootState } from '@/store/reducers';
 import { CollectionProgress } from '@/store/reducers/learning-list-reducer';
+import { useQueryClient } from '@tanstack/react-query';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -40,9 +42,10 @@ function QuizScreen() {
 
     const [isReviewMode, setIsReviewMode] = useState(false);
     const [showCongratsModal, setShowCongratsModal] = useState(false);
-    // const [currentCollection, setCurrentCollection] = useState<CollectionProgress | null>(null);
 
-    // Determine current collection ID
+    const queryClient = useQueryClient();
+
+    // Determine current collection id
     const collectionId = useMemo(() => {
         if (!collections) return undefined;
 
@@ -58,7 +61,7 @@ function QuizScreen() {
         return activeCollection?.collection_id;
     }, [id, collections]);
 
-    const currentCollection = useMemo(() => {
+    const currentCollection: CollectionProgress = useMemo(() => {
         if (!collections?.length || !collectionId) return null;
         return collections.find((c: CollectionProgress) => c.collection_id === collectionId) ?? null;
     }, [collectionId, collections]);
@@ -75,15 +78,24 @@ function QuizScreen() {
         try {
             if (!collectionId) return;
             const res = await collectionService.changeStatusOfCard(collectionId, quizList[currentIndex].id, 'mastered');
+
             if (res) {
                 if (res?.collectionCompleted) {
                     dispatch(changeStatus({ id: collectionId, status: 'completed' }));
-                    dispatch(increaseMasteredCount({ id: collectionId, isNew: quizMode === 'new' }));
+                    dispatch(increaseMasteredCount({ collection: res.collection, isNew: quizMode === 'new' }));
                     // router.replace('/');
                     setShowCongratsModal(true);
                     return;
                 }
-                dispatch(increaseMasteredCount({ id: collectionId, isNew: quizMode === 'new' }));
+
+                const last_reviewed_at = res.collection.last_reviewed_at;
+                const isNewDay = await checkNewDay(currentCollection.last_reviewed_at, last_reviewed_at);
+
+                if (isNewDay) {
+                    queryClient.invalidateQueries({ queryKey: ['my-collections'] });
+                }
+
+                dispatch(increaseMasteredCount({ collection: res.collection, isNew: quizMode === 'new' }));
                 handleSkip();
             }
         } catch (error) {
@@ -96,11 +108,17 @@ function QuizScreen() {
             try {
                 if (!collectionId) return;
                 const res = await quizService.answer(collectionId, cardId, quizType, rating, quizMode === 'new');
-                console.log('answered');
 
-                if (res) {
-                    dispatch(answerCard({ id: collectionId, isNew: quizMode === 'new' }));
+                if (res && res.collection) {
+                    dispatch(answerCard({ collection: res.collection, isNew: quizMode === 'new' }));
                     handleSkip();
+
+                    const last_reviewed_at = res.collection.last_reviewed_at;
+                    const isNewDay = await checkNewDay(currentCollection.last_reviewed_at, last_reviewed_at);
+
+                    if (isNewDay) {
+                        queryClient.invalidateQueries({ queryKey: ['my-collections'] });
+                    }
                 }
             } catch (error) {
                 showErrorToast(error);

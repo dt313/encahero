@@ -12,6 +12,10 @@ type User = {
     firstName: string | null;
     lastName: string | null;
     username: string;
+    time_zone?: string;
+    avatar?: string;
+    id: number;
+    created_at?: string;
 };
 
 // ================= ACCESS TOKEN =================

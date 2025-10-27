@@ -2,7 +2,7 @@ import React, { ReactNode, createContext, useContext, useEffect, useState } from
 
 import { useColorScheme } from 'react-native';
 
-import { storage } from '@/utils';
+import * as storage from '@/utils/storage';
 
 type ThemeMode = 'light' | 'dark';
 

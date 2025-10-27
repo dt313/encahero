@@ -4,7 +4,7 @@ import { SectionList, StyleSheet, Text, TextInput, TouchableOpacity, View } from
 
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
-import { changeStatus } from '@/store/action/learning-list-action';
+import { changeStatus, decreaseMasteredCount } from '@/store/action/learning-list-action';
 import { RootState } from '@/store/reducers';
 import { CollectionProgress } from '@/store/reducers/learning-list-reducer';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -24,7 +24,6 @@ function CardList() {
     const [search, setSearch] = useState('');
     const backgroundColor = useThemeColor({}, 'background');
     const white = useThemeColor({}, 'white');
-    const black = useThemeColor({}, 'black');
     const textColor = useThemeColor({}, 'text');
     const lighterText = useThemeColor({}, 'lighterText');
 
@@ -127,6 +126,7 @@ function CardList() {
                 setSelectedWord({ ...selectedWord, stats: { ...selectedWord.stats, status: 'active' } });
                 setModalVisible(false);
                 showSuccessToast('Removed from mastered successfully');
+                dispatch(decreaseMasteredCount(Number(id)));
             }
         } catch (err) {
             showErrorToast(err || 'Error removing from mastered');

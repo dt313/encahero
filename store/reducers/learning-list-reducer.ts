@@ -4,6 +4,7 @@ import {
     ANSWER_CARD,
     CHANGE_STATUS,
     CONTINUE_COLLECTION,
+    DECREASE_MASTERED_COUNT,
     INCREASE_MASTERED_COUNT,
     INIT_LEARNING_LIST,
     REGISTER_COLLECTION,
@@ -68,15 +69,28 @@ export default function learningListReducer(state = initialState, action: ReduxA
                 collections:
                     state.collections.length > 0 &&
                     state.collections.map((item) => {
-                        if (item.collection_id === action.payload.id) {
+                        if (item.collection_id === action.payload.collection.collection_id) {
+                            const todayLearnedCount = action.payload.collection.today_learned_count;
+                            const todayNewCount = action.payload.collection.today_new_count;
+                            const lastReviewedAt = action.payload.collection.last_reviewed_at;
+
                             if (action.payload.isNew) {
                                 return {
                                     ...item,
-                                    today_learned_count: item.today_learned_count + 1,
-                                    today_new_count: item.today_new_count + 1,
+                                    today_learned_count: todayLearnedCount
+                                        ? todayLearnedCount
+                                        : item.today_learned_count + 1,
+                                    today_new_count: todayNewCount ? todayNewCount : item.today_new_count + 1,
                                     learned_card_count: item.today_learned_count + 1,
+                                    last_reviewed_at: lastReviewedAt,
                                 };
-                            } else return { ...item, today_learned_count: item.today_learned_count + 1 };
+                            } else
+                                return {
+                                    ...item,
+                                    today_learned_count: action.payload.collection.today_learned_count,
+                                    today_new_count: todayNewCount ? todayNewCount : item.today_new_count,
+                                    last_reviewed_at: lastReviewedAt,
+                                };
                         } else return item;
                     }),
             };
@@ -88,24 +102,45 @@ export default function learningListReducer(state = initialState, action: ReduxA
                     state.collections.length > 0 &&
                     state.collections.map((item) => {
                         if (item.collection_id === action.payload.id) {
+                            const todayLearnedCount = action.payload.collection.today_learned_count;
+                            const todayNewCount = action.payload.collection.today_new_count;
+                            const lastReviewedAt = action.payload.collection.last_reviewed_at;
+
                             if (action.payload.isNew) {
                                 return {
                                     ...item,
-                                    today_learned_count: item.today_learned_count + 1,
-                                    today_new_count: item.today_new_count + 1,
+                                    today_learned_count: todayLearnedCount
+                                        ? todayLearnedCount
+                                        : item.today_learned_count + 1,
+                                    today_new_count: todayNewCount ? todayNewCount : item.today_new_count + 1,
                                     learned_card_count: item.today_learned_count + 1,
                                     mastered_card_count: item.mastered_card_count + 1,
+                                    last_reviewed_at: lastReviewedAt,
                                 };
                             } else
                                 return {
                                     ...item,
+                                    today_new_count: todayNewCount ? todayNewCount : item.today_new_count,
                                     today_learned_count: item.today_learned_count + 1,
                                     mastered_card_count: item.mastered_card_count + 1,
+                                    last_reviewed_at: lastReviewedAt,
                                 };
                         } else return item;
                     }),
             };
 
+        case DECREASE_MASTERED_COUNT:
+            return {
+                ...state,
+                collections: state.collections.map((item) =>
+                    item.collection_id === action.payload
+                        ? {
+                              ...item,
+                              mastered_card_count: item.mastered_card_count - 1,
+                          }
+                        : item,
+                ),
+            };
         case CHANGE_STATUS:
             return {
                 ...state,

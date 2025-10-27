@@ -1,6 +1,6 @@
 import ReduxActionType from '@/types/redux-action-type';
 
-import { storage } from '@/utils';
+import * as storage from '@/utils/storage';
 
 import { INIT_AUTO_SOUND, TOGGLE_AUTO_SOUND } from '../action/sound-action';
 

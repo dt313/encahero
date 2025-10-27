@@ -1,7 +1,7 @@
 import ReduxActionType from '@/types/redux-action-type';
 import { Dispatch } from '@reduxjs/toolkit';
 
-import { storage } from '@/utils';
+import * as storage from '@/utils/storage';
 
 export const TOGGLE_AUTO_SOUND = 'TOGGLE_AUTO_SOUND';
 export const INIT_AUTO_SOUND = 'INIT_AUTO_SOUND';

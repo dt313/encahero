@@ -2,7 +2,7 @@ import { router } from 'expo-router';
 
 import axios from 'axios';
 
-import { storage } from '@/utils';
+import * as storage from '@/utils/storage';
 
 const API_HOST = process.env.EXPO_PUBLIC_API_HOST;
 const API_PORT = process.env.EXPO_PUBLIC_API_PORT;

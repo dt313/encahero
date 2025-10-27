@@ -6,6 +6,7 @@ export const INIT_LEARNING_LIST = 'INIT_LEARNING_LIST';
 export const REGISTER_COLLECTION = 'REGISTER_COLLECTION';
 export const UPDATE_TASK_COUNT = 'UPDATE_TASK_COUNT';
 export const INCREASE_MASTERED_COUNT = 'INCREASE_MASTERED_COUNT';
+export const DECREASE_MASTERED_COUNT = 'DECREASE_MASTERED_COUNT';
 export const ANSWER_CARD = 'ANSWER_CARD';
 export const MASTER_CARD = 'MASTER_CARD';
 export const CHANGE_STATUS = 'CHANGE_STATUS';
@@ -31,14 +32,21 @@ export const updateTaskCount = (payload: { id: number; task_count: number }): Re
     };
 };
 
-export const increaseMasteredCount = (payload: { id: number; isNew: boolean }): ReduxActionType => {
+export const increaseMasteredCount = (payload: { collection: any; isNew: boolean }): ReduxActionType => {
     return {
         type: INCREASE_MASTERED_COUNT,
         payload,
     };
 };
 
-export const answerCard = (payload: { id: number; isNew: boolean }): ReduxActionType => {
+export const decreaseMasteredCount = (payload: number): ReduxActionType => {
+    return {
+        type: DECREASE_MASTERED_COUNT,
+        payload,
+    };
+};
+
+export const answerCard = (payload: { collection: any; isNew: boolean }): ReduxActionType => {
     return {
         type: ANSWER_CARD,
         payload,

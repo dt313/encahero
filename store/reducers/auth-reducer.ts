@@ -1,6 +1,6 @@
 import ReduxActionType from '@/types/redux-action-type';
 
-import { storage } from '@/utils';
+import * as storage from '@/utils/storage';
 
 import { LOGIN, LOGOUT, UPDATE_USER } from '../action/auth-action';
 
