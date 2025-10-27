@@ -74,6 +74,9 @@ export const Colors = {
 
         androidPickerBg: '#ddd',
         bottomModalBg: '#fff',
+
+        // card modal
+        removeButtonBg: '#f05b5b22',
     },
     dark: {
         primary: '#FF9800',
@@ -130,5 +133,8 @@ export const Colors = {
 
         androidPickerBg: '#333',
         bottomModalBg: '#222',
+
+        // card modal
+        removeButtonBg: '#f05b5b',
     },
 };

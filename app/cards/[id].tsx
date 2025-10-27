@@ -1,21 +1,18 @@
 import React, { useEffect, useState } from 'react';
 
-import { Image, Modal, SectionList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { SectionList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
 import { changeStatus } from '@/store/action/learning-list-action';
 import { RootState } from '@/store/reducers';
 import { CollectionProgress } from '@/store/reducers/learning-list-reducer';
-import { Cancel01Icon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { ThemedText } from '@/components/ThemedText';
 import BackIcon from '@/components/back-icon';
-import Button from '@/components/button';
-import CardStats from '@/components/card-stats';
+import CardModal from '@/components/card-modal';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
 import useToast from '@/hooks/useToast';
@@ -30,6 +27,7 @@ function CardList() {
     const black = useThemeColor({}, 'black');
     const textColor = useThemeColor({}, 'text');
     const lighterText = useThemeColor({}, 'lighterText');
+
     const { id, type } = useLocalSearchParams<{ id: string; type?: 'all' | 'learning' | 'mastered' }>();
     const [filter, setFilter] = useState<'all' | 'learning' | 'mastered'>(type || 'all');
     const [cards, setCards] = useState<any[]>([]);
@@ -194,56 +192,12 @@ function CardList() {
                 <ThemedText style={{ padding: 16, textAlign: 'center' }}>No words found</ThemedText>
             )}
 
-            <Modal
-                visible={modalVisible}
-                animationType="fade"
-                transparent={true}
-                onRequestClose={() => setModalVisible(false)}
-            >
-                <View style={styles.modalOverlay}>
-                    <View style={[styles.modalContent, { backgroundColor }]}>
-                        <View style={styles.content}>
-                            {selectedWord?.image_url && (
-                                <Image
-                                    source={{
-                                        uri: 'https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png',
-                                    }}
-                                    style={styles.modalImage}
-                                />
-                            )}
-                            <ThemedText style={styles.modalTitle}>{selectedWord?.en_word}</ThemedText>
-                            {/* <ThemedText style={styles.modalSubtitle}>{selectedWord?.vn_word}</ThemedText> */}
-                            <ThemedText style={styles.modalMeaning}>{selectedWord?.meaning}</ThemedText>
-                            {/* {selectedWord?.ex?.map((ex: string, i: number) => (
-                                <ThemedText key={i} style={styles.modalExample}>
-                                    - {ex}
-                                </ThemedText>
-                            ))} */}
-
-                            {selectedWord?.stats && (
-                                <CardStats
-                                    status={selectedWord.stats.status}
-                                    rating={selectedWord.stats.rating}
-                                    learned_count={selectedWord.stats.learned_count}
-                                />
-                            )}
-                        </View>
-
-                        <TouchableOpacity style={[styles.closeIcon]} onPress={() => setModalVisible(false)}>
-                            <HugeiconsIcon icon={Cancel01Icon} color={black} />
-                        </TouchableOpacity>
-
-                        {selectedWord?.stats?.status === 'mastered' && (
-                            <Button
-                                buttonStyle={{ borderRadius: 50, backgroundColor: '#f05b5b22' }}
-                                onPress={handleRemoveMastered}
-                            >
-                                Remove from mastered
-                            </Button>
-                        )}
-                    </View>
-                </View>
-            </Modal>
+            <CardModal
+                isOpen={modalVisible}
+                onClose={() => setModalVisible(false)}
+                word={selectedWord}
+                onRemove={handleRemoveMastered}
+            />
         </SafeAreaView>
     );
 }
@@ -313,85 +267,5 @@ const styles = StyleSheet.create({
     filterTextActive: {
         color: '#fff',
         fontWeight: '600',
-    },
-
-    // modal
-
-    modalOverlay: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0,0,0,0.5)',
-    },
-
-    modalContent: {
-        width: '90%',
-        maxHeight: '80%',
-
-        borderRadius: 12,
-        paddingTop: 40,
-        padding: 16,
-
-        // shadow iOS
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 6,
-        // elevation Android
-        elevation: 1,
-    },
-    content: {
-        alignItems: 'center',
-        marginBottom: 16,
-    },
-    modalImage: {
-        width: '100%',
-        height: 150,
-        resizeMode: 'contain',
-        marginBottom: 12,
-    },
-    modalTitle: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginBottom: 4,
-    },
-    modalSubtitle: {
-        fontSize: 16,
-        color: '#666',
-        marginBottom: 8,
-    },
-    modalMeaning: {
-        fontSize: 16,
-        marginBottom: 8,
-    },
-    modalExample: {
-        fontSize: 14,
-        color: '#444',
-        marginBottom: 4,
-    },
-    closeIcon: {
-        position: 'absolute',
-        top: 10,
-        right: 10,
-        zIndex: 10,
-        padding: 6,
-        borderRadius: 12,
-    },
-
-    closeIconText: {
-        fontSize: 20,
-        fontWeight: 'bold',
-    },
-
-    progressContainer: {
-        marginBottom: 12,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-    },
-
-    progressText: {
-        fontSize: 14,
-        fontWeight: '500',
-        marginBottom: 4,
     },
 });
