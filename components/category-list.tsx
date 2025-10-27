@@ -47,10 +47,21 @@ function CategoryList({ headerName = 'Category', containerStyle }: { headerName?
         queryKey: ['allCategories'],
         queryFn: categoryService.getCategories,
     });
+    const borderColor = useThemeColor({}, 'inputBorderColor');
 
     return (
         <View style={[styles.wrapper]}>
-            <ThemedText style={styles.headerName}>{headerName}</ThemedText>
+            <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                <ThemedText style={styles.headerName}>{headerName}</ThemedText>
+                <View
+                    style={[
+                        styles.headerLine,
+                        {
+                            backgroundColor: borderColor,
+                        },
+                    ]}
+                />
+            </View>
 
             <View style={styles.body}>
                 {categories.map((item: any, index: number) => {
@@ -74,10 +85,15 @@ const styles = StyleSheet.create({
     },
     headerName: {
         letterSpacing: 0.5,
-        fontWeight: 600,
-        fontSize: 24,
+        fontWeight: 500,
+        fontSize: 20,
+        marginRight: 8,
     },
-
+    headerLine: {
+        height: 1.5,
+        flex: 1,
+        borderRadius: 12,
+    },
     body: {
         marginTop: 20,
         rowGap: 8,

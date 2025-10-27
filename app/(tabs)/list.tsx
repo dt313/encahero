@@ -36,36 +36,36 @@ function List() {
             <SafeAreaView style={[styles.wrapper]}>
                 <ListHeader onSearchChange={setSearchText} />
 
-                <View style={{}}>
-                    {searchText ? (
+                {searchText ? (
+                    <View style={{ paddingHorizontal: 24 }}>
                         <HorizontalList list={filteredAll} isVertical={true} headerName="Kết quả" />
-                    ) : (
-                        <FlatList
-                            data={['popular', 'learningList', 'category']}
-                            keyExtractor={(_, idx) => idx.toString()}
-                            renderItem={({ item }) => {
-                                if (item === 'learningList' && progressList?.length)
-                                    return (
-                                        <HorizontalList
-                                            headerName="Đang học"
-                                            containerStyle={{ marginTop: 24 }}
-                                            list={progressList}
-                                            isLearningList={true}
-                                        />
-                                    );
-                                if (item === 'popular')
-                                    return <HorizontalList isRandomColor list={allList} headerName="Phổ biến" />;
-                                if (item === 'category') return <CategoryList headerName="Danh mục" />;
-                                return <></>;
-                            }}
-                            contentContainerStyle={{
-                                paddingVertical: 16,
-                                paddingBottom: Platform.OS === 'ios' ? 140 : 80,
-                                paddingHorizontal: 24,
-                            }}
-                        />
-                    )}
-                </View>
+                    </View>
+                ) : (
+                    <FlatList
+                        data={['popular', 'learningList', 'category']}
+                        keyExtractor={(_, idx) => idx.toString()}
+                        renderItem={({ item }) => {
+                            if (item === 'learningList' && progressList?.length)
+                                return (
+                                    <HorizontalList
+                                        headerName="Đang học"
+                                        containerStyle={{ marginTop: 24 }}
+                                        list={progressList}
+                                        isLearningList={true}
+                                    />
+                                );
+                            if (item === 'popular')
+                                return <HorizontalList isRandomColor list={allList} headerName="Phổ biến" />;
+                            if (item === 'category') return <CategoryList headerName="Danh mục" />;
+                            return <></>;
+                        }}
+                        contentContainerStyle={{
+                            paddingVertical: 16,
+                            paddingBottom: Platform.OS === 'ios' ? 140 : 80,
+                            paddingHorizontal: 24,
+                        }}
+                    />
+                )}
             </SafeAreaView>
         </ScreenWrapper>
     );

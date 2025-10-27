@@ -179,9 +179,20 @@ function HorizontalList({
     isLearningList,
     isVertical = false,
 }: HorizontalListProps) {
+    const borderColor = useThemeColor({}, 'inputBorderColor');
     return (
         <View style={[styles.wrapper, containerStyle]}>
-            <ThemedText style={styles.headerName}>{headerName}</ThemedText>
+            <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                <ThemedText style={styles.headerName}>{headerName}</ThemedText>
+                <View
+                    style={[
+                        styles.headerLine,
+                        {
+                            backgroundColor: borderColor,
+                        },
+                    ]}
+                />
+            </View>
             <FlatList
                 horizontal={!isVertical}
                 data={list}
@@ -217,12 +228,15 @@ function HorizontalList({
                         );
                     }
                 }}
+                style={{
+                    marginTop: isVertical ? 12 : undefined,
+                }}
                 contentContainerStyle={{
                     columnGap: 8,
                     paddingVertical: 16,
                     rowGap: isVertical ? 12 : undefined,
                     paddingHorizontal: isVertical ? 24 : undefined,
-                    paddingBottom: isVertical ? (Platform.OS === 'ios' ? 140 : 80) : 0,
+                    paddingBottom: isVertical ? (Platform.OS === 'ios' ? 200 : 80) : 0,
                 }}
                 showsHorizontalScrollIndicator={false}
             />
@@ -234,9 +248,14 @@ const styles = StyleSheet.create({
     wrapper: {},
     headerName: {
         letterSpacing: 0.5,
-        fontWeight: 600,
-        fontSize: 24,
+        fontWeight: 500,
+        fontSize: 20,
+        marginRight: 8,
+    },
+    headerLine: {
+        height: 1.5,
         flex: 1,
+        borderRadius: 12,
     },
     list: {
         marginVertical: 24,
