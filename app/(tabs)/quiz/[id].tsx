@@ -1,8 +1,7 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { useLocalSearchParams } from 'expo-router';
 
-import checkNewMode from '@/helper/check-new-mode';
 import { answerCard, changeStatus, increaseMasteredCount } from '@/store/action/learning-list-action';
 import { RootState } from '@/store/reducers';
 import { CollectionProgress } from '@/store/reducers/learning-list-reducer';
@@ -23,11 +22,11 @@ import ScreenWrapper from '@/components/screen-wrapper';
 
 import { useBottomSheet } from '@/hooks/useBottomSheet';
 import { useFetchQuiz } from '@/hooks/useFetchQuiz';
+import { useQuizMode } from '@/hooks/useQuizMode';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import useToast from '@/hooks/useToast';
 
 import { collectionService, quizService } from '@/services';
-import type { QuizMode } from '@/services/quiz';
 
 function QuizScreen() {
     const { ref: leftRef, open: openList, close: closeList } = useBottomSheet();
@@ -36,21 +35,12 @@ function QuizScreen() {
     const dispatch = useDispatch();
 
     const collections = useSelector((state: RootState) => state.learningList.collections);
-    const { id, mode } = useLocalSearchParams();
+    const { id } = useLocalSearchParams();
     const { showErrorToast } = useToast();
 
     const [isReviewMode, setIsReviewMode] = useState(false);
     const [showCongratsModal, setShowCongratsModal] = useState(false);
-    const [currentCollection, setCurrentCollection] = useState<CollectionProgress | null>(null);
-
-    // Determine quiz mode
-    const quizMode = useMemo<QuizMode | null>(() => {
-        if (!currentCollection) return null;
-        if (checkNewMode(currentCollection)) {
-            return 'new';
-        } else if (typeof mode === 'string') return mode as QuizMode;
-        return isReviewMode ? 'mixed' : 'old';
-    }, [mode, isReviewMode, currentCollection]);
+    // const [currentCollection, setCurrentCollection] = useState<CollectionProgress | null>(null);
 
     // Determine current collection ID
     const collectionId = useMemo(() => {
@@ -68,36 +58,14 @@ function QuizScreen() {
         return activeCollection?.collection_id;
     }, [id, collections]);
 
-    const { quizList, currentIndex, setCurrentIndex, fetchQuiz } = useFetchQuiz(collectionId, quizMode);
-
-    console.log(
-        quizMode,
-        collectionId,
-        currentCollection?.collection_id,
-        currentCollection?.collection?.name,
-        quizList[0]?.en_word,
-    );
-
-    //  Set current collection
-    useEffect(() => {
-        if (!collectionId || !collections) {
-            setCurrentCollection(null);
-            return;
-        }
-        const collection = collections.find(
-            (c: CollectionProgress) => c.collection_id === collectionId && c.status !== 'stopped',
-        );
-        console.log('Current collection set to:', collection, collectionId);
-        setCurrentCollection(collection);
+    const currentCollection = useMemo(() => {
+        if (!collections?.length || !collectionId) return null;
+        return collections.find((c: CollectionProgress) => c.collection_id === collectionId) ?? null;
     }, [collectionId, collections]);
 
-    const handleSkip = () => {
-        if (currentIndex < quizList.length - 1) {
-            setCurrentIndex(currentIndex + 1);
-        } else {
-            fetchQuiz();
-        }
-    };
+    const quizMode = useQuizMode({ currentCollection, isReviewMode });
+
+    const { quizList, currentIndex, handleSkip } = useFetchQuiz(collectionId, quizMode);
 
     const toggleReviewMode = () => {
         setIsReviewMode(!isReviewMode);
@@ -128,6 +96,7 @@ function QuizScreen() {
             try {
                 if (!collectionId) return;
                 const res = await quizService.answer(collectionId, cardId, quizType, rating, quizMode === 'new');
+                console.log('answered');
 
                 if (res) {
                     dispatch(answerCard({ id: collectionId, isNew: quizMode === 'new' }));
@@ -175,7 +144,7 @@ function QuizScreen() {
                         status={currentCollection?.status}
                         onMasterWord={handleMasteredWord}
                         onSkip={handleSkip}
-                        isShowMasteredButton={!(mode === 'recap')}
+                        isShowMasteredButton={!(currentCollection?.status === 'completed')}
                     />
                 )}
 
@@ -189,7 +158,7 @@ function QuizScreen() {
                         onClose={closeSetting}
                         onToggle={toggleReviewMode}
                         reviewMode={isReviewMode}
-                        isShowReviewMode={!(mode === 'recap' && currentCollection?.status === 'completed')}
+                        isShowReviewMode={!(currentCollection?.status === 'completed')}
                     />
                 </ModalBottomSheet>
 

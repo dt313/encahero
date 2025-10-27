@@ -38,7 +38,7 @@ const CompletedListItem = ({ id, name, masteredCount, cardCount }: CompletedItem
             <Button
                 buttonStyle={{ marginTop: 24, backgroundColor: '#fff', paddingVertical: 4 }}
                 textStyle={{ color: '#333' }}
-                onPress={() => router.replace(`/quiz/${id}?mode=recap`)}
+                onPress={() => router.replace(`/quiz/${id}`)}
             >
                 Ôn tập
             </Button>
