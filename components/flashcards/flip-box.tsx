@@ -6,6 +6,8 @@ import { ScrollView } from 'react-native-gesture-handler';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
 
+import { getExampleOfCard } from '@/utils';
+
 import { ThemedText } from '../ThemedText';
 import ViToEng from './vi2en';
 
@@ -50,7 +52,7 @@ function FlipBox({ flip, onFlip, quiz }: FlipBoxProps) {
                         </ThemedText>
                     </View>
                 </View>
-                <View style={[styles.card]}>
+                <View style={[styles.card, { alignItems: 'flex-start' }]}>
                     <ScrollView
                         contentContainerStyle={{
                             paddingVertical: 12,
@@ -66,7 +68,7 @@ function FlipBox({ flip, onFlip, quiz }: FlipBoxProps) {
                         >
                             <ViToEng
                                 meaning={quiz.meaning}
-                                example={quiz.ex[0]}
+                                example={getExampleOfCard(quiz.ex)}
                                 url={quiz.image_url}
                                 type={quiz.type}
                                 hideType={true}

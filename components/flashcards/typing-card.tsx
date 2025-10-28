@@ -8,6 +8,8 @@ import { commonColor } from '@/constants/Colors';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
 
+import { getExampleOfCard } from '@/utils';
+
 import Input from '../input';
 import Action from './action';
 import ViToEng from './vi2en';
@@ -43,12 +45,6 @@ function TypingCard({ quiz, onSubmit }: { quiz: Quiz; onSubmit: () => void }) {
         return undefined;
     }, [isCorrect, isShowAnswer]);
 
-    const reset = () => {
-        setValue('');
-        setIsCorrect(null);
-        setIsShowAnswer(false);
-    };
-
     const mainBoxBg = useThemeColor({}, 'mainBoxBg');
     const shadowColor = useThemeColor({}, 'shadowColor');
 
@@ -56,7 +52,7 @@ function TypingCard({ quiz, onSubmit }: { quiz: Quiz; onSubmit: () => void }) {
         <View style={[styles.wrapper, { backgroundColor: mainBoxBg, shadowColor }]}>
             <ViToEng
                 meaning={quiz.meaning}
-                example={quiz.ex[0]}
+                example={getExampleOfCard(quiz.ex, quiz.en_word)}
                 url={quiz?.image_url}
                 type={quiz?.type}
                 phonetic={quiz.phonetic}

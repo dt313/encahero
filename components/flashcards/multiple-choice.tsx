@@ -7,6 +7,8 @@ import { AnswerState, QuizDirection } from '@/types/quiz';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
 
+import { getExampleOfCard } from '@/utils';
+
 import { ThemedText } from '../ThemedText';
 import EngToVi from './en2vi';
 import MultipleChoiceAnswer from './multiple-choice-answer';
@@ -76,11 +78,11 @@ function MultipleChoice({ quiz, type, onSubmit }: { quiz: Quiz; type: QuizDirect
                 </View>
 
                 {type === QuizDirection.E2V ? (
-                    <EngToVi text={quiz.en_word} />
+                    <EngToVi text={quiz.en_word} phonetic={quiz.phonetic} type={quiz.type} />
                 ) : (
                     <ViToEng
                         meaning={quiz.meaning}
-                        example={quiz.ex[0]}
+                        example={getExampleOfCard(quiz.ex, quiz.en_word)}
                         url={quiz?.image_url}
                         type={quiz.type}
                         phonetic={quiz.phonetic}
