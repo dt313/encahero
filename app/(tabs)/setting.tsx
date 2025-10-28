@@ -9,6 +9,7 @@ import getAvatarOfUser from '@/helper/get-avatar-of-user';
 import getNameOfUser from '@/helper/get-name-of-user';
 import { AppDispatch } from '@/store';
 import { logoutAsync } from '@/store/action/auth-action';
+import { initLearningList } from '@/store/action/learning-list-action';
 import { RootState } from '@/store/reducers';
 import {
     ArrowRight01Icon,
@@ -23,6 +24,7 @@ import {
     User02FreeIcons,
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
+import { useQueryClient } from '@tanstack/react-query';
 import { useDispatch, useSelector } from 'react-redux';
 
 import avatar from '@/assets/images/peeps-avatar-alpha.png';
@@ -38,12 +40,14 @@ export default function SettingsScreen() {
     const { mode, toggleTheme } = useThemeSwitcher();
     const [pushNotif, setPushNotif] = useState(true);
     const user = useSelector((state: RootState) => state.auth.user);
-
+    const queryClient = useQueryClient();
     const router = useRouter();
     const dispatch = useDispatch<AppDispatch>();
 
     const handleLogout = () => {
+        queryClient.clear();
         dispatch(logoutAsync());
+        dispatch(initLearningList([]));
         router.replace('/login');
     };
 

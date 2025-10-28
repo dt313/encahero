@@ -48,10 +48,8 @@ export default function TabLayout() {
     });
 
     useEffect(() => {
-        if (myCollections?.length) {
-            dispatch(initLearningList(myCollections));
-        }
-    }, [myCollections, dispatch]);
+        dispatch(initLearningList(myCollections ?? []));
+    }, [myCollections, dispatch, me]);
 
     useEffect(() => {
         const checkTimeZone = async () => {
