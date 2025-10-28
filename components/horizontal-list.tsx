@@ -91,6 +91,7 @@ const ListItem = ({
                             id: res.collection_id,
                             name: res.collection.name,
                             card_count: res.collection.card_count,
+                            icon: res.collection.icon,
                         },
                         mastered_card_count: 0,
                         today_learned_count: 0,

@@ -19,6 +19,7 @@ export interface CollectionProgress {
         id: number;
         name: string;
         card_count: number;
+        icon?: string;
     };
     task_count: number;
     last_reviewed_at: string | null;
@@ -81,13 +82,13 @@ export default function learningListReducer(state = initialState, action: ReduxA
                                         ? todayLearnedCount
                                         : item.today_learned_count + 1,
                                     today_new_count: todayNewCount ? todayNewCount : item.today_new_count + 1,
-                                    learned_card_count: item.today_learned_count + 1,
+                                    learned_card_count: item.learned_card_count + 1,
                                     last_reviewed_at: lastReviewedAt,
                                 };
                             } else
                                 return {
                                     ...item,
-                                    today_learned_count: action.payload.collection.today_learned_count,
+                                    today_learned_count: todayLearnedCount,
                                     today_new_count: todayNewCount ? todayNewCount : item.today_new_count,
                                     last_reviewed_at: lastReviewedAt,
                                 };
@@ -113,7 +114,7 @@ export default function learningListReducer(state = initialState, action: ReduxA
                                         ? todayLearnedCount
                                         : item.today_learned_count + 1,
                                     today_new_count: todayNewCount ? todayNewCount : item.today_new_count + 1,
-                                    learned_card_count: item.today_learned_count + 1,
+                                    learned_card_count: item.learned_card_count + 1,
                                     mastered_card_count: item.mastered_card_count + 1,
                                     last_reviewed_at: lastReviewedAt,
                                 };
@@ -121,7 +122,7 @@ export default function learningListReducer(state = initialState, action: ReduxA
                                 return {
                                     ...item,
                                     today_new_count: todayNewCount ? todayNewCount : item.today_new_count,
-                                    today_learned_count: item.today_learned_count + 1,
+                                    today_learned_count: item.learned_card_count + 1,
                                     mastered_card_count: item.mastered_card_count + 1,
                                     last_reviewed_at: lastReviewedAt,
                                 };

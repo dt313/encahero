@@ -1,45 +1,52 @@
 import { Image, View } from 'react-native';
 
+import getImageUrl from '@/utils/get-img-url';
+
 import { ThemedText } from '../ThemedText';
 
 const ViToEng = ({
     meaning = '',
     example = '',
     type = '',
-    url = "'",
+    url = '',
+    phonetic = '',
+    hideType = false,
 }: {
     meaning: string;
     example: string;
     url?: string;
     type: string;
+    phonetic: string;
+    hideType?: boolean;
 }) => {
     return (
         <View>
-            <View>
+            <View style={{ paddingHorizontal: 8 }}>
                 <ThemedText type="subtitle" style={{ fontSize: 18 }}>
                     Định nghĩa:{' '}
                 </ThemedText>
-
                 <ThemedText
                     style={{
                         fontWeight: 400,
+                        fontSize: 16,
                     }}
                 >
-                    {meaning}
+                    - {meaning}
                 </ThemedText>
-                {type && (
+
+                {type && !hideType && (
                     <ThemedText
                         type="subtitle"
                         style={{
                             fontSize: 16,
-                            marginVertical: 12,
+                            marginTop: 12,
                         }}
                     >
-                        {type}
+                        ({type}) - <ThemedText style={{ fontWeight: 400 }}>{phonetic}</ThemedText>
                     </ThemedText>
                 )}
                 {example && (
-                    <View>
+                    <View style={{ marginTop: 12 }}>
                         <ThemedText type="subtitle" style={{ fontSize: 18 }}>
                             Ví dụ:
                         </ThemedText>
@@ -49,22 +56,23 @@ const ViToEng = ({
                                 fontWeight: 400,
                             }}
                         >
-                            {example}
+                            - {example}
                         </ThemedText>
                     </View>
                 )}
             </View>
-
-            <Image
-                source={{
-                    uri: 'https://www.shutterstock.com/shutterstock/photos/795957880/display_1500/stock-photo-female-hands-holding-young-green-plant-on-black-isolated-background-nature-growth-and-care-795957880.jpg',
-                }}
-                style={{
-                    width: 'auto',
-                    height: 100,
-                }}
-                resizeMode="contain"
-            />
+            {getImageUrl(url) && (
+                <Image
+                    source={{
+                        uri: getImageUrl(url) || '',
+                    }}
+                    style={{
+                        width: 'auto',
+                        height: 100,
+                    }}
+                    resizeMode="contain"
+                />
+            )}
         </View>
     );
 };

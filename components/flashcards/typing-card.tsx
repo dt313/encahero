@@ -54,7 +54,13 @@ function TypingCard({ quiz, onSubmit }: { quiz: Quiz; onSubmit: () => void }) {
 
     return (
         <View style={[styles.wrapper, { backgroundColor: mainBoxBg, shadowColor }]}>
-            <ViToEng meaning={quiz.meaning} example={quiz.ex[0]} url={quiz?.image_url} type={quiz?.type} />
+            <ViToEng
+                meaning={quiz.meaning}
+                example={quiz.ex[0]}
+                url={quiz?.image_url}
+                type={quiz?.type}
+                phonetic={quiz.phonetic}
+            />
             <Action
                 speakWord={quiz.en_word}
                 isNew={false}

@@ -7,6 +7,7 @@ export type Quiz = {
     meaning: string;
     ex: string[];
     image_url?: string;
+    phonetic: string;
     type:
         | 'noun'
         | 'verb'

@@ -78,7 +78,13 @@ function MultipleChoice({ quiz, type, onSubmit }: { quiz: Quiz; type: QuizDirect
                 {type === QuizDirection.E2V ? (
                     <EngToVi text={quiz.en_word} />
                 ) : (
-                    <ViToEng meaning={quiz.meaning} example={quiz.ex[0]} url={quiz?.image_url} type={quiz.type} />
+                    <ViToEng
+                        meaning={quiz.meaning}
+                        example={quiz.ex[0]}
+                        url={quiz?.image_url}
+                        type={quiz.type}
+                        phonetic={quiz.phonetic}
+                    />
                 )}
             </View>
             <View style={[styles.answersBox, { backgroundColor: mainBoxBg }]}>
