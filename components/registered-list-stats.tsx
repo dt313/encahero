@@ -44,7 +44,7 @@ export default function RegisteredListStats({ id, title, onClose }: RegisteredSt
     const collection = useMemo(() => {
         if (!learningList || learningList.length === 0) return undefined;
         return learningList.find((item: CollectionProgress) => item.collection_id === id);
-    }, [learningList, id]);
+    }, [learningList, id]) as CollectionProgress;
 
     const handleOpenBottomModal = useCallback(() => {
         bottomSheetModalRef.current?.present();
@@ -105,7 +105,7 @@ export default function RegisteredListStats({ id, title, onClose }: RegisteredSt
 
             <View style={styles.statsContainer}>
                 <View style={[styles.statBox, { backgroundColor: white, shadowColor }]}>
-                    <ThemedText style={styles.statNumber}>{10}</ThemedText>
+                    <ThemedText style={styles.statNumber}>{collection?.learned_card_count}</ThemedText>
                     <ThemedText lighter style={styles.statLabel}>
                         Đã học
                     </ThemedText>

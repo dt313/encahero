@@ -6,7 +6,7 @@ import useToast from '@/hooks/useToast';
 
 import { quizService } from '@/services';
 
-export function useFetchQuiz(collectionId?: number, isReview?: boolean) {
+export function useFetchQuiz(collectionId?: number, isReview?: boolean, isRefetchQuiz?: boolean) {
     const [quizList, setQuizList] = useState<Quiz[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const { showErrorToast } = useToast();
@@ -29,6 +29,11 @@ export function useFetchQuiz(collectionId?: number, isReview?: boolean) {
     useEffect(() => {
         fetchQuiz();
     }, [collectionId, isReview]);
+
+    useEffect(() => {
+        if (!isRefetchQuiz) return;
+        fetchQuiz();
+    }, [isRefetchQuiz]);
 
     const handleSkip = useCallback(() => {
         setCurrentIndex((prevIndex) => {

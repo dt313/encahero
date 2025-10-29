@@ -146,49 +146,59 @@ export default function LearningList({
             <ThemedText type="title" style={{ paddingHorizontal: 12 }}>
                 Danh sách của bạn
             </ThemedText>
-            <View style={{ flex: 1, width: '100%' }}>
-                <FlatList
-                    ref={listRef}
-                    data={progressList}
-                    keyExtractor={(item: any) => item.id}
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={{
-                        paddingHorizontal: 12,
-                        height: 200,
-                        marginVertical: 24,
-                    }}
-                    nestedScrollEnabled={true}
-                    getItemLayout={(_, index) => ({
-                        length: ITEM_WIDTH,
-                        offset: ITEM_WIDTH * index,
-                        index,
-                    })}
-                    renderItem={({ item, index }) => {
-                        return (
-                            <DeckCard
-                                id={item.collection_id}
-                                name={item.collection.name}
-                                todayCount={item.today_learned_count}
-                                taskCount={item.task_count}
-                                cardCount={item.collection.card_count}
-                                masteredCardCount={item.mastered_card_count}
-                                isActive={item?.collection_id === selectedId}
-                                onPress={() => onSelect(item.collection_id, index)}
-                            />
-                        );
-                    }}
-                />
-            </View>
+            {progressList.length <= 0 ? (
+                <View style={{ marginTop: 12, padding: 12 }}>
+                    <ThemedText style={{ fontStyle: 'italic', fontSize: 14 }}>
+                        Chưa có bài học nào . Hãy đăng kí các bài học mới
+                    </ThemedText>
+                </View>
+            ) : (
+                <View style={{ flex: 1, width: '100%' }}>
+                    <FlatList
+                        ref={listRef}
+                        data={progressList}
+                        keyExtractor={(item: any) => item.id}
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={{
+                            paddingHorizontal: 12,
+                            height: 200,
+                            marginVertical: 24,
+                        }}
+                        nestedScrollEnabled={true}
+                        getItemLayout={(_, index) => ({
+                            length: ITEM_WIDTH,
+                            offset: ITEM_WIDTH * index,
+                            index,
+                        })}
+                        renderItem={({ item, index }) => {
+                            return (
+                                <DeckCard
+                                    id={item.collection_id}
+                                    name={item.collection.name}
+                                    todayCount={item.today_learned_count}
+                                    taskCount={item.task_count}
+                                    cardCount={item.collection.card_count}
+                                    masteredCardCount={item.mastered_card_count}
+                                    isActive={item?.collection_id === selectedId}
+                                    onPress={() => onSelect(item.collection_id, index)}
+                                />
+                            );
+                        }}
+                    />
+                </View>
+            )}
 
-            <Button
-                buttonStyle={{
-                    marginHorizontal: 20,
-                }}
-                onPress={handleLearnNow}
-            >
-                Học
-            </Button>
+            {progressList.length > 0 && (
+                <Button
+                    buttonStyle={{
+                        marginHorizontal: 20,
+                    }}
+                    onPress={handleLearnNow}
+                >
+                    Học
+                </Button>
+            )}
         </View>
     );
 }

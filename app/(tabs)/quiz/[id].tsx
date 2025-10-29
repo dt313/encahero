@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useLocalSearchParams } from 'expo-router';
 
@@ -41,6 +41,7 @@ function QuizScreen() {
 
     const [isReviewMode, setIsReviewMode] = useState(false);
     const [showCongratsModal, setShowCongratsModal] = useState(false);
+    const [isRefetchQuiz, setIsRefetchQuiz] = useState(false);
 
     const queryClient = useQueryClient();
 
@@ -65,7 +66,12 @@ function QuizScreen() {
         return collections.find((c: CollectionProgress) => c.collection_id === collectionId) ?? null;
     }, [collectionId, collections]);
 
-    const { quizList, currentIndex, handleSkip } = useFetchQuiz(collectionId, isReviewMode);
+    useEffect(() => {
+        if (!currentCollection) return;
+        setIsRefetchQuiz(currentCollection.today_learned_count === currentCollection.task_count);
+    }, [currentCollection]);
+
+    const { quizList, currentIndex, handleSkip } = useFetchQuiz(collectionId, isReviewMode, isRefetchQuiz);
 
     const toggleReviewMode = () => {
         setIsReviewMode(!isReviewMode);
@@ -137,7 +143,7 @@ function QuizScreen() {
         async (quizType: QuestionType, cardId: number, isNew: boolean, rating?: 'E' | 'M' | 'H') => {
             try {
                 if (!collectionId) return;
-                const res = await quizService.answer(collectionId, cardId, quizType, rating);
+                const res = await quizService.answer(collectionId, cardId, quizType, rating, isNew);
 
                 if (res && res.collection) {
                     dispatch(answerCard({ collection: res.collection, isNew }));
