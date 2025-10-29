@@ -24,7 +24,6 @@ import ScreenWrapper from '@/components/screen-wrapper';
 
 import { useBottomSheet } from '@/hooks/useBottomSheet';
 import { useFetchQuiz } from '@/hooks/useFetchQuiz';
-import { useQuizMode } from '@/hooks/useQuizMode';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import useToast from '@/hooks/useToast';
 
@@ -47,7 +46,7 @@ function QuizScreen() {
 
     // Determine current collection id
     const collectionId = useMemo(() => {
-        if (!collections) return undefined;
+        if (!collections) return null;
 
         // Kiểm tra nếu có id trong URL
         if (id) {
@@ -66,51 +65,82 @@ function QuizScreen() {
         return collections.find((c: CollectionProgress) => c.collection_id === collectionId) ?? null;
     }, [collectionId, collections]);
 
-    const quizMode = useQuizMode({ currentCollection, isReviewMode });
-
-    const { quizList, currentIndex, handleSkip } = useFetchQuiz(collectionId, quizMode);
+    const { quizList, currentIndex, handleSkip } = useFetchQuiz(collectionId, isReviewMode);
 
     const toggleReviewMode = () => {
         setIsReviewMode(!isReviewMode);
     };
 
-    const handleMasteredWord = useCallback(async () => {
-        try {
-            if (!collectionId) return;
-            const res = await collectionService.changeStatusOfCard(collectionId, quizList[currentIndex].id, 'mastered');
-
-            if (res) {
-                if (res?.collectionCompleted) {
-                    dispatch(changeStatus({ id: collectionId, status: 'completed' }));
-                    dispatch(increaseMasteredCount({ collection: res.collection, isNew: quizMode === 'new' }));
-                    // router.replace('/');
-                    setShowCongratsModal(true);
-                    return;
-                }
-
-                const last_reviewed_at = res.collection.last_reviewed_at;
-                const isNewDay = await checkNewDay(currentCollection.last_reviewed_at, last_reviewed_at);
-
-                if (isNewDay) {
-                    queryClient.invalidateQueries({ queryKey: ['my-collections'] });
-                }
-
-                dispatch(increaseMasteredCount({ collection: res.collection, isNew: quizMode === 'new' }));
-                handleSkip();
-            }
-        } catch (error) {
-            showErrorToast(error);
-        }
-    }, [collectionId, collections, currentIndex, quizList, quizMode, dispatch]);
-
-    const handleSubmitAnswer = useCallback(
-        async (quizType: QuestionType, cardId: number, rating?: 'E' | 'M' | 'H') => {
+    const handleMasteredWord = useCallback(
+        async (isNew: boolean) => {
             try {
                 if (!collectionId) return;
-                const res = await quizService.answer(collectionId, cardId, quizType, rating, quizMode === 'new');
+                const res = await collectionService.changeStatusOfCard(
+                    collectionId,
+                    quizList[currentIndex].id,
+                    'mastered',
+                );
+
+                if (res) {
+                    // refetch if new day
+                    const last_reviewed_at = res.collection.last_reviewed_at;
+                    const isNewDay = await checkNewDay(currentCollection.last_reviewed_at, last_reviewed_at);
+
+                    if (isNewDay) {
+                        queryClient.invalidateQueries({ queryKey: ['my-collections'] });
+                    }
+
+                    queryClient.setQueryData(['userStatsDailyAndWeekly'], (old: any) => {
+                        if (!old) return old;
+                        return {
+                            ...old,
+                            today: (old.today ?? 0) + 1,
+                            week: (old.week ?? 0) + 1,
+                        };
+                    });
+
+                    queryClient.setQueryData(['contribution'], (old: any[] | undefined) => {
+                        if (!old) return old;
+
+                        const today = new Date().toISOString().split('T')[0];
+                        let found = false;
+
+                        const newData = old.map((item) => {
+                            if (item.date === today) {
+                                found = true;
+                                return { ...item, count: (item.count || 0) + 1 };
+                            }
+                            return item;
+                        });
+
+                        if (!found) newData.push({ date: today, count: 1 });
+                    });
+
+                    dispatch(increaseMasteredCount({ collection: res.collection, isNew }));
+
+                    if (res?.collectionCompleted) {
+                        dispatch(changeStatus({ id: collectionId, status: 'completed' })); // router.replace('/');
+                        setShowCongratsModal(true);
+                        return;
+                    }
+
+                    handleSkip();
+                }
+            } catch (error) {
+                showErrorToast(error);
+            }
+        },
+        [collectionId, currentCollection, currentIndex, quizList, dispatch, queryClient, showErrorToast, handleSkip],
+    );
+
+    const handleSubmitAnswer = useCallback(
+        async (quizType: QuestionType, cardId: number, isNew: boolean, rating?: 'E' | 'M' | 'H') => {
+            try {
+                if (!collectionId) return;
+                const res = await quizService.answer(collectionId, cardId, quizType, rating);
 
                 if (res && res.collection) {
-                    dispatch(answerCard({ collection: res.collection, isNew: quizMode === 'new' }));
+                    dispatch(answerCard({ collection: res.collection, isNew }));
                     handleSkip();
 
                     const last_reviewed_at = res.collection.last_reviewed_at;
@@ -124,7 +154,7 @@ function QuizScreen() {
                 showErrorToast(error);
             }
         },
-        [collectionId, collections, quizMode, dispatch],
+        [collectionId, currentCollection, dispatch, handleSkip, queryClient, showErrorToast],
     );
 
     const reviewBg = useThemeColor({}, 'reviewBg');
@@ -148,11 +178,7 @@ function QuizScreen() {
                 )}
 
                 {quizList.length > 0 ? (
-                    <RandomQuiz
-                        quiz={quizList[currentIndex]}
-                        onSubmit={handleSubmitAnswer}
-                        isNew={quizMode === 'new'}
-                    />
+                    <RandomQuiz quiz={quizList[currentIndex]} onSubmit={handleSubmitAnswer} />
                 ) : (
                     <NoQuiz />
                 )}
@@ -161,6 +187,7 @@ function QuizScreen() {
                     <QuizAction
                         status={currentCollection?.status}
                         onMasterWord={handleMasteredWord}
+                        isNewQuiz={quizList[currentIndex].isNew}
                         onSkip={handleSkip}
                         isShowMasteredButton={!(currentCollection?.status === 'completed')}
                     />

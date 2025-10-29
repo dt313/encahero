@@ -25,31 +25,29 @@ export function randomQuestionType(): QuestionType {
 
 function RandomQuiz({
     quiz,
-    isNew,
     onSubmit,
 }: {
     quiz: Quiz;
-    onSubmit: (quizType: QuestionType, cardId: number, rating?: 'E' | 'M' | 'H') => void;
-    isNew: boolean;
+    onSubmit: (quizType: QuestionType, cardId: number, isNew: boolean, rating?: 'E' | 'M' | 'H') => void;
 }) {
     const [questionType, setQuestionType] = useState<QuestionType | null>(null);
     const queryClient = useQueryClient();
     const isSubmittingRef = useRef(false);
     useEffect(() => {
-        if (isNew) {
+        if (quiz.isNew) {
             setQuestionType(QuestionType.RATING);
         } else {
             setQuestionType(randomQuestionType());
         }
         isSubmittingRef.current = false;
-    }, [quiz, isNew]);
+    }, [quiz]);
 
     const debouncedSubmit = useMemo(
         () =>
             debounce(
                 (rating?: 'E' | 'M' | 'H') => {
                     if (questionType) {
-                        onSubmit(questionType, quiz.id, rating);
+                        onSubmit(questionType, quiz.id, quiz.isNew, rating);
                         setQuestionType(null);
                         queryClient.setQueryData(['userStatsDailyAndWeekly'], (old: any) => {
                             if (!old) return old;
@@ -90,7 +88,7 @@ function RandomQuiz({
             return <MultipleChoice quiz={quiz} type={direction} onSubmit={debouncedSubmit} />;
 
         case QuestionType.RATING:
-            return <ReviewCard quiz={quiz} onSubmit={debouncedSubmit} isNew={isNew} />;
+            return <ReviewCard quiz={quiz} onSubmit={debouncedSubmit} isNew={quiz.isNew} />;
 
         case QuestionType.TYPING:
             return <TypingCard quiz={quiz} onSubmit={debouncedSubmit} />;

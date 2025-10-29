@@ -20,6 +20,8 @@ export type Quiz = {
         | 'phrase'
         | 'idiom'
         | 'other';
+
+    isNew: boolean;
 };
 
 export enum QuizDirection {

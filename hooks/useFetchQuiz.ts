@@ -5,9 +5,8 @@ import type { Quiz } from '@/types/quiz';
 import useToast from '@/hooks/useToast';
 
 import { quizService } from '@/services';
-import { QuizMode } from '@/services/quiz';
 
-export function useFetchQuiz(collectionId?: number, quizMode?: QuizMode | null) {
+export function useFetchQuiz(collectionId?: number, isReview?: boolean) {
     const [quizList, setQuizList] = useState<Quiz[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const { showErrorToast } = useToast();
@@ -15,10 +14,10 @@ export function useFetchQuiz(collectionId?: number, quizMode?: QuizMode | null) 
     const quizListLength = useRef<number>(0);
 
     const fetchQuiz = async () => {
-        if (!collectionId || !quizMode) return;
+        if (!collectionId) return;
 
         try {
-            const res = await quizService.getRandomQuizOfCollection(collectionId, quizMode);
+            const res = await quizService.getRandomQuizOfCollection(collectionId, isReview);
             setQuizList(res?.length ? res : []);
             quizListLength.current = res?.length ? res.length : 0;
             setCurrentIndex(0);
@@ -29,7 +28,7 @@ export function useFetchQuiz(collectionId?: number, quizMode?: QuizMode | null) 
 
     useEffect(() => {
         fetchQuiz();
-    }, [collectionId, quizMode]);
+    }, [collectionId, isReview]);
 
     const handleSkip = useCallback(() => {
         setCurrentIndex((prevIndex) => {

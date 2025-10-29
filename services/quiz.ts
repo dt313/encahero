@@ -4,9 +4,9 @@ import { QuestionType } from '@/components/random-quiz';
 
 export type QuizMode = 'old' | 'new' | 'mixed' | 'recap';
 
-export const getRandomQuizOfCollection = async (id: number, mode: QuizMode = 'old') => {
+export const getRandomQuizOfCollection = async (id: number, isReview?: boolean) => {
     try {
-        const res = await instance.get(`/quiz/${id}?mode=${mode}`);
+        const res = await instance.get(`/quiz/${id}?mixed=${isReview}`);
         return res.data;
     } catch (error: any) {
         throw error;

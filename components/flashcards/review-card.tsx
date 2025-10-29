@@ -15,11 +15,11 @@ import FlipBox from './flip-box';
 function ReviewCard({
     quiz,
     onSubmit,
-    isNew,
+    isNew = false,
 }: {
     quiz: Quiz;
     onSubmit: (name: 'E' | 'M' | 'H') => void;
-    isNew: boolean;
+    isNew?: boolean;
 }) {
     const mainBoxBg = useThemeColor({}, 'mainBoxBg');
     const shadowColor = useThemeColor({}, 'shadowColor');

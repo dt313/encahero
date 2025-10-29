@@ -9,18 +9,20 @@ function QuizAction({
     onMasterWord,
     onSkip,
     isShowMasteredButton,
+    isNewQuiz = false,
 }: {
     status: string;
-    onMasterWord: () => void;
+    onMasterWord: (isNew: boolean) => void;
     onSkip: () => void;
     isShowMasteredButton: boolean;
+    isNewQuiz: boolean;
 }) {
     const textColor = useThemeColor({}, 'text');
 
     return (
         <View style={[styles.btnBox, status === 'completed' && { flexDirection: 'row-reverse' }]}>
             {isShowMasteredButton && (
-                <Button type="link" onPress={onMasterWord}>
+                <Button type="link" onPress={() => onMasterWord(isNewQuiz)}>
                     🧠 Đã ghi nhớ
                 </Button>
             )}

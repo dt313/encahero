@@ -102,7 +102,7 @@ export default function learningListReducer(state = initialState, action: ReduxA
                 collections:
                     state.collections.length > 0 &&
                     state.collections.map((item) => {
-                        if (item.collection_id === action.payload.id) {
+                        if (item.collection_id === action.payload.collection.collection_id) {
                             const todayLearnedCount = action.payload.collection.today_learned_count;
                             const todayNewCount = action.payload.collection.today_new_count;
                             const lastReviewedAt = action.payload.collection.last_reviewed_at;
@@ -122,7 +122,9 @@ export default function learningListReducer(state = initialState, action: ReduxA
                                 return {
                                     ...item,
                                     today_new_count: todayNewCount ? todayNewCount : item.today_new_count,
-                                    today_learned_count: item.learned_card_count + 1,
+                                    today_learned_count: todayLearnedCount
+                                        ? todayLearnedCount
+                                        : item.today_learned_count + 1,
                                     mastered_card_count: item.mastered_card_count + 1,
                                     last_reviewed_at: lastReviewedAt,
                                 };
